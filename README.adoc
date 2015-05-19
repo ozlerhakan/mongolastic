@@ -55,4 +55,4 @@ Then, you can now add the converted JSON data into your running ElasticSearch no
 
 == License
 
-Pes is released under the MIT License. See LICENSE file for details.
+Mongolastic is released under the MIT License. See LICENSE file for details.

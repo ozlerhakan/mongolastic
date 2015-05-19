@@ -1,0 +1,58 @@
+== Mongolastic
+
+What database you have in your MongoDB can also be included into your ElasticSearch index by using the tool called Mongolastic. Mongolastic is a tool that copies a specified MongoDB collection into an eligible ElasticSearch JSON bulk structure. In other words, Mongolastic converts a JSON dataset/collection located on MongoDB into a JSON file. The JSON file has a characteristic of the bulk structure so that you can easily perform https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html#docs-bulk[the Bulk Api] in order to add the JSON dataset.
+
+== How it works
+
+First, build the source:
+
+    $ mvn clean install
+
+Second, configure the config file. Mongolastic requires you to give a yaml file called `config` which contains a few properties:
+
+
+[width="100%",options="header"]
+|====================
+| Property | Description  
+| host |  Specifies the name of the host machine where the `mongod` is running.
+| port |  Specifies the port where the `mongod` instance is listening. Default value is 27017
+| database |  Specifies the _database name_ to connect to.
+| collection  |  Specifies the _collection name_ to import.
+| outFile |  Specifies the converted JSON file _name_.
+|====================
+
+Here is an example config.yml file:
+
+[source,yalm]
+----
+host: "localhost"
+port: 27017
+database: "twitter"
+collection: "tweets"
+outFile: "tweets"
+----
+
+After building the source and configuring the config file, you can run the tool by either running:
+
+    $ java -jar target/mongolastic-1.0.jar config.yml
+
+Or
+
+    $ mvn exec:java -Dexec.args="config.yml"
+
+You should see a file called `tweets.json` on your working directory after running one of the mentioned commands.
+
+.An example of the tweets data with the create action:
+[source,json]
+----
+{"create":{"_index":"twitter","_type":"tweets","_id":"553bbecae8f1e57878b72a1e"}}
+{"created_at":"Sat Apr 25 16:17:26 +0000 2015","id":5.9199946551238246E+17,"id_str":"591999465512382464","text":"[CALENDAR] Barça have 5 league games left, 2 #UCL semi-final games, and the Spanish Cup final: http://t.co/mWKOzNEWFo http://t.co/cyN1ZZNsSx","source":"<a href=\"http://www.hootsuite.com\"  rel=\"nofollow\">Hootsuite</a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"geo":null,"coordinates":null,"place":null,"contributors":null,"retweet_count":95.0,"favorite_count":82.0,"favorited":false,"retweeted":false,"possibly_sensitive":false,"possibly_sensitive_appealable":false,"lang":"fr"}
+----
+
+Then, you can now add the converted JSON data into your running ElasticSearch node by using the Bulk Api as follows (Assume that your elastic node is running on the localhost interface on port 9200):
+
+    $ curl -XPOST localhost:9200/_bulk --data-binary @tweets.json
+
+== License
+
+Pes is released under the MIT License. See LICENSE file for details.

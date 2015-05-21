@@ -11,6 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
+        <elastic.version>1.5.2</elastic.version>
     </properties>
 
     <inceptionYear>2015</inceptionYear>
@@ -63,6 +64,14 @@
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>${elastic.version}</version>
+        </dependency>
+
+
     </dependencies>
 
 

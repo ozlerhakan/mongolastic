@@ -138,8 +138,8 @@ public class JSONConverter {
         try {
             File file = new File(outFile.concat(".json"));
             Files.write(file.toPath(), sb.toString().getBytes(Charset.forName("UTF-8")));
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
         }
     }
 }

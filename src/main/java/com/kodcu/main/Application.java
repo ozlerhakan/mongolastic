@@ -6,7 +6,6 @@ import com.kodcu.config.YamlConfiguration;
 import com.kodcu.converter.JSONConverter;
 
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -17,15 +16,8 @@ public class Application {
 
     public static void main(String[] args) {
 
-        if (args.length == 0) {
-            logger.log(Level.SEVERE, "Specify the correct file");
-            return;
-        }
+        configAssertion(args);
         String file = args[0];
-        if (!file.equals("config.yml")) {
-            logger.log(Level.SEVERE, "It is not a config.yml file we are looking for, Where is it?");
-            return;
-        }
 
         FileConfiguration fConfig = new FileConfiguration(file);
         Optional<YamlConfiguration> yamlConfig = Optional.ofNullable(fConfig.getFileContent());
@@ -36,8 +28,19 @@ public class Application {
             StringBuilder bulkJSONContent = converter.buildBulkJsonFile();
             converter.writeToFile(bulkJSONContent, config.getOutFile());
             mongo.closeConnection();
-            System.out.println("Cool! Your bulk JSON file generated successfully!");
+            logger.info("Cool! Your bulk JSON file generated successfully!");
         });
 
+    }
+
+    static void configAssertion(String[] args) {
+        if (args.length == 0) {
+            logger.severe("Incorrect syntax. Pass the name of the file");
+            System.exit(-1);
+        }
+        if (!args[0].equals("config.yml")) {
+            logger.severe("It is not a config.yml file we are looking for, Where is it?");
+            System.exit(-1);
+        }
     }
 }

@@ -26,8 +26,8 @@ public class FileConfiguration {
             String content = FileUtils.readFileToString(configFile, "utf-8");
             Yaml yaml = new Yaml();
             config = yaml.loadAs(content, YamlConfiguration.class);
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
         }
 
         return config;

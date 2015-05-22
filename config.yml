@@ -1,5 +1,11 @@
-host: "localhost"
-port: 27017
+# Mongo Config
+mongoHost: "localhost"
+mongoPort: 27017
 database: "twitter"
 collection: "tweets"
-outFile: "tweets"
+outFile: "output"
+
+# ElasticSearch Config
+enableBulk: true
+esHost: "localhost"
+esTransPort: 9300

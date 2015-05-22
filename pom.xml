@@ -31,9 +31,18 @@
             <id>ozlerhakan</id>
             <name>Hakan Ozler</name>
             <email>ozler.hakan@gmail.com</email>
-            <url>http://hakanozler.com.tr</url>
+            <url>http://github.com/ozlerhakan</url>
             <roles>
                 <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>hakdogan</id>
+            <name>Hüseyin Akdoğan</name>
+            <email>huseyin.akdogan@kodcu.com</email>
+            <url>http://github.com/hakdogan</url>
+            <roles>
+                <role>software evangelist - developer</role>
             </roles>
         </developer>
     </developers>
@@ -64,14 +73,16 @@
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
-
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
             <version>${elastic.version}</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.12</version>
+        </dependency>
     </dependencies>
 
 

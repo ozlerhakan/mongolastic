@@ -4,25 +4,24 @@ import com.mongodb.MongoNamespace;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import org.apache.log4j.Logger;
 import org.bson.Document;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
-import java.io.*;
+import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by Hakan on 5/18/2015.
  */
 public class JSONConverter {
 
-    private final Logger logger = Logger.getLogger("JSONConverter");
+    private final Logger logger = Logger.getLogger(JSONConverter.class);
     private final MongoCollection<Document> collection;
 
     public JSONConverter(final MongoCollection<Document> collection) {
@@ -30,6 +29,7 @@ public class JSONConverter {
     }
 
     public StringBuilder buildBulkJsonFile() {
+        // TODO: Her 1000 veride dosyaya yaz yapılabilir?
         FindIterable<Document> results = collection.find();
         MongoCursor<Document> cursor = results.iterator();
         StringBuilder sb = new StringBuilder();
@@ -139,7 +139,9 @@ public class JSONConverter {
             File file = new File(outFile.concat(".json"));
             Files.write(file.toPath(), sb.toString().getBytes(Charset.forName("UTF-8")));
         } catch (Exception e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage(), e.fillInStackTrace());
+        } finally {
+            sb.setLength(0);
         }
     }
 }

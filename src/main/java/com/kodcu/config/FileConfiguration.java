@@ -1,18 +1,18 @@
 package com.kodcu.config;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by Hakan on 5/19/2015.
  */
 public class FileConfiguration {
 
-    private final Logger logger = Logger.getLogger("FileConfiguration");
+    private final Logger logger = LoggerFactory.getLogger(FileConfiguration.class);
     private final String file;
 
     public FileConfiguration(String file) {
@@ -27,7 +27,7 @@ public class FileConfiguration {
             Yaml yaml = new Yaml();
             config = yaml.loadAs(content, YamlConfiguration.class);
         } catch (Exception e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage(), e.fillInStackTrace());
         }
 
         return config;

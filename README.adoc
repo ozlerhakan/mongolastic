@@ -24,7 +24,7 @@ Second, configure the config file. Mongolastic requires you to give a yaml file 
 | esTransPort | Specifies the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
 |====================
 
-IMPORTANT: Configure `esHost` and `esTransPort` if `enableBulk` is true.
+IMPORTANT: Configure `esHost` and `esTransPort` if `enableBulk` is true. Otherwise, you can delete the last 2 properties.
 
 Here is an example config.yml file:
 

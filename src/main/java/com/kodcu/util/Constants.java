@@ -5,7 +5,7 @@ package com.kodcu.util;
  */
 public class Constants {
 
-    public static final String configFile = "config.yml";
-    public static final String jsonOutputFileName = "tweets.json";
+    public static final String CONFIG_FILE = "config.yml";
+    public static final String CREATE_ACTION = "^\\{\"create\"\\S+\"_id\":\"(\\S+)\"\\}\\}$";
 
 }

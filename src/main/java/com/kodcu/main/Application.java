@@ -36,7 +36,7 @@ public class Application {
 
     public static void configLog() throws IOException {
         PatternLayout patternLayout = new PatternLayout();
-        FileAppender fileAppender = new FileAppender(patternLayout, "error.log", false);
+        FileAppender fileAppender = new FileAppender(patternLayout, "message.log", false);
         fileAppender.setThreshold(Level.DEBUG);
         BasicConfigurator.configure(fileAppender);
         BasicConfigurator.configure();

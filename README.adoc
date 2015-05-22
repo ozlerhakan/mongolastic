@@ -1,6 +1,6 @@
 == Mongolastic
 
-What database you have in your MongoDB can also be included into your ElasticSearch index by using the tool called Mongolastic. Mongolastic is a tool that copies a specified MongoDB collection into an eligible ElasticSearch JSON bulk structure. In other words, Mongolastic converts a JSON dataset/collection located on MongoDB into a JSON file. The JSON file has a characteristic of the bulk structure so that you can easily perform https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html#docs-bulk[the Bulk Api] in order to add the JSON dataset.
+What database you have in your MongoDB can also be included into your ElasticSearch index by using the tool called Mongolastic. Mongolastic is a tool that copies a specified MongoDB collection into an eligible ElasticSearch JSON bulk structure. In other words, Mongolastic converts a JSON dataset/collection located on MongoDB into a JSON file. The JSON file has a characteristic of the bulk structure so that you can easily perform the https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html#docs-bulk[Bulk Api] in order to add the JSON dataset.
 
 == How it works
 
@@ -15,21 +15,32 @@ Second, configure the config file. Mongolastic requires you to give a yaml file 
 |====================
 | Property | Description  
 | host |  Specifies the name of the host machine where the `mongod` is running.
-| port |  Specifies the port where the `mongod` instance is listening. Default value is 27017
+| port |  Specifies the port where the `mongod` instance is listening.
 | database |  Specifies the _database name_ to connect to.
-| collection  |  Specifies the _collection name_ to import.
-| outFile |  Specifies the converted JSON file _name_.
+| collection  |  Specifies the _collection name_ to export.
+| outFile |  Specifies the _name_ of the new JSON file.
+| enableBulk |  Specifies whether the Bulk Api will be used or not. If it is true, the Java API that ElasticSearch provides will be used to insert all the generated data via the Bulk approach.
+| esHost |  Specifies the name of the host machine where the `elastic node` is running.
+| esTransPort | Specifies the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
 |====================
+
+IMPORTANT: Configure `esHost` and `esTransPort` if `enableBulk` is true.
 
 Here is an example config.yml file:
 
 [source,yalm]
 ----
-host: "localhost"
-port: 27017
+# Mongo Config
+mongoHost: "localhost"
+mongoPort: 27017
 database: "twitter"
 collection: "tweets"
-outFile: "tweets"
+outFile: "output"
+
+# ElasticSearch Config
+enableBulk: true
+esHost: "localhost"
+esTransPort: 9300
 ----
 
 After building the source and configuring the config file, you can run the tool by either running:
@@ -40,7 +51,7 @@ Or
 
     $ mvn exec:java -Dexec.args="config.yml"
 
-You should see a file called `tweets.json` on your working directory after running one of the mentioned commands.
+You should see a file called `output.json` on your working directory *and* a type called "tweets" in an index called "twitter" in your running elastic node after running one of the mentioned commands based on the mentioned config file.
 
 .An example of the tweets data with the create action:
 [source,json]
@@ -49,9 +60,9 @@ You should see a file called `tweets.json` on your working directory after runni
 {"created_at":"Sat Apr 25 16:17:26 +0000 2015","id":5.9199946551238246E+17,"id_str":"591999465512382464","text":"[CALENDAR] Barça have 5 league games left, 2 #UCL semi-final games, and the Spanish Cup final: http://t.co/mWKOzNEWFo http://t.co/cyN1ZZNsSx","source":"<a href=\"http://www.hootsuite.com\"  rel=\"nofollow\">Hootsuite</a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"geo":null,"coordinates":null,"place":null,"contributors":null,"retweet_count":95.0,"favorite_count":82.0,"favorited":false,"retweeted":false,"possibly_sensitive":false,"possibly_sensitive_appealable":false,"lang":"fr"}
 ----
 
-Then, you can now add the converted JSON data into your running ElasticSearch node by using the Bulk Api as follows (Assume that your elastic node is running on the localhost interface on port 9200):
+In addition, You can manually add the converted JSON data into your running ElasticSearch node by using the Bulk Api as follows (Assuming that your elastic node is running on the localhost interface on port 9200):
 
-    $ curl -XPOST localhost:9200/_bulk --data-binary @tweets.json
+    $ curl -XPOST localhost:9200/_bulk --data-binary @output.json
 
 == License
 

@@ -4,6 +4,8 @@ import com.kodcu.config.ElasticConfiguration;
 import com.kodcu.config.YamlConfiguration;
 import com.kodcu.util.Constants;
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.common.unit.ByteSizeUnit;
@@ -31,10 +33,14 @@ public class BulkService {
     }
 
     public void startBulkOperation() {
-        // TODO: Aynı index mevcut ise sil
         // TODO: Hala geliştirime açık
         String file = config.getOutFile().concat(".json");
         Pattern pattern = Pattern.compile(Constants.CREATE_ACTION);
+
+        //Delete index if existing
+        if(client.getClient().admin().indices().prepareExists(config.getDatabase()).execute().actionGet().isExists())
+            deleteCurrentIndex(config.getDatabase());
+
         BulkProcessor bulkProcessor = BulkProcessor.builder(client.getClient(), new BulkProcessorListener())
                 .setBulkActions(1000)
                 .setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
@@ -68,6 +74,11 @@ public class BulkService {
                 client.closeNode();
             }
         }
+    }
+
+    public void deleteCurrentIndex(String indexName){
+        DeleteIndexResponse delete = client.getClient().admin().indices().delete(new DeleteIndexRequest(indexName)).actionGet();
+        logger.info("the current index was deleted.");
     }
 
 }

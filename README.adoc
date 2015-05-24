@@ -1,15 +1,14 @@
 == Mongolastic
 
-What database you have in your MongoDB can also be included into your ElasticSearch index by using the tool called Mongolastic. Mongolastic is a tool that copies a specified MongoDB collection into an eligible ElasticSearch JSON bulk structure. In other words, Mongolastic converts a JSON dataset/collection located on MongoDB into a JSON file. The JSON file has a characteristic of the bulk structure so that you can easily perform the https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html#docs-bulk[Bulk Api] in order to add the JSON dataset.
+What database you have in your MongoDB can also be included into your ElasticSearch index by using the tool called Mongolastic. Mongolastic is a tool that copies a specified MongoDB collection into an eligible ElasticSearch JSON bulk structure. In other words, by default, Mongolastic converts a JSON dataset/collection located on MongoDB into a JSON file. The JSON file has a characteristic of the bulk structure so that you can easily perform the https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html#docs-bulk[Bulk Api] and optionally, you can let the tool insert the bulk file for you into an ElasticSearch environment with regard to the specified settings.
 
 == How it works
 
-First, build the source:
+First, build the source after downloading the latest release from the https://github.com/ozlerhakan/mongolastic/releases[releases] page:
 
     $ mvn clean install
 
 Second, configure the config file. Mongolastic requires you to give a yaml file called `config` which contains a few properties:
-
 
 [width="100%",options="header"]
 |====================
@@ -45,13 +44,23 @@ esTransPort: 9300
 
 After building the source and configuring the config file, you can run the tool by either running:
 
-    $ java -jar target/mongolastic-1.0.jar config.yml
+    $ java -jar target/mongolastic.jar config.yml [key:value key:value ... property8] <1>
+
+<1> _Optionally_, you can *override* the specified value of each property by typing a new key:value pair among the available config pairs.
 
 Or
 
-    $ mvn exec:java -Dexec.args="config.yml"
+    $ mvn exec:java -Dexec.args="config.yml [property1 property2 ... property8]"
 
-You should see a file called `output.json` on your working directory *and* a type called "tweets" in an index called "twitter" in your running elastic node after running one of the mentioned commands based on the mentioned config file.
+Let's say you did not pass any extra parameter except a config.yml, you should see a file called `output.json` on your working directory *and* a type called "tweets" in an index called "twitter" in your running elastic node after running one of the mentioned commands based on the mentioned config file.
+
+IMPORTANT: You can pass parameters up to _8 config key:value pairs_ + _a config file_ to Mongolastic.
+
+On the other hand, consider the following one:
+
+    $ java -jar target/mongolastic.jar config.yml enableBulk:false outFile:tt
+
+This command will simply skip the second phase and give a new name called "tt" to the JSON bulk file rather than "output".
 
 .An example of the tweets data with the create action:
 [source,json]

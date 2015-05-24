@@ -8,8 +8,8 @@ import com.kodcu.converter.JSONConverter;
 import com.kodcu.service.BulkService;
 import com.kodcu.util.Constants;
 import org.apache.log4j.*;
-
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 /**
@@ -30,8 +30,7 @@ public class Application {
         String file = args[0];
 
         Application app = new Application(file);
-        app.Start();
-
+        app.Start(args);
     }
 
     public static void configLog() throws IOException {
@@ -42,9 +41,12 @@ public class Application {
         BasicConfigurator.configure();
     }
 
-    public void Start() {
+    public void Start(String[] args) {
         FileConfiguration fConfig = new FileConfiguration(fileName);
         Optional<YamlConfiguration> yamlConfig = Optional.ofNullable(fConfig.getFileContent());
+
+        if(args.length > 1)
+            yamlConfig = Optional.ofNullable(checkConfigArguments(yamlConfig.get(), args));
 
         yamlConfig.ifPresent(config -> {
             MongoConfiguration mongo = new MongoConfiguration(config);
@@ -63,6 +65,7 @@ public class Application {
     }
 
     static void configAssertion(String[] args) {
+
         if (args.length == 0) {
             logger.error("Incorrect syntax. Pass the name of the file");
             System.exit(-1);
@@ -70,6 +73,50 @@ public class Application {
         if (!args[0].equals(Constants.CONFIG_FILE)) {
             logger.error("It is not a config.yml file we are looking for, Where is it?");
             System.exit(-1);
+        }
+    }
+
+    public YamlConfiguration checkConfigArguments(YamlConfiguration config, String[] args){
+
+        try {
+
+            Class<?> cls = Class.forName("com.kodcu.config.YamlConfiguration");
+            Method[] methlist = cls.getDeclaredMethods();
+
+            int coupling = 0;
+            String[] confParameter = null;
+
+            for(int i=1; i < args.length; i++){
+                confParameter = args[i].split(":");
+                for (int j = 0; j < methlist.length; j++) {
+                    Method m = methlist[j];
+
+                    if(m.getName().equals(confParameter[0])) {
+                        ++coupling;
+                        Object value;
+                        Class[] pvec = m.getParameterTypes();
+
+                        if(pvec != null && pvec[0].toString().equals("boolean"))
+                            value = Boolean.valueOf(confParameter[1]);
+                        else
+                            value = confParameter[1];
+
+                        m.setAccessible(true);
+                        m.invoke(config, value);
+                    }
+                }
+
+                if(coupling == 0){
+                    logger.error("Incorrect parameter. Pass the correct parameter name");
+                    System.exit(-1);
+                } else
+                    coupling = 0;
+            }
+
+        } catch (Exception ex){
+            logger.error(ex.getMessage(), ex.fillInStackTrace());
+        } finally {
+            return config;
         }
     }
 }

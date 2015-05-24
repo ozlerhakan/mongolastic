@@ -44,6 +44,10 @@ public class MongoConfiguration {
         try {
             MongoDatabase database = client.getDatabase(config.getDatabase());
             collection = database.getCollection(config.getCollection());
+            if(collection.count() == 0) {
+                logger.info("Database/Collection does not exist or does not contain the record");
+                System.exit(-1);
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex.fillInStackTrace());
         }

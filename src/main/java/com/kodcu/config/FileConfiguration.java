@@ -57,11 +57,18 @@ public class FileConfiguration {
 
                                 if (types[0].getName().equals("boolean"))
                                     param = Boolean.valueOf(value);
-                                else if (types[0].getName().equals("int"))
-                                    param = Integer.valueOf(value);
+                                else if (types[0].getName().equals("int")) {
+                                    try {
+                                        param = Integer.valueOf(value);
+                                    } catch (NumberFormatException e){
+                                        logger.error("Invalid value for parameter");
+                                        System.exit(-1);
+                                    }
+                                }
 
                                 method.setAccessible(true);
                                 method.invoke(config, param);
+
                             } catch (Exception ex) {
                                 logger.error(ex.getMessage(), ex.fillInStackTrace());
                                 return false;

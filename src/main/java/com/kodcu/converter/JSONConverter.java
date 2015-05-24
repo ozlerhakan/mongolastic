@@ -134,10 +134,11 @@ public class JSONConverter {
         }
     }
 
-    public void writeToFile(StringBuilder sb, String outFile) {
+    public void writeToFile(StringBuilder sb, String outFile, Runnable message) {
         try {
             File file = new File(outFile.concat(".json"));
             Files.write(file.toPath(), sb.toString().getBytes(Charset.forName("UTF-8")));
+            message.run();
         } catch (Exception e) {
             logger.error(e.getMessage(), e.fillInStackTrace());
         } finally {

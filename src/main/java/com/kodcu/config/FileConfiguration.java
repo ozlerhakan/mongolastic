@@ -44,33 +44,36 @@ public class FileConfiguration {
 
         for (int i = 1; i < args.length; i++) {
             final String[] confParameter = args[i].split(":");
-            String key = String.join("", "set", Character.toUpperCase(confParameter[0].charAt(0)) + confParameter[0].substring(1));
-            String value = confParameter[1];
-            boolean coupling = Arrays.asList(methodList).stream().anyMatch(method -> {
-                String methodName = method.getName();
-                if (methodName.equals(key)) {
-                    try {
-                        Object param = value;
-                        Class[] types = method.getParameterTypes();
+            switch (confParameter.length) {
+                case 2:
+                    String key = String.join("", "set", Character.toUpperCase(confParameter[0].charAt(0)) + confParameter[0].substring(1));
+                    String value = confParameter[1];
+                    boolean coupling = Arrays.asList(methodList).stream().anyMatch(method -> {
+                        String methodName = method.getName();
+                        if (methodName.equals(key)) {
+                            try {
+                                Object param = value;
+                                Class[] types = method.getParameterTypes();
 
-                        if (types[0].getName().equals("boolean"))
-                            param = Boolean.valueOf(value);
-                        else if (types[0].getName().equals("int"))
-                            param = Integer.valueOf(value);
+                                if (types[0].getName().equals("boolean"))
+                                    param = Boolean.valueOf(value);
+                                else if (types[0].getName().equals("int"))
+                                    param = Integer.valueOf(value);
 
-                        method.setAccessible(true);
-                        method.invoke(config, param);
-                    } catch (Exception ex) {
-                        logger.error(ex.getMessage(), ex.fillInStackTrace());
-                        return false;
+                                method.setAccessible(true);
+                                method.invoke(config, param);
+                            } catch (Exception ex) {
+                                logger.error(ex.getMessage(), ex.fillInStackTrace());
+                                return false;
+                            }
+                            return true;
+                        } else
+                            return false;
+                    });
+                    if (!coupling) {
+                        logger.error("Incorrect parameter. Pass the correct parameter name.");
+                        System.exit(-1);
                     }
-                    return true;
-                } else
-                    return false;
-            });
-            if (!coupling) {
-                logger.error("Incorrect parameter. Pass the correct parameter name.");
-                System.exit(-1);
             }
         }
     }

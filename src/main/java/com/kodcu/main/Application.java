@@ -96,13 +96,15 @@ public class Application {
                         Object value;
                         Class[] pvec = m.getParameterTypes();
 
-                        if(pvec != null && pvec[0].toString().equals("boolean"))
-                            value = Boolean.valueOf(confParameter[1]);
-                        else
-                            value = confParameter[1];
+                        if(pvec.length > 0){
+                            if(pvec[0].toString().equals("boolean"))
+                                value = Boolean.valueOf(confParameter[1]);
+                            else
+                                value = confParameter[1];
 
-                        m.setAccessible(true);
-                        m.invoke(config, value);
+                            m.setAccessible(true);
+                            m.invoke(config, value);
+                        }
                     }
                 }
 

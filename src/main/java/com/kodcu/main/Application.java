@@ -88,24 +88,31 @@ public class Application {
 
             for(int i=1; i < args.length; i++){
                 confParameter = args[i].split(":");
-                for (int j = 0; j < methlist.length; j++) {
-                    Method m = methlist[j];
 
-                    if(m.getName().equals(confParameter[0])) {
-                        ++coupling;
-                        Object value;
-                        Class[] pvec = m.getParameterTypes();
+                switch (confParameter.length) {
+                    case 2:
 
-                        if(pvec.length > 0){
-                            if(pvec[0].toString().equals("boolean"))
-                                value = Boolean.valueOf(confParameter[1]);
-                            else
-                                value = confParameter[1];
+                        for (int j = 0; j < methlist.length; j++) {
+                            Method m = methlist[j];
 
-                            m.setAccessible(true);
-                            m.invoke(config, value);
+                            if(m.getName().equals(confParameter[0])) {
+                                ++coupling;
+                                Object value;
+                                Class[] pvec = m.getParameterTypes();
+
+                                if(pvec.length > 0){
+                                    if(pvec[0].toString().equals("boolean"))
+                                        value = Boolean.valueOf(confParameter[1]);
+                                    else
+                                        value = confParameter[1];
+
+                                    m.setAccessible(true);
+                                    m.invoke(config, value);
+                                }
+                            }
                         }
-                    }
+
+                        break;
                 }
 
                 if(coupling == 0){

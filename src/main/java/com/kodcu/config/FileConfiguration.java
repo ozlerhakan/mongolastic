@@ -43,9 +43,9 @@ public class FileConfiguration {
         final Method[] methodList = clazz.getDeclaredMethods();
 
         for (int i = 1; i < args.length; i++) {
-            final String[] property = args[i].split(":");
-            String key = String.join("", "set", Character.toUpperCase(property[0].charAt(0)) + property[0].substring(1));
-            String value = property[1];
+            final String[] confParameter = args[i].split(":");
+            String key = String.join("", "set", Character.toUpperCase(confParameter[0].charAt(0)) + confParameter[0].substring(1));
+            String value = confParameter[1];
             boolean coupling = Arrays.asList(methodList).stream().anyMatch(method -> {
                 String methodName = method.getName();
                 if (methodName.equals(key)) {

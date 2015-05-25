@@ -71,7 +71,7 @@ public class Application {
             System.exit(-1);
         }
         if (args.length > 9) {
-            logger.error("Incorrect syntax. Pass less than 9 parameters");
+            logger.error("Incorrect syntax. Pass max 9 parameters");
             System.exit(-1);
         }
     }

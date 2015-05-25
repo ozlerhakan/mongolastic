@@ -80,4 +80,18 @@ public class YamlConfiguration {
     public void setEsTransPort(int esTransPort) {
         this.esTransPort = esTransPort;
     }
+
+    @Override
+    public String toString() {
+        return "YamlConfiguration{" +
+                "collection='" + collection + '\'' +
+                ", mongoHost='" + mongoHost + '\'' +
+                ", mongoPort=" + mongoPort +
+                ", database='" + database + '\'' +
+                ", outFile='" + outFile + '\'' +
+                ", esHost='" + esHost + '\'' +
+                ", esTransPort=" + esTransPort +
+                ", enableBulk=" + enableBulk +
+                '}';
+    }
 }

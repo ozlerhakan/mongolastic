@@ -6,8 +6,10 @@ import com.kodcu.util.Constants;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 
@@ -38,8 +40,7 @@ public class BulkService {
         Pattern pattern = Pattern.compile(Constants.CREATE_ACTION);
 
         //Delete index if existing
-        if(client.getClient().admin().indices().prepareExists(config.getDatabase()).execute().actionGet().isExists())
-            deleteCurrentIndex(config.getDatabase());
+        this.deleteCurrentIndex(config.getDatabase());
 
         BulkProcessor bulkProcessor = BulkProcessor.builder(client.getClient(), new BulkProcessorListener())
                 .setBulkActions(1000)
@@ -76,9 +77,16 @@ public class BulkService {
         }
     }
 
-    public void deleteCurrentIndex(String indexName){
-        DeleteIndexResponse delete = client.getClient().admin().indices().delete(new DeleteIndexRequest(indexName)).actionGet();
-        logger.info("the current index was deleted.");
+    public void deleteCurrentIndex(String indexName) {
+        IndicesAdminClient admin = client.getClient().admin().indices();
+        IndicesExistsRequestBuilder builder = admin.prepareExists(indexName);
+        if (builder.execute().actionGet().isExists()) {
+            DeleteIndexResponse delete = admin.delete(new DeleteIndexRequest(indexName)).actionGet();
+            if (delete.isAcknowledged())
+                logger.info("The current index was deleted.");
+            else
+                logger.info("The current index was not deleted.");
+        }
     }
 
 }

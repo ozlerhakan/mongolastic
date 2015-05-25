@@ -52,9 +52,9 @@ Or
 
     $ mvn exec:java -Dexec.args="config.yml [property1 property2 ... property8]"
 
-Let's say you did not pass any extra parameter except a config.yml, you should see a file called `output.json` on your working directory *and* a type called "tweets" in an index called "twitter" in your running elastic node after running one of the mentioned commands based on the mentioned config file.
+Let's say you did not pass any extra parameter except a config.yml, you should see a file called `output.json` on your working directory *and* a type called "tweets" in an index called "twitter" in your running elastic node based on the mentioned config file.
 
-IMPORTANT: You can pass parameters up to _8 config key:value pairs_ + _a config file_ to Mongolastic. If you pass unknown parameters, Mongolastic will consider the properties of the config file.
+IMPORTANT: You can pass parameters up to _8 config key:value pairs_ + _a config file_ to Mongolastic. If you pass unknown parameters not being a key:value pair, Mongolastic will consider the properties of the config file.
 
 On the other hand, consider the following one:
 
@@ -69,7 +69,7 @@ This command will simply skip the second phase and give a new name called "tt" t
 {"created_at":"Sat Apr 25 16:17:26 +0000 2015","id":5.9199946551238246E+17,"id_str":"591999465512382464","text":"[CALENDAR] Barça have 5 league games left, 2 #UCL semi-final games, and the Spanish Cup final: http://t.co/mWKOzNEWFo http://t.co/cyN1ZZNsSx","source":"<a href=\"http://www.hootsuite.com\"  rel=\"nofollow\">Hootsuite</a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"geo":null,"coordinates":null,"place":null,"contributors":null,"retweet_count":95.0,"favorite_count":82.0,"favorited":false,"retweeted":false,"possibly_sensitive":false,"possibly_sensitive_appealable":false,"lang":"fr"}
 ----
 
-In addition, You can manually add the converted JSON data into your running ElasticSearch node by using the Bulk Api as follows (Assuming that your elastic node is running on the localhost interface on port 9200):
+In addition, You can manually add the converted JSON data into your running ElasticSearch node by using the Bulk Api as follows (Assuming that your elastic node is running on the local interface on port 9200):
 
     $ curl -XPOST localhost:9200/_bulk --data-binary @output.json
 

@@ -54,7 +54,7 @@ Or
 
 Let's say you did not pass any extra parameter except a config.yml, you should see a file called `output.json` on your working directory *and* a type called "tweets" in an index called "twitter" in your running elastic node based on the mentioned config file.
 
-IMPORTANT: You can pass parameters up to _8 config key:value pairs_ + _a config file_ to Mongolastic. If you pass unknown parameters not being a key:value pair, Mongolastic will consider the properties of the config file.
+IMPORTANT: You can pass parameters up to _8 config key:value pairs_ + _a config file_ to Mongolastic. If you pass unknown parameters not being a key:value pair, Mongolastic will discard them and consider the properties of the config file.
 
 On the other hand, consider the following one:
 

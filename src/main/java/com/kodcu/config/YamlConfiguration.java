@@ -5,13 +5,13 @@ package com.kodcu.config;
  */
 public class YamlConfiguration {
 
-    private String mongoHost;
-    private int mongoPort;
-    private String database;
-    private String collection;
-    private String outFile;
     private String esHost;
-    private int esTransPort;
+    private String database;
+    private String fileName;
+    private String mongoHost;
+    private String collection;
+    private int esPort;
+    private int mongoPort;
     private boolean enableBulk;
 
     private YamlConfiguration() {
@@ -41,12 +41,12 @@ public class YamlConfiguration {
         this.database = database;
     }
 
-    public String getOutFile() {
-        return outFile;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setOutFile(String outFile) {
-        this.outFile = outFile;
+    public void setFileName(String outFile) {
+        this.fileName = outFile;
     }
 
     public String getMongoHost() {
@@ -73,12 +73,12 @@ public class YamlConfiguration {
         this.esHost = esHost;
     }
 
-    public int getEsTransPort() {
-        return esTransPort;
+    public int getEsPort() {
+        return esPort;
     }
 
-    public void setEsTransPort(int esTransPort) {
-        this.esTransPort = esTransPort;
+    public void setEsPort(int esTransPort) {
+        this.esPort = esTransPort;
     }
 
     @Override
@@ -88,9 +88,9 @@ public class YamlConfiguration {
                 ", mongoHost='" + mongoHost + '\'' +
                 ", mongoPort=" + mongoPort +
                 ", database='" + database + '\'' +
-                ", outFile='" + outFile + '\'' +
+                ", fileName='" + fileName + '\'' +
                 ", esHost='" + esHost + '\'' +
-                ", esTransPort=" + esTransPort +
+                ", esTransPort=" + esPort +
                 ", enableBulk=" + enableBulk +
                 '}';
     }

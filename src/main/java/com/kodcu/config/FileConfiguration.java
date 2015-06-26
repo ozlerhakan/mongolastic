@@ -1,11 +1,20 @@
 package com.kodcu.config;
 
-import org.apache.commons.io.FileUtils;
+import com.kodcu.lang.QueryLexer;
+import com.kodcu.lang.QueryParser;
+import com.kodcu.listener.QueryListener;
+import com.kodcu.listener.QuerySyntaxErrorListener;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,7 +36,7 @@ public class FileConfiguration {
         YamlConfiguration config = null;
         try {
             File configFile = new File(fileName);
-            String content = FileUtils.readFileToString(configFile, "utf-8");
+            String content = this.readQueryToString(configFile);
             Yaml yaml = new Yaml();
             if (args.length > 1)
                 config = this.checkConfigArguments(yaml, content);
@@ -52,4 +61,23 @@ public class FileConfiguration {
         return yaml.loadAs(content, YamlConfiguration.class);
     }
 
+    private String readQueryToString(File configFile) {
+        try {
+            QuerySyntaxErrorListener qsel = new QuerySyntaxErrorListener();
+            InputStream query = new FileInputStream(configFile);
+            QueryLexer lexer = new QueryLexer(new ANTLRInputStream(query));
+            QueryParser parser = new QueryParser(new CommonTokenStream(lexer));
+            parser.removeErrorListeners();
+            parser.addErrorListener(qsel);
+
+            QueryListener ast = new QueryListener();
+            ParseTreeWalker walker = new ParseTreeWalker();
+            walker.walk(ast, parser.query());
+            return ast.getContent();
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e.fillInStackTrace());
+            System.exit(-1);
+        }
+        return null;
+    }
 }

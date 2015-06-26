@@ -36,7 +36,7 @@ public class BulkService {
 
     public void startBulkOperation() {
         // TODO: Hala geliştirime açık
-        String file = config.getOutFile().concat(".json");
+        String file = config.getFileName().concat(".json");
         Pattern pattern = Pattern.compile(Constants.CREATE_ACTION);
 
         //Delete index if existing

@@ -1,0 +1,6 @@
+// a mongolastic query that simply ask to mongolastic to export tweets data located on a mongod listening on localhost:27017
+// to a json bulk file called output and likewise add the collection into an elasticsearch server listening on localhost:9300
+
+transfer twitter/tweets
+from mongo = { host:"localhost", port: 27017 }
+to file = { name: "tweetsJSON" } AND es = { host:"localhost", port: 9300 }

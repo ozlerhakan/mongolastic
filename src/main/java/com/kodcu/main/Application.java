@@ -29,7 +29,7 @@ public class Application {
         configAssertion(args);
 
         Application app = new Application(args);
-        app.Start();
+        app.start();
     }
 
     public static void configLog() throws IOException {
@@ -40,7 +40,7 @@ public class Application {
         BasicConfigurator.configure();
     }
 
-    public void Start() {
+    public void start() {
         FileConfiguration fConfig = new FileConfiguration(args);
         Optional<YamlConfiguration> yamlConfig = Optional.ofNullable(fConfig.getFileContent());
 
@@ -48,7 +48,7 @@ public class Application {
             MongoConfiguration mongo = new MongoConfiguration(config);
             JSONConverter converter = new JSONConverter(mongo.getMongoCollection());
             StringBuilder bulkJSONContent = converter.buildBulkJsonFile();
-            converter.writeToFile(bulkJSONContent, config.getOutFile(), () -> {
+            converter.writeToFile(bulkJSONContent, config.getFileName(), () -> {
                 logger.info("Cool! Your bulk JSON file generated successfully!");
             });
             mongo.closeConnection();
@@ -66,7 +66,7 @@ public class Application {
             logger.error("Incorrect syntax. Pass the correct parameter(s)");
             System.exit(-1);
         }
-        if (!args[0].equals(Constants.CONFIG_FILE)) {
+        if (!args[0].endsWith(Constants.MONGOLASTIC_FILE)) {
             logger.error("It is not a config.yml file we are looking for, Where is it?");
             System.exit(-1);
         }

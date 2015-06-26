@@ -28,7 +28,7 @@ public class ElasticConfiguration {
                     .put("client.transport.ping_timeout", 5000)
                     .put("client.transport.nodes_sampler_interval", 5000)
                     .build();
-            InetSocketTransportAddress ista = new InetSocketTransportAddress(config.getEsHost(), config.getEsTransPort());
+            InetSocketTransportAddress ista = new InetSocketTransportAddress(config.getEsHost(), config.getEsPort());
             client = new TransportClient(settings, false).addTransportAddress(ista);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex.fillInStackTrace());

@@ -36,7 +36,7 @@ fromDeclaration
     ;
 
 toDeclaration
-    :   TO  declarations
+    :   TO  fileDeclaration
     ;
 
 andDeclaration
@@ -45,7 +45,6 @@ andDeclaration
 
 declarations
     :   mongoDeclaration
-    |   fileDeclaration
     |   esDeclaration
     ;
 

@@ -78,8 +78,8 @@ public class Application {
             logger.error("It is not a config.yml file we are looking for, Where is it?");
             System.exit(-1);
         }
-        if (args.length > 7) {
-            logger.error("Incorrect syntax. Pass max 7 parameters");
+        if (args.length > 8) {
+            logger.error("Incorrect syntax. Pass max 8 parameters");
             System.exit(-1);
         }
     }

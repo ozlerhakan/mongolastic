@@ -54,6 +54,7 @@ public class FileConfiguration {
             final String[] confParameter = arg.split(":");
             String key = confParameter[0];
             String value = confParameter[1];
+            if (key.equals("fromMongo") || key.equals("enableBulk")) return "";
             return String.join(": ", key, value);
         }).collect(Collectors.toList());
         extraParams.add(0, content);

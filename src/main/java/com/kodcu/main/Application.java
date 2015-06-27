@@ -45,20 +45,28 @@ public class Application {
         Optional<YamlConfiguration> yamlConfig = Optional.ofNullable(fConfig.getFileContent());
 
         yamlConfig.ifPresent(config -> {
-            MongoConfiguration mongo = new MongoConfiguration(config);
-            JSONConverter converter = new JSONConverter(mongo.getMongoCollection());
-            StringBuilder bulkJSONContent = converter.buildBulkJsonFile();
-            converter.writeToFile(bulkJSONContent, config.getFileName(), () -> {
-                logger.info("Cool! Your bulk JSON file generated successfully!");
-            });
-            mongo.closeConnection();
-
-            if (config.isEnableBulk()) {
-                ElasticConfiguration client = new ElasticConfiguration(config);
-                BulkService bulkService = new BulkService(config, client);
-                bulkService.startBulkOperation();
+            if (config.isFromMongo()) {
+                this.startFromMongo(config);
+            } else {
+                // TODO: start from es to file (and mongo) service
             }
         });
+    }
+
+    public void startFromMongo(YamlConfiguration config) {
+        MongoConfiguration mongo = new MongoConfiguration(config);
+        JSONConverter converter = new JSONConverter(mongo.getMongoCollection());
+        StringBuilder bulkJSONContent = converter.buildBulkJsonFile();
+        converter.writeToFile(bulkJSONContent, config.getFileName(), () -> {
+            logger.info("Cool! Your bulk JSON file generated successfully!");
+        });
+        mongo.closeConnection();
+
+        if (config.isEnableBulk()) {
+            ElasticConfiguration client = new ElasticConfiguration(config);
+            BulkService bulkService = new BulkService(config, client);
+            bulkService.startBulkOperation();
+        }
     }
 
     static void configAssertion(String[] args) {
@@ -70,8 +78,8 @@ public class Application {
             logger.error("It is not a config.yml file we are looking for, Where is it?");
             System.exit(-1);
         }
-        if (args.length > 9) {
-            logger.error("Incorrect syntax. Pass max 9 parameters");
+        if (args.length > 7) {
+            logger.error("Incorrect syntax. Pass max 7 parameters");
             System.exit(-1);
         }
     }

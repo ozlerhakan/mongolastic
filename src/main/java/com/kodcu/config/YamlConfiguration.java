@@ -13,8 +13,17 @@ public class YamlConfiguration {
     private int esPort;
     private int mongoPort;
     private boolean enableBulk;
+    private boolean fromMongo;
 
     private YamlConfiguration() {
+    }
+
+    public boolean isFromMongo() {
+        return fromMongo;
+    }
+
+    public void setFromMongo(boolean fromMongo) {
+        this.fromMongo = fromMongo;
     }
 
     public boolean isEnableBulk() {

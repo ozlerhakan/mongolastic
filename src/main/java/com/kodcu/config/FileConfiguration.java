@@ -4,6 +4,7 @@ import com.kodcu.lang.QueryLexer;
 import com.kodcu.lang.QueryParser;
 import com.kodcu.listener.QueryListener;
 import com.kodcu.listener.QuerySyntaxErrorListener;
+import com.kodcu.util.QueryWorker;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -71,10 +72,12 @@ public class FileConfiguration {
             parser.removeErrorListeners();
             parser.addErrorListener(qsel);
 
-            QueryListener ast = new QueryListener();
+            QueryWorker worker = new QueryWorker();
+            QueryListener ast = new QueryListener(worker);
             ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(ast, parser.query());
-            return ast.getContent();
+            System.out.println(worker.getPropertiesAsString());
+            return worker.getPropertiesAsString();
         } catch (IOException e) {
             logger.error(e.getMessage(), e.fillInStackTrace());
             System.exit(-1);

@@ -2,25 +2,18 @@ package com.kodcu.listener;
 
 import com.kodcu.lang.QueryBaseListener;
 import com.kodcu.lang.QueryParser;
+import com.kodcu.util.QueryWorker;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Hakan on 6/26/2015.
  */
 public class QueryListener extends QueryBaseListener {
 
-    private static final Logger logger = Logger.getLogger(QueryListener.class);
-    private List<String> properties = null;
-    private String prefix;
-    private boolean fromEs;
-    private boolean fromMongo;
+    private final QueryWorker worker;
 
-    public QueryListener() {
-        properties = new ArrayList<>();
+    public QueryListener(final QueryWorker worker) {
+        this.worker = worker;
     }
 
     @Override
@@ -37,69 +30,45 @@ public class QueryListener extends QueryBaseListener {
 
     @Override
     public void enterCollectionName(QueryParser.CollectionNameContext ctx) {
-        String collection = String.join(": ", "collection", "\"".concat(ctx.getText()).concat("\""));
-        properties.add(collection);
+        worker.setCollectionName(ctx.getText());
     }
 
     @Override
     public void enterDatabaseName(QueryParser.DatabaseNameContext ctx) {
-        String db = String.join(": ", "database", "\"".concat(ctx.getText()).concat("\""));
-        properties.add(db);
+        worker.setDatabaseName(ctx.getText());
     }
 
     @Override
     public void enterEsDeclaration(QueryParser.EsDeclarationContext ctx) {
         ParseTree pt = ctx.getParent().getRuleContext().getParent().getChild(0);
         String where = pt.getText();
-        if (where.equalsIgnoreCase("from")) {
-            fromEs = true;
-        } else if (where.equalsIgnoreCase("and") && !fromEs) {
-            String enableBulk = String.join(": ", "enableBulk", "true");
-            properties.add(enableBulk);
-        } else if (where.equalsIgnoreCase("and") && fromEs) {
-            logger.error("INFO: You cannot set two elastic instances in a query!");
-            System.exit(-1);
-        }
-        prefix = "es";
+        worker.esDeclaration(where);
     }
 
     @Override
-    public void enterFileDeclaration(QueryParser.FileDeclarationContext ctx) {
-        String filename = String.join(": ", "fileName", ctx.fileConfiguration().STRINGLITERAL().getText());
-        properties.add(filename);
+    public void enterFileProperty(QueryParser.FilePropertyContext ctx) {
+        worker.setFileName(ctx.STRINGLITERAL().getText());
     }
 
     @Override
     public void enterMongoDeclaration(QueryParser.MongoDeclarationContext ctx) {
         ParseTree pt = ctx.getParent().getRuleContext().getParent().getChild(0);
         String where = pt.getText();
-        if (where.equalsIgnoreCase("from")) {
-            String mongo = String.join(": ", "fromMongo", "true");
-            properties.add(mongo);
-            fromMongo = true;
-        } else if (where.equalsIgnoreCase("and") && !fromMongo) {
-            String enableBulk = String.join(": ", "enableBulk", "true");
-            properties.add(enableBulk);
-        } else if (where.equalsIgnoreCase("and") && fromMongo) {
-            logger.error("INFO: You cannot set two mongo instances in a query!");
-            System.exit(-1);
-        }
-        prefix = "mongo";
+        worker.mongoDeclaration(where);
     }
 
     @Override
     public void enterProperty(QueryParser.PropertyContext ctx) {
-        String key = String.join("",
-                prefix,
-                ctx.key().getText().substring(0, 1).toUpperCase(),
-                ctx.key().getText().substring(1, ctx.key().getText().length()).toLowerCase());
-        String property = String.join(": ", key, ctx.value().getText());
-        properties.add(property);
+        worker.addKeyValue(ctx);
     }
 
-    public String getContent() {
-        return String.join("\n", properties);
+    @Override
+    public void exitQuery(QueryParser.QueryContext ctx) {
+        worker.setDefaultValues();
     }
 
-
+    @Override
+    public void enterQuery(QueryParser.QueryContext ctx) {
+        worker.initializePropertyList();
+    }
 }

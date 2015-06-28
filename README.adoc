@@ -87,9 +87,9 @@ You can pass the following key:value properties to override the initial settings
 |====================
 | Property | Description
 | _mongoHost_ |  Specifies the name of the host machine where the `mongod` is running.
-| _mongoPort |  Specifies the port where the `mongod` instance is listening.
-| _db_ or _database_ |  Specifies the _database name_ to connect to.
-| _c_ or _collection_  |  Specifies the _collection name_ to export.
+| _mongoPort_ |  Specifies the port where the `mongod` instance is listening.
+| _db_ *or* _database_ |  Specifies the _database name_ to connect to.
+| _c_ *or* _collection_  |  Specifies the _collection name_ to export.
 | _fileName_ |  Specifies the _name_ of the new JSON file.
 | _esHost_ |  Specifies the name of the host machine where the `elastic node` is running.
 | _esPort_ | Specifies the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.

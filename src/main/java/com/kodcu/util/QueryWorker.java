@@ -74,12 +74,12 @@ public class QueryWorker {
     }
 
     public void setCollectionName(String name){
-        String collection = this.setKeyValue("collection", name);
+        String collection = this.setKeyValue("c", name);
         this.addProperty(collection);
     }
 
     public void setDatabaseName(String databaseName) {
-        String db = this.setKeyValue("database", databaseName);
+        String db = this.setKeyValue("db", databaseName);
         this.addProperty(db);
     }
 

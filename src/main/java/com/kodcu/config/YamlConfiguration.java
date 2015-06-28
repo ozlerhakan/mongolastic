@@ -5,11 +5,11 @@ package com.kodcu.config;
  */
 public class YamlConfiguration {
 
+    private String c;
+    private String db;
     private String esHost;
-    private String database;
     private String fileName;
     private String mongoHost;
-    private String collection;
     private int esPort;
     private int mongoPort;
     private boolean enableBulk;
@@ -35,19 +35,19 @@ public class YamlConfiguration {
     }
 
     public String getCollection() {
-        return collection;
+        return c;
     }
 
-    public void setCollection(String collection) {
-        this.collection = collection;
+    public void setC(String c) {
+        this.c = c;
     }
 
     public String getDatabase() {
-        return database;
+        return db;
     }
 
-    public void setDatabase(String database) {
-        this.database = database;
+    public void setDb(String db) {
+        this.db = db;
     }
 
     public String getFileName() {
@@ -93,10 +93,10 @@ public class YamlConfiguration {
     @Override
     public String toString() {
         return "YamlConfiguration{" +
-                "collection='" + collection + '\'' +
+                "collection='" + c + '\'' +
                 ", mongoHost='" + mongoHost + '\'' +
                 ", mongoPort=" + mongoPort +
-                ", database='" + database + '\'' +
+                ", database='" + db + '\'' +
                 ", fileName='" + fileName + '\'' +
                 ", esHost='" + esHost + '\'' +
                 ", esTransPort=" + esPort +

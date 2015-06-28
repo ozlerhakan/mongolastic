@@ -56,6 +56,8 @@ public class FileConfiguration {
             String key = confParameter[0];
             String value = confParameter[1];
             if (key.equals("fromMongo") || key.equals("enableBulk")) return "";
+            if (key.equals("database")) key = "db";
+            if (key.equals("collection")) key = "c";
             return String.join(": ", key, value);
         }).collect(Collectors.toList());
         extraParams.add(0, content);
@@ -76,7 +78,6 @@ public class FileConfiguration {
             QueryListener ast = new QueryListener(worker);
             ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(ast, parser.query());
-            System.out.println(worker.getPropertiesAsString());
             return worker.getPropertiesAsString();
         } catch (IOException e) {
             logger.error(e.getMessage(), e.fillInStackTrace());

@@ -13,18 +13,20 @@ Second, write a query in a mongolastic file. Mongolastic requires you to give a 
 .the query anatomy
 [source,xml]
 ----
-[transfer|export|copy] [database-name]/[collection-name]
+transfer|export|copy database-index-name/collection-type-name
 from <declarations>
-to file = { name: [file-name] }
+to file = <fileConfig>
 [and  <declarations>]?
 
-<declarations> := mongo = <config>
-                | es    = <config>
+<declarations> := mongo [= <serverConfig>]?
+                | es    [= <serverConfig>]?
 
-<config> := { host: host-machine , port: port-number }
+<fileConfig>   := { name: "file-name" }
+<serverConfig> := { <properties> [, <properties>]* }
+
+<properties> := port: port-number
+              | host: "host-machine"
 ----
-
-NOTE: Mongolastic supports 'from mongo to file and *optionally* es' direction for now. You can either use upper-case or lower-case for the keywords (e.g. FROM, PORT, AND, etc.)
 
 Here is an example of a mongolastic query:
 
@@ -38,6 +40,36 @@ file = { name: "output" }
 and
 es = { host:"localhost", port: 9300 }
 ----
+
+The following is the equivalent of the previous query:
+
+[source,mongolastic]
+----
+transfer twitter/tweets
+from
+mongo
+to
+file = { name: "output" }
+and
+es
+----
+
+And the following one as well:
+
+[source,mongolastic]
+----
+transfer twitter/tweets
+from
+mongo = { host:"localhost" } <1>
+to
+file = { name: "output" }
+and
+es = { port: 9300 } <2>
+----
+<1> Default number of the mongo port is 27017 and default host is localhost.
+<2> Default host and port of es are localhost and 9300 respectively.
+
+NOTE: Mongolastic supports 'from mongo to file and *optionally* es' direction for now. You can either use upper-case or lower-case for the keywords (e.g. FROM, PORT, AND, etc.)
 
 After building the source and writing a query, you can run the tool by either running:
 
@@ -54,13 +86,13 @@ You can pass the following key:value properties to override the initial settings
 [width="100%",options="header"]
 |====================
 | Property | Description
-| mongoHost |  Specifies the name of the host machine where the `mongod` is running.
-| mongoPort |  Specifies the port where the `mongod` instance is listening.
-| database |  Specifies the _database name_ to connect to.
-| collection  |  Specifies the _collection name_ to export.
-| fileName |  Specifies the _name_ of the new JSON file.
-| esHost |  Specifies the name of the host machine where the `elastic node` is running.
-| esPort | Specifies the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
+| _mongoHost_ |  Specifies the name of the host machine where the `mongod` is running.
+| _mongoPort |  Specifies the port where the `mongod` instance is listening.
+| _db_ or _database_ |  Specifies the _database name_ to connect to.
+| _c_ or _collection_  |  Specifies the _collection name_ to export.
+| _fileName_ |  Specifies the _name_ of the new JSON file.
+| _esHost_ |  Specifies the name of the host machine where the `elastic node` is running.
+| _esPort_ | Specifies the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
 |====================
 
 IMPORTANT: You can pass parameters up to _7 config key:value pairs_ + _a mongolastic query file_ to Mongolastic. If you pass unknown parameters not being a key:value pair, Mongolastic will discard them and consider the properties of a given query file.
@@ -77,12 +109,11 @@ transfer twitter/tweets
 from
 mongo = { host:"localhost", port: 27017 }
 to
-file = { name: "tweetsJSON" }
-and
-es = { host:"localhost", port: 9300 }
+file = { name: "output" }
+and es
 ----
 
-and you did not pass any extra parameter except the query.mongolastic file, you should see a file called `tweetsJSON.json` on your working directory *and* a type called "tweets" in an index called "twitter" in your running elastic node based on what you queried.
+and you did not pass any extra parameter except the query.mongolastic file, you should see a file called `output.json` on your working directory *and* a type called "tweets" in an index called "twitter" in your running elastic node listening localhost:9300.
 
 === 2. Example
 
@@ -90,7 +121,7 @@ Consider the following one that 1 additional parameter is passed along with the 
 
     $ java -jar target/mongolastic.jar query.mongolastic fileName:tweets
 
-This command will simply give a new name called "tweets" to the JSON bulk file rather than "tweetsJSON".
+This command will simply give a new name called "tweets" to the JSON bulk file rather than "output".
 
 == Extra Info
 
@@ -104,7 +135,7 @@ An example of the tweets data with the create action located in a bulk file:
 
 Keep in mind that you can manually add the converted JSON data into your running ElasticSearch node by using the Bulk Api as follows (Assuming that your elastic node is running on the local interface on port 9200):
 
-    $ curl -XPOST localhost:9200/_bulk --data-binary @tweetsJSON.json
+    $ curl -XPOST localhost:9200/_bulk --data-binary @output.json
 
 == License
 

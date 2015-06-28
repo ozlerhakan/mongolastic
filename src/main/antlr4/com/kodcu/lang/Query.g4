@@ -49,7 +49,7 @@ declarations
     ;
 
 mongoDeclaration
-    :   MONGO '=' configuration
+    :   MONGO ('=' configuration)?
     ;
 
 fileDeclaration
@@ -57,11 +57,15 @@ fileDeclaration
     ;
 
 esDeclaration
-    :   ES '=' configuration
+    :   ES ('=' configuration)?
     ;
 
 fileConfiguration
-    :  '{' NAME ':' STRINGLITERAL '}'
+    :  '{' fileProperty '}'
+    ;
+
+fileProperty
+    :    NAME ':' STRINGLITERAL
     ;
 
 configuration

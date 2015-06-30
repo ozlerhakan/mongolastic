@@ -43,8 +43,4 @@ public class ElasticConfiguration {
         return client;
     }
 
-    public void printThis() {
-        System.out.println(this);
-    }
-
 }

@@ -9,6 +9,7 @@ import com.mongodb.client.MongoDatabase;
 import org.apache.log4j.Logger;
 import org.bson.Document;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -33,7 +34,7 @@ public class MongoConfiguration {
                     .socketKeepAlive(false)
                     .readPreference(ReadPreference.primaryPreferred())
                     .build();
-            client = new MongoClient(address, options);
+            client = new MongoClient(Arrays.asList(address), options);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex.fillInStackTrace());
         }
@@ -44,10 +45,6 @@ public class MongoConfiguration {
         try {
             MongoDatabase database = client.getDatabase(config.getDatabase());
             collection = database.getCollection(config.getCollection());
-            if(collection.count() == 0) {
-                logger.info("Database/Collection does not exist or does not contain the record");
-                System.exit(-1);
-            }
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex.fillInStackTrace());
         }

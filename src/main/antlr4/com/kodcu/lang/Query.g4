@@ -28,7 +28,7 @@ collectionName
     ;
 
 dataset
-    :   fromDeclaration toDeclaration (andDeclaration)?
+    :   fromDeclaration toDeclaration
     ;
 
 fromDeclaration
@@ -36,7 +36,7 @@ fromDeclaration
     ;
 
 toDeclaration
-    :   TO  fileDeclaration
+    :   TO  declarations
     ;
 
 andDeclaration

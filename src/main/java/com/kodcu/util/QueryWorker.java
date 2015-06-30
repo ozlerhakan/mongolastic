@@ -69,11 +69,11 @@ public class QueryWorker {
         return String.join("\n", properties);
     }
 
-    public void addProperty(String property){
+    public void addProperty(String property) {
         this.getProperties().add(property);
     }
 
-    public void setCollectionName(String name){
+    public void setCollectionName(String name) {
         String collection = this.setKeyValue("c", name);
         this.addProperty(collection);
     }
@@ -83,20 +83,12 @@ public class QueryWorker {
         this.addProperty(db);
     }
 
-    public void setFileName(String fileName) {
-        String filename = this.setKeyValue("fileName", fileName);
-        this.addProperty(filename);
-    }
-
     public void mongoDeclaration(String where) {
         if (where.equalsIgnoreCase("from")) {
             String mongo = this.setKeyValue("fromMongo", "true");
             this.addProperty(mongo);
             this.setFromMongo(true);
-        } else if (where.equalsIgnoreCase("and") && !isFromMongo()) {
-            String enableBulk = this.setKeyValue("enableBulk", "true");
-            this.addProperty(enableBulk);
-        } else if (where.equalsIgnoreCase("and") && isFromMongo()) {
+        } else if (where.equalsIgnoreCase("to") && isFromMongo()) {
             logger.error("INFO: You cannot set two mongo instances in a query!");
             System.exit(-1);
         }
@@ -129,10 +121,7 @@ public class QueryWorker {
     public void esDeclaration(String where) {
         if (where.equalsIgnoreCase("from")) {
             this.setFromEs(true);
-        } else if (where.equalsIgnoreCase("and") && !isFromEs()) {
-            String enableBulk = this.setKeyValue("enableBulk", "true");
-            this.addProperty(enableBulk);
-        } else if (where.equalsIgnoreCase("and") && isFromEs()) {
+        } else if (where.equalsIgnoreCase("to") && isFromEs()) {
             logger.error("INFO: You cannot set two elastic instances in a query!");
             System.exit(-1);
         }
@@ -159,7 +148,7 @@ public class QueryWorker {
         properties = new ArrayList<>();
     }
 
-    private String setKeyValue(String key, String value){
+    private String setKeyValue(String key, String value) {
         return String.join(": ", key, value);
     }
 }

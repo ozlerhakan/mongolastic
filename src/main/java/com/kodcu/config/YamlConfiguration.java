@@ -8,11 +8,9 @@ public class YamlConfiguration {
     private String c;
     private String db;
     private String esHost;
-    private String fileName;
     private String mongoHost;
     private int esPort;
     private int mongoPort;
-    private boolean enableBulk;
     private boolean fromMongo;
 
     private YamlConfiguration() {
@@ -24,14 +22,6 @@ public class YamlConfiguration {
 
     public void setFromMongo(boolean fromMongo) {
         this.fromMongo = fromMongo;
-    }
-
-    public boolean isEnableBulk() {
-        return enableBulk;
-    }
-
-    public void setEnableBulk(boolean enableBulk) {
-        this.enableBulk = enableBulk;
     }
 
     public String getCollection() {
@@ -48,14 +38,6 @@ public class YamlConfiguration {
 
     public void setDb(String db) {
         this.db = db;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String outFile) {
-        this.fileName = outFile;
     }
 
     public String getMongoHost() {
@@ -97,10 +79,8 @@ public class YamlConfiguration {
                 ", mongoHost='" + mongoHost + '\'' +
                 ", mongoPort=" + mongoPort +
                 ", database='" + db + '\'' +
-                ", fileName='" + fileName + '\'' +
                 ", esHost='" + esHost + '\'' +
                 ", esTransPort=" + esPort +
-                ", enableBulk=" + enableBulk +
                 '}';
     }
 }

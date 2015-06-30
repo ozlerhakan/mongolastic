@@ -1,4 +1,4 @@
-package com.kodcu.service;
+package com.kodcu.listener;
 
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkProcessor;

@@ -4,8 +4,13 @@ import com.kodcu.config.ElasticConfiguration;
 import com.kodcu.config.FileConfiguration;
 import com.kodcu.config.MongoConfiguration;
 import com.kodcu.config.YamlConfiguration;
-import com.kodcu.converter.JSONConverter;
+import com.kodcu.converter.JsonBuilder;
+import com.kodcu.provider.ElasticToMongoProvider;
+import com.kodcu.provider.MongoToElasticProvider;
+import com.kodcu.provider.Provider;
 import com.kodcu.service.BulkService;
+import com.kodcu.service.ElasticBulkService;
+import com.kodcu.service.MongoBulkService;
 import com.kodcu.util.Constants;
 import org.apache.log4j.*;
 
@@ -33,7 +38,7 @@ public class Application {
     }
 
     public static void configLog() throws IOException {
-        PatternLayout patternLayout = new PatternLayout();
+        PatternLayout patternLayout = new PatternLayout("[%d{yyyy-MM-dd}] [%t] [%p]:%m%n");
         FileAppender fileAppender = new FileAppender(patternLayout, "mongolastic.log", false);
         fileAppender.setThreshold(Level.DEBUG);
         BasicConfigurator.configure(fileAppender);
@@ -48,25 +53,32 @@ public class Application {
             if (config.isFromMongo()) {
                 this.startFromMongo(config);
             } else {
-                // TODO: start from es to file (and mongo) service
+                this.startFromElastic(config);
             }
         });
     }
 
-    public void startFromMongo(YamlConfiguration config) {
+    private void startFromElastic(YamlConfiguration config) {
         MongoConfiguration mongo = new MongoConfiguration(config);
-        JSONConverter converter = new JSONConverter(mongo.getMongoCollection());
-        StringBuilder bulkJSONContent = converter.buildBulkJsonFile();
-        converter.writeToFile(bulkJSONContent, config.getFileName(), () -> {
-            logger.info("Cool! Your bulk JSON file generated successfully!");
+        BulkService bulkService = new MongoBulkService(mongo.getMongoCollection());
+        ElasticConfiguration elastic = new ElasticConfiguration(config);
+        Provider provider = new ElasticToMongoProvider(elastic, config, new JsonBuilder());
+        provider.transfer(bulkService, () -> {
+            mongo.closeConnection();
+            elastic.closeNode();
         });
-        mongo.closeConnection();
+    }
 
-        if (config.isEnableBulk()) {
-            ElasticConfiguration client = new ElasticConfiguration(config);
-            BulkService bulkService = new BulkService(config, client);
-            bulkService.startBulkOperation();
-        }
+    public void startFromMongo(YamlConfiguration config) {
+        ElasticConfiguration elastic = new ElasticConfiguration(config);
+        BulkService bulkService = new ElasticBulkService(config, elastic);
+        MongoConfiguration mongo = new MongoConfiguration(config);
+        Provider provider = new MongoToElasticProvider(mongo.getMongoCollection(), new JsonBuilder());
+        provider.transfer(bulkService, () -> {
+            bulkService.close();
+            mongo.closeConnection();
+            elastic.closeNode();
+        });
     }
 
     static void configAssertion(String[] args) {
@@ -78,8 +90,8 @@ public class Application {
             logger.error("It is not a config.yml file we are looking for, Where is it?");
             System.exit(-1);
         }
-        if (args.length > 8) {
-            logger.error("Incorrect syntax. Pass max 8 parameters");
+        if (args.length > 7) {
+            logger.error("Incorrect syntax. Pass max 7 parameters");
             System.exit(-1);
         }
     }

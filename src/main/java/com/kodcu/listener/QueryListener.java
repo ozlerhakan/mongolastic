@@ -47,7 +47,6 @@ public class QueryListener extends QueryBaseListener {
 
     @Override
     public void enterFileProperty(QueryParser.FilePropertyContext ctx) {
-        worker.setFileName(ctx.STRINGLITERAL().getText());
     }
 
     @Override

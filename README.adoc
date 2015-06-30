@@ -1,6 +1,6 @@
-== Mongolastic
+= Mongolastic
 
-What database you have in your MongoDB can also be included into your ElasticSearch index by using the tool called Mongolastic. Mongolastic is a tool that copies a specified MongoDB collection into an eligible ElasticSearch JSON bulk structure. In other words, by default, Mongolastic converts a JSON dataset/collection located on MongoDB into a JSON file. The JSON file has a characteristic of the bulk structure so that you can easily perform the https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html#docs-bulk[Bulk Api] and optionally, you can let the tool insert the bulk file for you into an ElasticSearch environment. You can perform the aforementioned facilities using mongolastic query language. Writing a mongolastic query, you explicitly can pass a few specific parameters as well.
+What data you have in your MongoDB can also be included into your ElasticSearch and vice versa using this tool. You can perform the aforementioned facilities using the mongolastic query language. Writing a mongolastic query, you explicitly can pass a few specific parameters as well.
 
 == How it works
 
@@ -15,13 +15,11 @@ Second, write a query in a mongolastic file. Mongolastic requires you to give a 
 ----
 transfer|export|copy database-index-name/collection-type-name
 from <declarations>
-to file = <fileConfig>
-[and  <declarations>]?
+to  <declarations>
 
 <declarations> := mongo [= <serverConfig>]?
                 | es    [= <serverConfig>]?
 
-<fileConfig>   := { name: "file-name" }
 <serverConfig> := { <properties> [, <properties>]* }
 
 <properties> := port: port-number
@@ -36,8 +34,6 @@ transfer twitter/tweets
 from
 mongo = { host:"localhost", port: 27017 }
 to
-file = { name: "output" }
-and
 es = { host:"localhost", port: 9300 }
 ----
 
@@ -45,41 +41,33 @@ The following is the equivalent of the previous query:
 
 [source,mongolastic]
 ----
-transfer twitter/tweets
-from
-mongo
-to
-file = { name: "output" }
-and
-es
+transfer twitter/tweets from mongo to es
 ----
 
 And the following one as well:
 
 [source,mongolastic]
 ----
-transfer twitter/tweets
+copy twitter/tweets
 from
 mongo = { host:"localhost" } <1>
 to
-file = { name: "output" }
-and
 es = { port: 9300 } <2>
 ----
 <1> Default number of the mongo port is 27017 and default host is localhost.
 <2> Default host and port of es are localhost and 9300 respectively.
 
-NOTE: Mongolastic supports 'from mongo to file and *optionally* es' direction for now. You can either use upper-case or lower-case for the keywords (e.g. FROM, PORT, AND, etc.)
+NOTE: You can either use upper-case or lower-case for the keywords (e.g. FROM, PORT, etc.)
 
 After building the source and writing a query, you can run the tool by either running:
 
-    $ java -jar target/mongolastic.jar query.mongolastic [key:value key:value ... property8] <1>
+    $ java -jar target/mongolastic.jar query.mongolastic [key:value key:value ... property6] <1>
 
 <1> _Optionally_, you can *override* the specified value of each property by typing a new key:value pair among the available config pairs.
 
 Or
 
-    $ mvn exec:java -Dexec.args="query.mongolastic [property1 property2 ... property8]"
+    $ mvn exec:java -Dexec.args="query.mongolastic [property1 property2 ... property6]"
 
 You can pass the following key:value properties to override the initial settings:
 
@@ -88,14 +76,13 @@ You can pass the following key:value properties to override the initial settings
 | Property | Description
 | _mongoHost_ |  Specifies the name of the host machine where the `mongod` is running.
 | _mongoPort_ |  Specifies the port where the `mongod` instance is listening.
-| _db_ *or* _database_ |  Specifies the _database name_ to connect to.
-| _c_ *or* _collection_  |  Specifies the _collection name_ to export.
-| _fileName_ |  Specifies the _name_ of the new JSON file.
+| _db_ *or* _database_ *or* _index_ |  Specifies the _database/index name_ to connect to.
+| _c_ *or* _collection_ *or* _type_ |  Specifies the _collection/type name_ to export.
 | _esHost_ |  Specifies the name of the host machine where the `elastic node` is running.
 | _esPort_ | Specifies the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
 |====================
 
-IMPORTANT: You can pass parameters up to _7 config key:value pairs_ + _a mongolastic query file_ to Mongolastic. If you pass unknown parameters not being a key:value pair, Mongolastic will discard them and consider the properties of a given query file.
+IMPORTANT: You can pass parameters up to _6 config key:value pairs_ + _a mongolastic query file_ to Mongolastic. If you pass unknown parameters not being a key:value pair, Mongolastic will discard them and consider the properties of a given query file.
 
 == Examples
 
@@ -105,37 +92,20 @@ Let's say your query is as follows:
 
 [source, mongolastic]
 ----
-transfer twitter/tweets
+copy twitter/tweets
 from
-mongo = { host:"localhost", port: 27017 }
-to
-file = { name: "output" }
-and es
+mongo = { host:"localhost", port: 27017 } to es
 ----
 
-and you did not pass any extra parameter except the query.mongolastic file, you should see a file called `output.json` on your working directory *and* a type called "tweets" in an index called "twitter" in your running elastic node listening localhost:9300.
+and you did not pass any extra parameter except the query.mongolastic file, you should a type called "tweets" in an index called "twitter" in your running elastic node listening localhost:9300.
 
 === 2. Example
 
 Consider the following one that 1 additional parameter is passed along with the mongolastic file:
 
-    $ java -jar target/mongolastic.jar query.mongolastic fileName:tweets
+    $ java -jar target/mongolastic.jar query.mongolastic db:kodcucom c:students
 
-This command will simply give a new name called "tweets" to the JSON bulk file rather than "output".
-
-== Extra Info
-
-An example of the tweets data with the create action located in a bulk file:
-
-[source,json]
-----
-{"create":{"_index":"twitter","_type":"tweets","_id":"553bbecae8f1e57878b72a1e"}}
-{"created_at":"Sat Apr 25 16:17:26 +0000 2015","id":5.9199946551238246E+17,"id_str":"591999465512382464","text":"[CALENDAR] Barça have 5 league games left, 2 #UCL semi-final games, and the Spanish Cup final: http://t.co/mWKOzNEWFo http://t.co/cyN1ZZNsSx","source":"<a href=\"http://www.hootsuite.com\"  rel=\"nofollow\">Hootsuite</a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"geo":null,"coordinates":null,"place":null,"contributors":null,"retweet_count":95.0,"favorite_count":82.0,"favorited":false,"retweeted":false,"possibly_sensitive":false,"possibly_sensitive_appealable":false,"lang":"fr"}
-----
-
-Keep in mind that you can manually add the converted JSON data into your running ElasticSearch node by using the Bulk Api as follows (Assuming that your elastic node is running on the local interface on port 9200):
-
-    $ curl -XPOST localhost:9200/_bulk --data-binary @output.json
+This command will simply ignore twitter/tweets collection and look at the collection called students of the database called kodcucom in order to transfer them into a running elastic node.
 
 == License
 

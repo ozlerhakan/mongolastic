@@ -14,6 +14,7 @@ import java.util.Map;
 public class QueryWorker {
 
     private static final Logger logger = Logger.getLogger(QueryWorker.class);
+    private Map<String, String> map;
     private List<String> properties;
     private String prefix;
     private boolean fromEs;
@@ -74,13 +75,17 @@ public class QueryWorker {
     }
 
     public void setCollectionName(String name) {
-        String collection = this.setKeyValue("c", name);
+        String collection = this.setKeyValue("collection", name);
         this.addProperty(collection);
+        String newcollection = this.setKeyValue("asCollection", name);
+        this.addProperty(newcollection);
     }
 
     public void setDatabaseName(String databaseName) {
-        String db = this.setKeyValue("db", databaseName);
+        String db = this.setKeyValue("database", databaseName);
         this.addProperty(db);
+        String newdb = this.setKeyValue("asDatabase", databaseName);
+        this.addProperty(newdb);
     }
 
     public void mongoDeclaration(String where) {
@@ -89,7 +94,7 @@ public class QueryWorker {
             this.addProperty(mongo);
             this.setFromMongo(true);
         } else if (where.equalsIgnoreCase("to") && isFromMongo()) {
-            logger.error("INFO: You cannot set two mongo instances in a query!");
+            logger.error("You cannot set two mongo instances in a query!");
             System.exit(-1);
         }
         this.setPrefix("mongo");
@@ -104,7 +109,7 @@ public class QueryWorker {
         final String property = this.setKeyValue(key, ctx.value().getText());
         boolean duplicateProperty = this.getProperties().stream().anyMatch(p -> p.startsWith(key));
         if (duplicateProperty) {
-            logger.error(String.format("INFO: You cannot define the %s more than once!", ctx.key().getText()));
+            logger.error(String.format("You cannot define the %s more than once!", ctx.key().getText()));
             System.exit(-1);
         }
         this.addProperty(property);
@@ -122,7 +127,7 @@ public class QueryWorker {
         if (where.equalsIgnoreCase("from")) {
             this.setFromEs(true);
         } else if (where.equalsIgnoreCase("to") && isFromEs()) {
-            logger.error("INFO: You cannot set two elastic instances in a query!");
+            logger.error("You cannot set two elastic instances in a query!");
             System.exit(-1);
         }
         this.setPrefix("es");
@@ -146,9 +151,28 @@ public class QueryWorker {
 
     public void initializePropertyList() {
         properties = new ArrayList<>();
+        map = new HashMap<>();
     }
 
     private String setKeyValue(String key, String value) {
+        map.put(key, value);
         return String.join(": ", key, value);
+    }
+
+    public void setAsCollectionName(String asColl) {
+        String db = map.get("database");
+        String coll = map.get("collection");
+        String asDb = map.get("asDatabase");
+        if (asDb.equals(db) && coll.equals(asColl)) {
+            logger.error("Specify different db/index and collection/type!");
+            System.exit(-1);
+        }
+        String newcollection = this.setKeyValue("asCollection", asColl);
+        this.addProperty(newcollection);
+    }
+
+    public void setAsDatabaseName(String newDb) {
+        String newdb = this.setKeyValue("asDatabase", newDb);
+        this.addProperty(newdb);
     }
 }

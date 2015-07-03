@@ -40,8 +40,7 @@ public class ElasticToMongoProvider extends Provider {
         if (builder.execute().actionGet().isExists()) {
             CountResponse response = elastic.getClient().prepareCount(config.getDatabase()).setTypes(config.getCollection()).execute().actionGet();
             count = response.getCount();
-        }
-        else {
+        } else {
             logger.info("Index/Type does not exist or does not contain the record");
             System.exit(-1);
         }
@@ -61,7 +60,7 @@ public class ElasticToMongoProvider extends Provider {
         for (SearchHit hit : response.getHits().getHits()) {
             Set<Map.Entry<String, Object>> result = hit.getSource().entrySet();
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
-            jsonObj.add("_id", hit.getId());
+            jsonObj.add("_id", Json.createObjectBuilder().add("$oid", hit.getId()));
             result.stream().forEach(entry -> {
                 builder.buildJson(jsonObj, entry, sb);
             });

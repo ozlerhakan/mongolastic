@@ -55,4 +55,8 @@ public class MongoConfiguration {
         if (Objects.nonNull(client))
             client.close();
     }
+
+    public MongoClient getClient(){
+        return client;
+    }
 }

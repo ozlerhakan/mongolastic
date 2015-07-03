@@ -56,8 +56,8 @@ public class FileConfiguration {
             String key = confParameter[0];
             String value = confParameter[1];
             if (key.equals("fromMongo")) return "";
-            else if (key.equals("database") || key.equals("index")) key = "db";
-            else if (key.equals("collection") || key.equals("type")) key = "c";
+            else if (key.equals("db") || key.equals("index")) key = "database";
+            else if (key.equals("c") || key.equals("type")) key = "collection";
             return String.join(": ", key, value);
         }).collect(Collectors.toList());
         extraParams.add(0, content);

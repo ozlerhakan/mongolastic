@@ -1,5 +1,7 @@
 package com.kodcu.service;
 
+import com.kodcu.config.YamlConfiguration;
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.InsertOneModel;
 import org.apache.log4j.Logger;
@@ -17,8 +19,8 @@ public class MongoBulkService implements BulkService {
     private final Logger logger = Logger.getLogger(MongoBulkService.class);
     private final MongoCollection<Document> collection;
 
-    public MongoBulkService(final MongoCollection<Document> collection) {
-        this.collection = collection;
+    public MongoBulkService(final MongoClient client, final YamlConfiguration config) {
+        this.collection = client.getDatabase(config.getAsDatabase()).getCollection(config.getAsCollection());
     }
 
     @Override

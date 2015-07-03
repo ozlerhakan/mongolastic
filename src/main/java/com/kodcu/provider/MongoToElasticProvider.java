@@ -1,7 +1,7 @@
 package com.kodcu.provider;
 
+import com.kodcu.config.YamlConfiguration;
 import com.kodcu.converter.JsonBuilder;
-import com.mongodb.MongoNamespace;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -21,9 +21,11 @@ public class MongoToElasticProvider extends Provider {
     private final Logger logger = Logger.getLogger(MongoToElasticProvider.class);
     private final MongoCollection<Document> collection;
     private final JsonBuilder builder;
+    private final YamlConfiguration config;
 
-    public MongoToElasticProvider(final MongoCollection<Document> collection, final JsonBuilder builder) {
+    public MongoToElasticProvider(final MongoCollection<Document> collection, final YamlConfiguration config, final JsonBuilder builder) {
         this.collection = collection;
+        this.config = config;
         this.builder = builder;
     }
 
@@ -49,11 +51,10 @@ public class MongoToElasticProvider extends Provider {
 
             set.stream().forEach(entry -> {
                 if (entry.getKey().equals("_id")) {
-                    MongoNamespace namespace = collection.getNamespace();
                     JsonObjectBuilder create = Json.createObjectBuilder();
                     create.add("create", Json.createObjectBuilder()
-                            .add("_index", namespace.getDatabaseName())
-                            .add("_type", namespace.getCollectionName())
+                            .add("_index", config.getAsDatabase())
+                            .add("_type", config.getAsCollection())
                             .add("_id", entry.getValue().toString()));
                     sb.append(create.build().toString());
                     sb.append(System.lineSeparator());

@@ -60,7 +60,7 @@ public class Application {
 
     private void startFromElastic(YamlConfiguration config) {
         MongoConfiguration mongo = new MongoConfiguration(config);
-        BulkService bulkService = new MongoBulkService(mongo.getMongoCollection());
+        BulkService bulkService = new MongoBulkService(mongo.getClient(), config);
         ElasticConfiguration elastic = new ElasticConfiguration(config);
         Provider provider = new ElasticToMongoProvider(elastic, config, new JsonBuilder());
         provider.transfer(bulkService, () -> {
@@ -73,7 +73,7 @@ public class Application {
         ElasticConfiguration elastic = new ElasticConfiguration(config);
         BulkService bulkService = new ElasticBulkService(config, elastic);
         MongoConfiguration mongo = new MongoConfiguration(config);
-        Provider provider = new MongoToElasticProvider(mongo.getMongoCollection(), new JsonBuilder());
+        Provider provider = new MongoToElasticProvider(mongo.getMongoCollection(), config, new JsonBuilder());
         provider.transfer(bulkService, () -> {
             bulkService.close();
             mongo.closeConnection();
@@ -87,7 +87,7 @@ public class Application {
             System.exit(-1);
         }
         if (!args[0].endsWith(Constants.MONGOLASTIC_FILE)) {
-            logger.error("It is not a config.yml file we are looking for, Where is it?");
+            logger.error("It is not a mongolastic file we are looking for, Where is it?");
             System.exit(-1);
         }
         if (args.length > 7) {

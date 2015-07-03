@@ -5,8 +5,10 @@ package com.kodcu.config;
  */
 public class YamlConfiguration {
 
-    private String c;
-    private String db;
+    private String collection;
+    private String database;
+    private String asCollection;
+    private String asDatabase;
     private String esHost;
     private String mongoHost;
     private int esPort;
@@ -14,6 +16,22 @@ public class YamlConfiguration {
     private boolean fromMongo;
 
     private YamlConfiguration() {
+    }
+
+    public String getAsCollection() {
+        return asCollection;
+    }
+
+    public void setAsCollection(String asCollection) {
+        this.asCollection = asCollection;
+    }
+
+    public String getAsDatabase() {
+        return asDatabase;
+    }
+
+    public void setAsDatabase(String asDatabase) {
+        this.asDatabase = asDatabase;
     }
 
     public boolean isFromMongo() {
@@ -25,19 +43,19 @@ public class YamlConfiguration {
     }
 
     public String getCollection() {
-        return c;
+        return collection;
     }
 
-    public void setC(String c) {
-        this.c = c;
+    public void setCollection(String c) {
+        this.collection = c;
     }
 
     public String getDatabase() {
-        return db;
+        return database;
     }
 
-    public void setDb(String db) {
-        this.db = db;
+    public void setDatabase(String db) {
+        this.database = db;
     }
 
     public String getMongoHost() {
@@ -75,10 +93,10 @@ public class YamlConfiguration {
     @Override
     public String toString() {
         return "YamlConfiguration{" +
-                "collection='" + c + '\'' +
+                "collection='" + collection + '\'' +
                 ", mongoHost='" + mongoHost + '\'' +
                 ", mongoPort=" + mongoPort +
-                ", database='" + db + '\'' +
+                ", database='" + database + '\'' +
                 ", esHost='" + esHost + '\'' +
                 ", esTransPort=" + esPort +
                 '}';

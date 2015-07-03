@@ -9,7 +9,6 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
 import org.elasticsearch.action.bulk.BulkProcessor;
-import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
@@ -34,7 +33,6 @@ public class ElasticBulkService implements BulkService {
         this.config = config;
         this.client = client;
         this.initialize();
-        this.dropDataSet();
     }
 
     @Override
@@ -43,8 +41,8 @@ public class ElasticBulkService implements BulkService {
 
         try {
             logger.info("Transferring data began to elasticsearch.");
-            final String indexName = config.getDatabase();
-            final String typeName = config.getCollection();
+            final String indexName = config.getAsDatabase();
+            final String typeName = config.getAsCollection();
             String id = null;
 
             for (String line : jsonContent.split(System.lineSeparator())) {
@@ -81,13 +79,13 @@ public class ElasticBulkService implements BulkService {
     @Override
     public void dropDataSet() {
         IndicesAdminClient admin = client.getClient().admin().indices();
-        IndicesExistsRequestBuilder builder = admin.prepareExists(config.getDatabase());
+        IndicesExistsRequestBuilder builder = admin.prepareExists(config.getAsDatabase());
         if (builder.execute().actionGet().isExists()) {
-            DeleteIndexResponse delete = admin.delete(new DeleteIndexRequest(config.getDatabase())).actionGet();
+            DeleteIndexResponse delete = admin.delete(new DeleteIndexRequest(config.getAsDatabase())).actionGet();
             if (delete.isAcknowledged())
-                logger.info(String.format("The current index %s was deleted.", config.getDatabase()));
+                logger.info(String.format("The current index %s was deleted.", config.getAsDatabase()));
             else
-                logger.info(String.format("The current index %s was not deleted.", config.getDatabase()));
+                logger.info(String.format("The current index %s was not deleted.", config.getAsDatabase()));
         }
     }
 

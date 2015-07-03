@@ -29,6 +29,16 @@ public class QueryListener extends QueryBaseListener {
     }
 
     @Override
+    public void enterNewCollectionName(QueryParser.NewCollectionNameContext ctx) {
+        worker.setAsCollectionName(ctx.getText());
+    }
+
+    @Override
+    public void enterNewDatabaseName(QueryParser.NewDatabaseNameContext ctx) {
+        worker.setAsDatabaseName(ctx.getText());
+    }
+
+    @Override
     public void enterCollectionName(QueryParser.CollectionNameContext ctx) {
         worker.setCollectionName(ctx.getText());
     }

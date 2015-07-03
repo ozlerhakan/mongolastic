@@ -8,15 +8,27 @@ query
     ;
 
 queryDeclaration
-    :  queryTag dataLocation dataset
+    :  queryTag dataLocation asStatement? dataset
     ;
 
 queryTag
-    :   tag=(EXPORT|TRANSFER|COPY)
+    :   tag=(EXPORT|TRANSFER|COPY|CLONE)
     ;
 
 dataLocation
     :   databaseName '/' collectionName
+    ;
+
+asStatement
+    :  AS  newDatabaseName '/' newCollectionName
+    ;
+
+newDatabaseName
+    :   IDENTIFIER
+    ;
+
+newCollectionName
+    :   IDENTIFIER
     ;
 
 databaseName
@@ -92,6 +104,7 @@ value
 
 TO          : 'to'|'TO';
 ES          : 'es'|'ES';
+AS          : 'as'|'AS';
 AND         : 'and'|'AND';
 FROM        : 'from'|'FROM';
 HOST        : 'host'|'HOST';
@@ -99,6 +112,7 @@ PORT        : 'port'|'PORT';
 NAME        : 'name'|'NAME';
 FILE        : 'file'|'FILE';
 COPY        : 'copy'|'COPY';
+CLONE       : 'clone'|'CLONE';
 MONGO       : 'mongo'|'MONGO';
 EXPORT      : 'export'|'EXPORT';
 TRANSFER    : 'transfer'|'TRANSPORT';

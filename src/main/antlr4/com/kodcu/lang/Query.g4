@@ -91,6 +91,7 @@ property
 key
     :   HOST
     |   PORT
+    |   QUERY
     ;
 
 value
@@ -114,12 +115,13 @@ FILE        : 'file'|'FILE';
 COPY        : 'copy'|'COPY';
 CLONE       : 'clone'|'CLONE';
 MONGO       : 'mongo'|'MONGO';
+QUERY       : 'query'|'QUERY';
 EXPORT      : 'export'|'EXPORT';
 TRANSFER    : 'transfer'|'TRANSPORT';
 
 
 STRINGLITERAL
-    :   '"' .*? '"'
+    :   '"' ( ~[\\"] | '\\' . )* '"'
     ;
 
 NUMBER

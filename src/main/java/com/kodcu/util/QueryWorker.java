@@ -135,11 +135,17 @@ public class QueryWorker {
     }
 
     public void setDefaultValues() {
+        if ((map.containsKey("esQuery") && !isFromEs()) ||
+            (map.containsKey("mongoQuery") && !isFromMongo())) {
+            logger.error("You cannot set the query property in the TO statement!");
+            System.exit(-1);
+        }
         final Map<String, String> defaultProperties = new HashMap<>();
         defaultProperties.put("mongoPort", "27017");
         defaultProperties.put("mongoHost", "localhost");
         defaultProperties.put("esPort", "9300");
         defaultProperties.put("esHost", "localhost");
+        defaultProperties.put("mongoQuery", "\"{}\"");
         defaultProperties.forEach((k, v) -> {
             final boolean exist = this.getProperties().stream().anyMatch(p -> p.startsWith(k));
             if (!exist && isMongoExist() && k.startsWith("mongo"))

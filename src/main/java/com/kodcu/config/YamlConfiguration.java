@@ -11,11 +11,29 @@ public class YamlConfiguration {
     private String asDatabase;
     private String esHost;
     private String mongoHost;
+    private String mongoQuery;
+    private String esQuery;
     private int esPort;
     private int mongoPort;
     private boolean fromMongo;
 
     private YamlConfiguration() {
+    }
+
+    public String getEsQuery() {
+        return esQuery;
+    }
+
+    public void setEsQuery(String esQuery) {
+        this.esQuery = esQuery;
+    }
+
+    public String getMongoQuery() {
+        return mongoQuery;
+    }
+
+    public void setMongoQuery(String mongoQuery) {
+        this.mongoQuery = mongoQuery;
     }
 
     public String getAsCollection() {

@@ -13,7 +13,8 @@ Second, write a query in a mongolastic file. Mongolastic requires you to give a 
 .the query anatomy
 [source,xml]
 ----
-transfer|export|copy database-index-name/collection-type-name
+transfer|export|copy|clone database-index-name/collection-type-name
+[as different-database-index-name/different-collection-type-name]?
 from <declarations>
 to  <declarations>
 
@@ -24,6 +25,7 @@ to  <declarations>
 
 <properties> := port: port-number
               | host: "host-machine"
+              | query: "{json-query}"
 ----
 
 Here is an example of a mongolastic query:
@@ -90,22 +92,48 @@ IMPORTANT: You can pass parameters up to _6 config key:value pairs_ + _a mongola
 
 Let's say your query is as follows:
 
+.the query.mongolastic file
 [source, mongolastic]
 ----
-copy twitter/tweets
+copy twitter/tweets as social/tweet
 from
 mongo = { host:"localhost", port: 27017 } to es
 ----
 
-and you did not pass any extra parameter except the query.mongolastic file, you should a type called "tweets" in an index called "twitter" in your running elastic node listening localhost:9300.
+and you did not pass any extra parameter except the query.mongolastic file. Mongolastic first looks at the _tweets_ collection of the database called _twitter_ located on the running mongod. If it finds tweet documents, it will start copying those into an elasticsearch environment. Ultimately, you should see a type called "tweet" in an index called "social" in your running elastic node listening on localhost:9300 as Mongolastic adds the data into a different type of a different index. If you do not specify the mongolastic as statement, the tweets data will be located in a type called "tweets" in an index called "twitter" in the elastic server.
 
 === 2. Example
 
-Consider the following one that 1 additional parameter is passed along with the mongolastic file:
+Consider the following one that 2 additional parameters are passed along with the same query.mongolastic file:
 
-    $ java -jar target/mongolastic.jar query.mongolastic db:kodcucom c:students
+    $ java -jar target/mongolastic.jar query.mongolastic db:kodcucom c:tweetdata
 
-This command will simply ignore twitter/tweets collection and look at the collection called students of the database called kodcucom in order to transfer them into a running elastic node.
+Mongolastic will simply ignore twitter/tweets and look for the collection called _tweetdata_ in the database called _kodcucom_ from mongod in order to transfer them into a running elastic node. As you know now, the new location of the entire data in es will be located in a different index/type. The entire tweet data will be imported to an type called _tweet_ of the index called _social_ since the query includes the AS statement.
+
+=== 3. Example
+
+Let's say we have another query like below:
+
+[source, mongolastic]
+----
+clone kodcucom/students
+from es to mongo
+----
+
+The query ask to the tool to retrieve the _students_ data in the index called _kodcucom_ from es and import them into a mongod server. Both servers are listening on the default values.
+
+=== 4. Example
+
+Another query is:
+
+[source, mongolastic]
+----
+transfer twitter/tweets as kodcu/tweets
+from mongo = { host:"localhost", port: 27017, query: "{ 'user.name' : 'Kodcucom'}" }
+to es = { host:"localhost", port: 9300 }
+----
+
+tells to Mongolastic to transfer the tweets where the user name is Kodcucom from a running mongod to an elastic node listening on localhost:9300. You should see an type called _tweets_ containing all the corresponding tweets in an index called _kodcu_.
 
 == License
 

@@ -72,7 +72,6 @@ public class ElasticToMongoProvider extends Provider {
             Set<Map.Entry<String, Object>> result = hit.getSource().entrySet();
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
             jsonObj.add("_id", hit.getId());
-            //jsonObj.add("_id", Json.createObjectBuilder().add("$oid", hit.getId()));
             result.stream().forEach(entry -> {
                 builder.buildJson(jsonObj, entry, sb);
             });

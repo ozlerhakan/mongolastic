@@ -25,6 +25,12 @@ public class MongoBulkService implements BulkService {
 
     @Override
     public void proceed(String jsonContent) {
+
+        if(jsonContent.isEmpty()) {
+            logger.debug("Index/Type does not exist or does not contain the record");
+            return;
+        }
+
         try {
             logger.info("Transferring data began to mongodb.");
             final List<InsertOneModel<Document>> list = new ArrayList<>();

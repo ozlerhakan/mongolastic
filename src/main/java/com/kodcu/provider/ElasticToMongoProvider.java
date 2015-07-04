@@ -4,11 +4,14 @@ import com.kodcu.config.ElasticConfiguration;
 import com.kodcu.config.YamlConfiguration;
 import com.kodcu.converter.JsonBuilder;
 import org.apache.log4j.Logger;
+import org.apache.lucene.queryparser.flexible.core.builders.QueryBuilder;
+import org.bson.Document;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.IndicesAdminClient;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
 import javax.json.Json;
@@ -50,9 +53,17 @@ public class ElasticToMongoProvider extends Provider {
     @Override
     public String buildJSONContent(int skip, int limit) {
 
+        Document query = Document.parse(config.getEsQuery());
+        String esQuery = config.getEsQuery();
+
+        //TODO sorgunun config.getEsQuery()'den uygun formatta gelmesi daha uygun
+        esQuery = esQuery.replace("Document", "").replace("{", "").replace("}", "").replace("'", "");
+        String[] esQueryArray = esQuery.split(":");
+
         SearchResponse response = elastic.getClient().prepareSearch(config.getDatabase())
                 .setTypes(config.getCollection())
                 .setSearchType(SearchType.DEFAULT)
+                .setQuery(QueryBuilders.matchQuery(esQueryArray[0].trim(), esQueryArray[1].trim()))
                 .setFrom(skip).setSize(limit)
                 .execute().actionGet();
 
@@ -60,7 +71,8 @@ public class ElasticToMongoProvider extends Provider {
         for (SearchHit hit : response.getHits().getHits()) {
             Set<Map.Entry<String, Object>> result = hit.getSource().entrySet();
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
-            jsonObj.add("_id", Json.createObjectBuilder().add("$oid", hit.getId()));
+            jsonObj.add("_id", hit.getId());
+            //jsonObj.add("_id", Json.createObjectBuilder().add("$oid", hit.getId()));
             result.stream().forEach(entry -> {
                 builder.buildJson(jsonObj, entry, sb);
             });

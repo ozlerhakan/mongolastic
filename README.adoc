@@ -25,8 +25,11 @@ to  <declarations>
 
 <properties> := port: port-number
               | host: "host-machine"
-              | query: "{json-query}"
+              | query: "{mongodb-json-query}"  <1>
+              | query: "elastic/json/file/path" <2>
 ----
+<1> Works only for the mongo configuration
+<2> Works only for the es configuration
 
 Here is an example of a mongolastic query:
 
@@ -133,7 +136,36 @@ from mongo = { host:"localhost", port: 27017, query: "{ 'user.name' : 'Kodcucom'
 to es = { host:"localhost", port: 9300 }
 ----
 
-tells to Mongolastic to transfer the tweets where the user name is Kodcucom from a running mongod to an elastic node listening on localhost:9300. You should see an type called _tweets_ containing all the corresponding tweets in an index called _kodcu_.
+tells to Mongolastic to transfer the tweets where the user name is Kodcucom from a running mongod to an elastic node listening on localhost:9300. You should see an type called _tweets_ containing all the corresponding tweets in an index called _kodcu_. You can write mongodb json queries in the query property of the mongo configuration.
+
+=== 5. Example
+
+This example demonstrates how to use the query property of the es configuration. Before starting the tool, we need one json file having the characteristic of an es query like below:
+
+.a json file called elastic that must contains *only* the *query* part
+[source, json]
+----
+{
+  "query": {
+    "match": {
+      "user.screen_name": "FCBarcelona"
+    }
+  }
+}
+----
+
+Now that we have an elastic query, we are free to include its path in the query property:
+
+.a mongolastic query
+[source, mongolastic]
+----
+transfer twitter/tweets as barca/tweets
+from es = { host:"elastic-machine" query:"./elastic.json" } <1>
+to mongo
+----
+<1> If you do not specify the query option, the default search query works as a match all query.
+
+The query below will copy the tweets where the screen name is 'FCBarcelona' from a running elastic node to a mongod listening on localhost:27017. You should see an type called _tweets_ containing all the corresponding tweets tweeted by FCBarcelona in an index called _barca_.
 
 == License
 

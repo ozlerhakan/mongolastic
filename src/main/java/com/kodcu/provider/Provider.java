@@ -23,7 +23,7 @@ public abstract class Provider {
             skip += limit;
         }
 
-        if (count != 0) {
+        if (count > 0) {
             String jsonContent = this.buildJSONContent(skip, (int) count);
             bulkService.proceed(jsonContent);
         }

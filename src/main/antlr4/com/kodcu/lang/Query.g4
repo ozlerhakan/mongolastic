@@ -64,20 +64,8 @@ mongoDeclaration
     :   MONGO ('=' configuration)?
     ;
 
-fileDeclaration
-    :   FILE '=' fileConfiguration
-    ;
-
 esDeclaration
     :   ES ('=' configuration)?
-    ;
-
-fileConfiguration
-    :  '{' fileProperty '}'
-    ;
-
-fileProperty
-    :    NAME ':' STRINGLITERAL
     ;
 
 configuration
@@ -117,7 +105,7 @@ CLONE       : 'clone'|'CLONE';
 MONGO       : 'mongo'|'MONGO';
 QUERY       : 'query'|'QUERY';
 EXPORT      : 'export'|'EXPORT';
-TRANSFER    : 'transfer'|'TRANSPORT';
+TRANSFER    : 'transfer'|'TRANSFER';
 
 
 STRINGLITERAL

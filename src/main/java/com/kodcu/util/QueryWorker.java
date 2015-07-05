@@ -1,8 +1,11 @@
 package com.kodcu.util;
 
 import com.kodcu.lang.QueryParser;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,11 +105,12 @@ public class QueryWorker {
     }
 
     public void addKeyValue(QueryParser.PropertyContext ctx) {
+        String value = this.setValue(ctx.key().getText(), ctx.value().getText());
         String key = String.join("",
-                getPrefix(),
+                this.getPrefix(),
                 this.getFirstLetterOfString(ctx),
                 this.getSubString(ctx, 1));
-        final String property = this.setKeyValue(key, ctx.value().getText());
+        final String property = this.setKeyValue(key, value);
         boolean duplicateProperty = this.getProperties().stream().anyMatch(p -> p.startsWith(key));
         if (duplicateProperty) {
             logger.error(String.format("You cannot define the %s more than once!", ctx.key().getText()));
@@ -115,11 +119,31 @@ public class QueryWorker {
         this.addProperty(property);
     }
 
-    public String getSubString(QueryParser.PropertyContext ctx, int startFrom) {
+    private String setValue(String key, String value) {
+        if (key.equalsIgnoreCase("query")) {
+            File configFile = new File(value.substring(1, value.length() - 1));
+            if (configFile.isFile() && this.getPrefix().equals("mongo")) {
+                logger.error("You can only give a json file path for the es configuration!");
+                System.exit(-1);
+            } else if (this.getPrefix().equals("es")) {
+                try {
+                    String query = FileUtils.readFileToString(configFile, "UTF-8");
+                    query = query.replaceAll("\"", "\\\\\"");
+                    value = "\"".concat(query).concat("\"");
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e.fillInStackTrace());
+                    System.exit(-1);
+                }
+            }
+        }
+        return value;
+    }
+
+    private String getSubString(QueryParser.PropertyContext ctx, int startFrom) {
         return ctx.key().getText().substring(startFrom, ctx.key().getText().length()).toLowerCase();
     }
 
-    public String getFirstLetterOfString(QueryParser.PropertyContext ctx) {
+    private String getFirstLetterOfString(QueryParser.PropertyContext ctx) {
         return ctx.key().getText().substring(0, 1).toUpperCase();
     }
 
@@ -135,8 +159,7 @@ public class QueryWorker {
     }
 
     public void setDefaultValues() {
-        if ((map.containsKey("esQuery") && !isFromEs()) ||
-            (map.containsKey("mongoQuery") && !isFromMongo())) {
+        if ((map.containsKey("esQuery") && !isFromEs()) || (map.containsKey("mongoQuery") && !isFromMongo())) {
             logger.error("You cannot set the query property in the TO statement!");
             System.exit(-1);
         }
@@ -146,6 +169,7 @@ public class QueryWorker {
         defaultProperties.put("esPort", "9300");
         defaultProperties.put("esHost", "localhost");
         defaultProperties.put("mongoQuery", "\"{}\"");
+        defaultProperties.put("esQuery", "\"{\\\"query\\\":{\\\"match_all\\\":{}}}\"");
         defaultProperties.forEach((k, v) -> {
             final boolean exist = this.getProperties().stream().anyMatch(p -> p.startsWith(k));
             if (!exist && isMongoExist() && k.startsWith("mongo"))

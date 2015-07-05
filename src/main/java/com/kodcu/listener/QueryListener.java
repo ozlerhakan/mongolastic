@@ -56,10 +56,6 @@ public class QueryListener extends QueryBaseListener {
     }
 
     @Override
-    public void enterFileProperty(QueryParser.FilePropertyContext ctx) {
-    }
-
-    @Override
     public void enterMongoDeclaration(QueryParser.MongoDeclarationContext ctx) {
         ParseTree pt = ctx.getParent().getRuleContext().getParent().getChild(0);
         String where = pt.getText();

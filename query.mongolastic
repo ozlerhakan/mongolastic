@@ -1,5 +1,6 @@
-// a mongolastic query that simply ask to mongolastic to export tweets data located on a mongod listening on localhost:27017
+// a mongolastic query that simply ask to mongolastic to export tweets data where the user name is Kodcucom located on a mongod listening on localhost:27017
 // to an elasticsearch server listening on localhost:9300 as a tweets type
 
-//transfer twitter/tweets as kodcu/tweets from mongo = { host:"localhost", port: 27017, query: "{ 'name' : 'Kodcucom'}" } to es = { host:"localhost", port: 9300 }
-transfer hakdogan/mongolastic as twitter/tweets from es = { host:"localhost", port: 9300, query: "{ 'name': 'hakdogan'}" } to mongo = { host:"localhost", port: 27017 }
+transfer twitter/tweets as kodcu/tweets
+from mongo = { host:"localhost", port: 27017, query: "{ 'user.name' : 'kodcu.com'}" }
+to es = { host:"localhost", port: 9300 }

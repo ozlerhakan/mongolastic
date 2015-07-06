@@ -165,7 +165,7 @@ to mongo
 ----
 <1> If you do not specify the query option, the default search query works as a match all query.
 
-The query above will copy the tweets where the screen name is 'FCBarcelona' from a running elastic node to a mongod listening on localhost:27017. You should see an type called _tweets_ containing all the corresponding tweets tweeted by FCBarcelona in an index called _barca_.
+The query above will copy the tweets where the screen name is 'FCBarcelona' from a running elastic node to a mongod listening on localhost:27017. You should see a collection called _tweets_ containing all the corresponding tweets tweeted by FCBarcelona in a database called _barca_.
 
 == License
 

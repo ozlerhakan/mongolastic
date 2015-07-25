@@ -22,16 +22,6 @@ public class QueryWorker {
     private String prefix;
     private boolean fromEs;
     private boolean fromMongo;
-    private boolean esExist;
-    private boolean mongoExist;
-
-    public boolean isEsExist() {
-        return esExist;
-    }
-
-    public void setEsExist(boolean esExist) {
-        this.esExist = esExist;
-    }
 
     public boolean isFromEs() {
         return fromEs;
@@ -47,14 +37,6 @@ public class QueryWorker {
 
     public void setFromMongo(boolean fromMongo) {
         this.fromMongo = fromMongo;
-    }
-
-    public boolean isMongoExist() {
-        return mongoExist;
-    }
-
-    public void setMongoExist(boolean mongoExist) {
-        this.mongoExist = mongoExist;
     }
 
     public String getPrefix() {
@@ -101,7 +83,6 @@ public class QueryWorker {
             System.exit(-1);
         }
         this.setPrefix("mongo");
-        this.setMongoExist(true);
     }
 
     public void addKeyValue(QueryParser.PropertyContext ctx) {
@@ -110,18 +91,18 @@ public class QueryWorker {
                 this.getPrefix(),
                 this.getFirstLetterOfString(ctx),
                 this.getSubString(ctx, 1));
-        final String property = this.setKeyValue(key, value);
-        boolean duplicateProperty = this.getProperties().stream().anyMatch(p -> p.startsWith(key));
+        boolean duplicateProperty = map.containsKey(key);
         if (duplicateProperty) {
-            logger.error(String.format("You cannot define the %s more than once!", ctx.key().getText()));
+            logger.error(String.format("You cannot define the %s more than once in the %s configuration!", ctx.key().getText(), getPrefix()));
             System.exit(-1);
         }
+        final String property = this.setKeyValue(key, value);
         this.addProperty(property);
     }
 
     private String setValue(String key, String value) {
         if (key.equalsIgnoreCase("query")) {
-            File configFile = new File(value.substring(1, value.length() - 1));
+            final File configFile = new File(value.substring(1, value.length() - 1));
             if (configFile.isFile() && this.getPrefix().equals("mongo")) {
                 logger.error("You can only give a json file path for the es configuration!");
                 System.exit(-1);
@@ -155,7 +136,6 @@ public class QueryWorker {
             System.exit(-1);
         }
         this.setPrefix("es");
-        this.setEsExist(true);
     }
 
     public void setDefaultValues() {
@@ -171,11 +151,8 @@ public class QueryWorker {
         defaultProperties.put("mongoQuery", "\"{}\"");
         defaultProperties.put("esQuery", "\"{\\\"query\\\":{\\\"match_all\\\":{}}}\"");
         defaultProperties.forEach((k, v) -> {
-            final boolean exist = this.getProperties().stream().anyMatch(p -> p.startsWith(k));
-            if (!exist && isMongoExist() && k.startsWith("mongo"))
-                this.addProperty(this.setKeyValue(k, v));
-            if (!exist && isEsExist() && k.startsWith("es"))
-                this.addProperty(this.setKeyValue(k, v));
+            final boolean exist = map.containsKey(k);
+            if (!exist) this.addProperty(this.setKeyValue(k, v));
         });
     }
 
@@ -197,8 +174,8 @@ public class QueryWorker {
             logger.error("Specify different db/index and collection/type!");
             System.exit(-1);
         }
-        String newcollection = this.setKeyValue("asCollection", asColl);
-        this.addProperty(newcollection);
+        String newCollection = this.setKeyValue("asCollection", asColl);
+        this.addProperty(newCollection);
     }
 
     public void setAsDatabaseName(String newDb) {

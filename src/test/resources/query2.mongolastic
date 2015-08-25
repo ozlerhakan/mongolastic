@@ -1,0 +1,3 @@
+transfer twitter/tweets as barca/tweets
+from es = { query: "src\test\resources\elastic1.json" }
+to mongo

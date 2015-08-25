@@ -1,0 +1,3 @@
+transfer twitter/tweets as kodcu/tweets
+from mongo = { host:"localhost", port: 27017, query: "{ 'user.name' : 'kodcu.com'}" }
+to es = { host:"localhost", port: 9300 }

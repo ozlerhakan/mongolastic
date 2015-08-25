@@ -50,6 +50,7 @@ public class MongoBulkService implements BulkService {
 
     @Override
     public void close() {
+        //no-op
     }
 
 }

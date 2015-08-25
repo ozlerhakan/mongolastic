@@ -17,9 +17,6 @@ public class YamlConfiguration {
     private int mongoPort;
     private boolean fromMongo;
 
-    private YamlConfiguration() {
-    }
-
     public String getEsQuery() {
         return esQuery;
     }

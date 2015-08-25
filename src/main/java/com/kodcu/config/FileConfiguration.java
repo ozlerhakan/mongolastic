@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,7 +50,7 @@ public class FileConfiguration {
     }
 
     private YamlConfiguration checkConfigArguments(Yaml yaml, String content) {
-        List<String> extraParams = Stream.of(args).filter(arg -> arg.split(":").length == 2).map(arg -> {
+        String extraParams = Stream.of(args).filter(arg -> arg.split(":").length == 2).map(arg -> {
             final String[] confParameter = arg.split(":");
             String key = confParameter[0];
             String value = confParameter[1];
@@ -59,9 +58,8 @@ public class FileConfiguration {
             else if (key.equals("db") || key.equals("index")) key = "database";
             else if (key.equals("c") || key.equals("type")) key = "collection";
             return String.join(": ", key, value);
-        }).collect(Collectors.toList());
-        extraParams.add(0, content);
-        content = String.join("\n", extraParams);
+        }).collect(Collectors.joining(System.lineSeparator()));
+        content = content.concat(extraParams);
         return yaml.loadAs(content, YamlConfiguration.class);
     }
 

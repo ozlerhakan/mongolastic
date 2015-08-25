@@ -48,37 +48,31 @@ public class Application {
     public void start() {
         FileConfiguration fConfig = new FileConfiguration(args);
         Optional<YamlConfiguration> yamlConfig = Optional.ofNullable(fConfig.getFileContent());
-
-        yamlConfig.ifPresent(config -> {
-            if (config.isFromMongo()) {
-                this.startFromMongo(config);
-            } else {
-                this.startFromElastic(config);
-            }
-        });
+        yamlConfig.ifPresent(this::proceedService);
     }
 
-    private void startFromElastic(YamlConfiguration config) {
-        MongoConfiguration mongo = new MongoConfiguration(config);
-        BulkService bulkService = new MongoBulkService(mongo.getClient(), config);
+    public void proceedService(YamlConfiguration config) {
         ElasticConfiguration elastic = new ElasticConfiguration(config);
-        Provider provider = new ElasticToMongoProvider(elastic, config, new JsonBuilder());
-        provider.transfer(bulkService, () -> {
-            mongo.closeConnection();
-            elastic.closeNode();
-        });
-    }
-
-    public void startFromMongo(YamlConfiguration config) {
-        ElasticConfiguration elastic = new ElasticConfiguration(config);
-        BulkService bulkService = new ElasticBulkService(config, elastic);
         MongoConfiguration mongo = new MongoConfiguration(config);
-        Provider provider = new MongoToElasticProvider(mongo.getMongoCollection(), config, new JsonBuilder());
+        BulkService bulkService = this.initializeBulkService(config, mongo, elastic);
+        Provider provider = this.initializeProvider(config, mongo, elastic);
         provider.transfer(bulkService, () -> {
             bulkService.close();
             mongo.closeConnection();
             elastic.closeNode();
         });
+    }
+
+    private Provider initializeProvider(YamlConfiguration config, MongoConfiguration mongo, ElasticConfiguration elastic) {
+        if (config.isFromMongo())
+            return new MongoToElasticProvider(mongo.getMongoCollection(), config, new JsonBuilder());
+        return new ElasticToMongoProvider(elastic, config, new JsonBuilder());
+    }
+
+    private BulkService initializeBulkService(YamlConfiguration config, MongoConfiguration mongo, ElasticConfiguration elastic) {
+        if (config.isFromMongo())
+            return new ElasticBulkService(config, elastic);
+        return new MongoBulkService(mongo.getClient(), config);
     }
 
     static void configAssertion(String[] args) {

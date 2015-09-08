@@ -1,12 +1,12 @@
 = Mongolastic
 
+image::https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master"[alt="Build Status" url="https://travis-ci.org/ozlerhakan/mongolastic"]
+
 What data you have in your MongoDB can also be included into your ElasticSearch and vice versa using this tool. You can perform the aforementioned facilities using the mongolastic query language. Writing a mongolastic query, you explicitly can pass a few specific parameters as well.
 
 == How it works
 
-First, build the source after downloading the latest release from the https://github.com/ozlerhakan/mongolastic/releases[releases] page:
-
-    $ mvn clean install
+First, download the latest mongolastic.jar file from the https://github.com/ozlerhakan/mongolastic/releases[releases] page.
 
 Second, write a query in a mongolastic file. Mongolastic requires you to give a file ending with `.mongolastic` which contains the query structure:
 
@@ -31,7 +31,7 @@ to  <declarations>
 <1> Works only for the mongo configuration
 <2> Works only for the es configuration
 
-Here is an example of a mongolastic query:
+Here is an example of a mongolastic query in a mongolastic file:
 
 [source,mongolastic]
 ----
@@ -64,15 +64,11 @@ es = { port: 9300 } <2>
 
 NOTE: You can either use upper-case or lower-case for the keywords (e.g. FROM, PORT, etc.)
 
-After building the source and writing a query, you can run the tool by either running:
+After downloading the jar and writing a query into a mongolastic file, you can run the tool in a terminal (i.e. command prompt):
 
-    $ java -jar target/mongolastic.jar query.mongolastic [key:value key:value ... property6] <1>
+    $ java -jar mongolastic.jar query.mongolastic [key:value key:value ... property6] <1>
 
-<1> _Optionally_, you can *override* the specified value of each property by typing a new key:value pair among the available config pairs.
-
-Or
-
-    $ mvn exec:java -Dexec.args="query.mongolastic [property1 property2 ... property6]"
+<1> _Optionally_, you can *override* the specified value of each given property by typing a new key:value pair among the available config pairs.
 
 You can pass the following key:value properties to override the initial settings:
 
@@ -109,7 +105,7 @@ and you did not pass any extra parameter except the query.mongolastic file. Mong
 
 Consider the following one that 2 additional parameters are passed along with the same query.mongolastic file:
 
-    $ java -jar target/mongolastic.jar query.mongolastic db:kodcucom c:tweetdata
+    $ java -jar mongolastic.jar query.mongolastic db:kodcucom c:tweetdata
 
 Mongolastic will simply ignore twitter/tweets and look for the collection called _tweetdata_ in the database called _kodcucom_ from mongod in order to transfer them into a running elastic node. As you know now, the new location of the entire data in es will be located in a different index/type. The entire tweet data will be imported to an type called _tweet_ of the index called _social_ since the query includes the AS statement.
 

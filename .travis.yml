@@ -1,0 +1,17 @@
+language: java
+jdk:
+- oraclejdk8
+script: mvn install
+before_script:
+- mvn clean
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: E8iX+y1svn/88ftT5fnMIfECNUNek0T/VtrkdacuFriC/cNcopcZUuIEqmCTuMIvo+iL/h4F4wYzGLadRU6iOhnPk8oMPadcR+2Pll/mz7/I4zcj/iZL8KMJGlJxLpnTKBw3QEGnWflg/S8I6g6bOcGnPhQW0AQZ6bj7FBR59Gd7abtqAkwZVki+zxXbMzMqA3VYRaMc2UEdTU6AlcR7GeCdcDFhQ/4uqmMySGGGKLAROZ+0r9BhbaZ0ivuR7Uza9l68d0FhN2wRxDhP86RM3hbZttGQw+CBw7+3IcHoJ9MpSGgatxWd3eudWypDoocVs9FxYKS3zJcVzzLWtmB1yRdY/zOcLkr7Tkz2z+LIZbjPJFjeDUgpRJPqw8ckPOEbsdmp+/0zVBp+aDdMgpa3hfXkchTa4hXUDWJCZiuN4oByWxnBqoALUAjRdIflCeZuukbmHzZb6QWNTfRSGAZtQHO+sdJIvMFFC9v0k6T2WXvlEWDXt0cA8Gid9iBZLZfemJiBRNRP94TDcakMZzwnBH/G3l1nc7tk8AR7gX0b/biLeloSdxdI7UGV+uLvy+LgrsJp5TeLvBaylCRJ6672IvroGZwZm/GG3NsPS1vb2WoZfbjiS+paWUxreeFumJyg43Vuv0LiDND2y2P8zTtnC7HaM0k54ewt86Kx5w86Ma0=
+  file: /home/travis/build/ozlerhakan/mongolastic/target/mongolastic.jar
+  on:
+    tags: true
+    all_branches: true
+    repo: ozlerhakan/mongolastic
+

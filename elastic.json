@@ -1,7 +1,0 @@
-{
-  "query": {
-    "match": {
-      "user.screen_name": "FCBarcelona"
-    }
-  }
-}

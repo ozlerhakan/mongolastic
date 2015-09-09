@@ -6,9 +6,9 @@ import com.kodcu.service.BulkService;
 /**
  * Created by Hakan on 6/30/2015.
  */
-public abstract class Provider {
+public interface Provider {
 
-    public void transfer(final BulkService bulkService, final Runnable closeConnections) {
+    default void transfer(final BulkService bulkService, final Runnable closeConnections) {
         long count = this.getCount();
         final int limit = 200;
         int skip = 0;
@@ -31,7 +31,7 @@ public abstract class Provider {
         closeConnections.run();
     }
 
-    protected abstract long getCount();
+    long getCount();
 
-    protected abstract String buildJSONContent(int skip, int limit);
+    String buildJSONContent(int skip, int limit);
 }

@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * Created by Hakan on 6/29/2015.
  */
-public class ElasticToMongoProvider extends Provider {
+public class ElasticToMongoProvider implements Provider {
 
     private final Logger logger = Logger.getLogger(ElasticToMongoProvider.class);
     private final ElasticConfiguration elastic;
@@ -33,7 +33,7 @@ public class ElasticToMongoProvider extends Provider {
     }
 
     @Override
-    protected long getCount() {
+    public long getCount() {
         long count = 0;
         IndicesAdminClient admin = elastic.getClient().admin().indices();
         IndicesExistsRequestBuilder builder = admin.prepareExists(config.getDatabase());

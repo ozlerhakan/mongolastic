@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * Created by Hakan on 5/18/2015.
  */
-public class MongoToElasticProvider extends Provider {
+public class MongoToElasticProvider implements Provider {
 
     private final Logger logger = Logger.getLogger(MongoToElasticProvider.class);
     private final MongoCollection<Document> collection;
@@ -29,7 +29,8 @@ public class MongoToElasticProvider extends Provider {
         this.builder = builder;
     }
 
-    protected long getCount() {
+    @Override
+    public long getCount() {
         long count = collection.count(Document.parse(config.getMongoQuery()));
         if (count == 0) {
             logger.info("Database/Collection does not exist or does not contain the record");

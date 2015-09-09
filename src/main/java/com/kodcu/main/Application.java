@@ -12,6 +12,7 @@ import com.kodcu.service.BulkService;
 import com.kodcu.service.ElasticBulkService;
 import com.kodcu.service.MongoBulkService;
 import com.kodcu.util.Constants;
+import com.kodcu.util.Log;
 import org.apache.log4j.*;
 
 import java.io.IOException;
@@ -38,11 +39,7 @@ public class Application {
     }
 
     public static void configLog() throws IOException {
-        PatternLayout patternLayout = new PatternLayout("[%d{yyyy-MM-dd}] [%t] [%p]:%m%n");
-        FileAppender fileAppender = new FileAppender(patternLayout, "mongolastic.log", false);
-        fileAppender.setThreshold(Level.DEBUG);
-        BasicConfigurator.configure(fileAppender);
-        BasicConfigurator.configure();
+        Log.buildLog();
     }
 
     public void start() {

@@ -18,7 +18,7 @@ public class BulkProcessorListener implements BulkProcessor.Listener {
 
     @Override
     public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
-        logger.info("Data transfer successfully terminated.");
+        logger.info(String.format("Data transfer successfully terminated.(%d)", response.getItems().length));
     }
 
     @Override

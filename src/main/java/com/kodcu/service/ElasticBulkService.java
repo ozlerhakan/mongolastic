@@ -41,8 +41,8 @@ public class ElasticBulkService implements BulkService {
 
         try {
             logger.info("Transferring data began to elasticsearch.");
-            final String indexName = config.getAsDatabase();
-            final String typeName = config.getAsCollection();
+            final String indexName = config.getMisc().getDindex().getAs();
+            final String typeName = config.getMisc().getCtype().getAs();
             String id = null;
 
             for (String line : jsonContent.split(System.lineSeparator())) {
@@ -79,13 +79,13 @@ public class ElasticBulkService implements BulkService {
     @Override
     public void dropDataSet() {
         IndicesAdminClient admin = client.getClient().admin().indices();
-        IndicesExistsRequestBuilder builder = admin.prepareExists(config.getAsDatabase());
+        IndicesExistsRequestBuilder builder = admin.prepareExists(config.getMisc().getDindex().getAs());
         if (builder.execute().actionGet().isExists()) {
-            DeleteIndexResponse delete = admin.delete(new DeleteIndexRequest(config.getAsDatabase())).actionGet();
+            DeleteIndexResponse delete = admin.delete(new DeleteIndexRequest(config.getMisc().getDindex().getAs())).actionGet();
             if (delete.isAcknowledged())
-                logger.info(String.format("The current index %s was deleted.", config.getAsDatabase()));
+                logger.info(String.format("The current index %s was deleted.", config.getMisc().getDindex().getAs()));
             else
-                logger.info(String.format("The current index %s was not deleted.", config.getAsDatabase()));
+                logger.info(String.format("The current index %s was not deleted.", config.getMisc().getDindex().getAs()));
         }
     }
 

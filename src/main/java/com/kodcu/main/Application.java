@@ -1,9 +1,6 @@
 package com.kodcu.main;
 
-import com.kodcu.config.ElasticConfiguration;
-import com.kodcu.config.FileConfiguration;
-import com.kodcu.config.MongoConfiguration;
-import com.kodcu.config.YamlConfiguration;
+import com.kodcu.config.*;
 import com.kodcu.converter.JsonBuilder;
 import com.kodcu.provider.ElasticToMongoProvider;
 import com.kodcu.provider.MongoToElasticProvider;
@@ -61,28 +58,30 @@ public class Application {
     }
 
     private Provider initializeProvider(YamlConfiguration config, MongoConfiguration mongo, ElasticConfiguration elastic) {
-        if (config.isFromMongo())
-            return new MongoToElasticProvider(mongo.getMongoCollection(), config, new JsonBuilder());
-        return new ElasticToMongoProvider(elastic, config, new JsonBuilder());
+        if (config.getMisc().getDirection().equals("em")) {
+            return new ElasticToMongoProvider(elastic, config, new JsonBuilder());
+        }
+        return new MongoToElasticProvider(mongo.getMongoCollection(), config, new JsonBuilder());
     }
 
     private BulkService initializeBulkService(YamlConfiguration config, MongoConfiguration mongo, ElasticConfiguration elastic) {
-        if (config.isFromMongo())
-            return new ElasticBulkService(config, elastic);
-        return new MongoBulkService(mongo.getClient(), config);
+        if (config.getMisc().getDirection().equals("em")) {
+            return new MongoBulkService(mongo.getClient(), config);
+        }
+        return new ElasticBulkService(config, elastic);
     }
 
     static void configAssertion(String[] args) {
         if (args.length == 0) {
-            logger.error("Incorrect syntax. Pass the correct parameter(s)");
+            logger.error("Incorrect syntax. Should be mongolastic.jar -f /path/yml/file");
             System.exit(-1);
         }
-        if (!args[0].endsWith(Constants.MONGOLASTIC_FILE)) {
-            logger.error("It is not a mongolastic file we are looking for, Where is it?");
+        if ( !args[0].equals("-f")){
+            logger.error("Please specify the -f parameter with a correct yaml file");
             System.exit(-1);
         }
-        if (args.length > 7) {
-            logger.error("Incorrect syntax. Pass max 7 parameters");
+        if (args.length != 2) {
+            logger.error("Incorrect syntax. Pass max 2 parameters");
             System.exit(-1);
         }
     }

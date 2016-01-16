@@ -9,6 +9,7 @@ import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.IndicesAdminClient;
+import org.elasticsearch.index.search.MultiMatchQuery;
 import org.elasticsearch.search.SearchHit;
 
 import javax.json.Json;
@@ -36,14 +37,14 @@ public class ElasticToMongoProvider implements Provider {
     public long getCount() {
         long count = 0;
         IndicesAdminClient admin = elastic.getClient().admin().indices();
-        IndicesExistsRequestBuilder builder = admin.prepareExists(config.getDatabase());
+        IndicesExistsRequestBuilder builder = admin.prepareExists(config.getMisc().getDindex().getName());
         if (builder.execute().actionGet().isExists()) {
-            CountResponse response = elastic.getClient()
-                    .prepareCount(config.getDatabase())
-                    .setTypes(config.getCollection())
-                    .setSource(config.getEsQuery().getBytes())
+            SearchResponse response = elastic.getClient().prepareSearch(config.getMisc().getDindex().getName())
+                    .setTypes(config.getMisc().getCtype().getName())
+                    .setSearchType(SearchType.QUERY_THEN_FETCH)
+                    .setSize(0)
                     .execute().actionGet();
-            count = response.getCount();
+            count = response.getHits().getTotalHits();
         } else {
             logger.info("Index/Type does not exist or does not contain the record");
             System.exit(-1);
@@ -54,10 +55,9 @@ public class ElasticToMongoProvider implements Provider {
     @Override
     public String buildJSONContent(int skip, int limit) {
 
-        SearchResponse response = elastic.getClient().prepareSearch(config.getDatabase())
-                .setTypes(config.getCollection())
-                .setSearchType(SearchType.DEFAULT)
-                .setSource(config.getEsQuery().getBytes())
+        SearchResponse response = elastic.getClient().prepareSearch(config.getMisc().getDindex().getName())
+                .setTypes(config.getMisc().getCtype().getName())
+                .setSearchType(SearchType.QUERY_THEN_FETCH)
                 .setFrom(skip).setSize(limit)
                 .execute().actionGet();
 

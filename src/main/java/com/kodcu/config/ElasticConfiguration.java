@@ -3,9 +3,10 @@ package com.kodcu.config;
 import org.apache.log4j.Logger;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+
+import java.net.InetAddress;
 
 /**
  * Created by hakdogan on 21/05/15.
@@ -23,13 +24,13 @@ public class ElasticConfiguration {
 
     private void prepareClient() {
         try {
-            Settings settings = ImmutableSettings.settingsBuilder()
+            Settings settings = Settings.settingsBuilder()
                     .put("client.transport.ignore_cluster_name", true)
-                    .put("client.transport.ping_timeout", 5000)
-                    .put("client.transport.nodes_sampler_interval", 5000)
+                    .put("client.transport.ping_timeout", "5s")
+                    .put("client.transport.nodes_sampler_interval", "5s")
                     .build();
-            InetSocketTransportAddress ista = new InetSocketTransportAddress(config.getEsHost(), config.getEsPort());
-            client = new TransportClient(settings, false).addTransportAddress(ista);
+            InetSocketTransportAddress ista = new InetSocketTransportAddress(InetAddress.getByName(config.getElastic().getHost()), config.getElastic().getPort());
+            client = TransportClient.builder().settings(settings).build().addTransportAddress(ista);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex.fillInStackTrace());
         }

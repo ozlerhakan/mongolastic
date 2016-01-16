@@ -31,7 +31,7 @@ public class MongoToElasticProvider implements Provider {
 
     @Override
     public long getCount() {
-        long count = collection.count(Document.parse(config.getMongoQuery()));
+        long count = collection.count(Document.parse(config.getMongo().getQuery()));
         if (count == 0) {
             logger.info("Database/Collection does not exist or does not contain the record");
             System.exit(-1);
@@ -41,7 +41,7 @@ public class MongoToElasticProvider implements Provider {
 
     @Override
     public String buildJSONContent(int skip, int limit) {
-        Document query = Document.parse(config.getMongoQuery());
+        Document query = Document.parse(config.getMongo().getQuery());
         FindIterable<Document> results = collection.find(query).skip(skip).limit(limit);
         MongoCursor<Document> cursor = results.iterator();
         StringBuilder sb = new StringBuilder();
@@ -55,8 +55,8 @@ public class MongoToElasticProvider implements Provider {
                 if (entry.getKey().equals("_id")) {
                     JsonObjectBuilder create = Json.createObjectBuilder();
                     create.add("create", Json.createObjectBuilder()
-                            .add("_index", config.getAsDatabase())
-                            .add("_type", config.getAsCollection())
+                            .add("_index", config.getMisc().getDindex().getAs())
+                            .add("_type", config.getMisc().getCtype().getAs())
                             .add("_id", entry.getValue().toString()));
                     sb.append(create.build().toString());
                     sb.append(System.lineSeparator());

@@ -1,119 +1,48 @@
 package com.kodcu.config;
 
+import com.kodcu.config.yml.Elastic;
+import com.kodcu.config.yml.Misc;
+import com.kodcu.config.yml.Mongo;
+
 /**
  * Created by Hakan on 5/19/2015.
  */
 public class YamlConfiguration {
 
-    private String collection;
-    private String database;
-    private String asCollection;
-    private String asDatabase;
-    private String esHost;
-    private String mongoHost;
-    private String mongoQuery;
-    private String esQuery;
-    private int esPort;
-    private int mongoPort;
-    private boolean fromMongo;
+    private Misc misc;
+    private Mongo mongo;
+    private Elastic elastic;
 
-    public String getEsQuery() {
-        return esQuery;
+    public Elastic getElastic() {
+        return elastic;
     }
 
-    public void setEsQuery(String esQuery) {
-        this.esQuery = esQuery;
+    public void setElastic(Elastic elastic) {
+        this.elastic = elastic;
     }
 
-    public String getMongoQuery() {
-        return mongoQuery;
+    public Misc getMisc() {
+        return misc;
     }
 
-    public void setMongoQuery(String mongoQuery) {
-        this.mongoQuery = mongoQuery;
+    public void setMisc(Misc misc) {
+        this.misc = misc;
     }
 
-    public String getAsCollection() {
-        return asCollection;
+    public Mongo getMongo() {
+        return mongo;
     }
 
-    public void setAsCollection(String asCollection) {
-        this.asCollection = asCollection;
-    }
-
-    public String getAsDatabase() {
-        return asDatabase;
-    }
-
-    public void setAsDatabase(String asDatabase) {
-        this.asDatabase = asDatabase;
-    }
-
-    public boolean isFromMongo() {
-        return fromMongo;
-    }
-
-    public void setFromMongo(boolean fromMongo) {
-        this.fromMongo = fromMongo;
-    }
-
-    public String getCollection() {
-        return collection;
-    }
-
-    public void setCollection(String c) {
-        this.collection = c;
-    }
-
-    public String getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(String db) {
-        this.database = db;
-    }
-
-    public String getMongoHost() {
-        return mongoHost;
-    }
-
-    public void setMongoHost(String mongoHost) {
-        this.mongoHost = mongoHost;
-    }
-
-    public int getMongoPort() {
-        return mongoPort;
-    }
-
-    public void setMongoPort(int mongoPort) {
-        this.mongoPort = mongoPort;
-    }
-
-    public String getEsHost() {
-        return esHost;
-    }
-
-    public void setEsHost(String esHost) {
-        this.esHost = esHost;
-    }
-
-    public int getEsPort() {
-        return esPort;
-    }
-
-    public void setEsPort(int esTransPort) {
-        this.esPort = esTransPort;
+    public void setMongo(Mongo mongo) {
+        this.mongo = mongo;
     }
 
     @Override
     public String toString() {
-        return "YamlConfiguration{" +
-                "collection='" + collection + '\'' +
-                ", mongoHost='" + mongoHost + '\'' +
-                ", mongoPort=" + mongoPort +
-                ", database='" + database + '\'' +
-                ", esHost='" + esHost + '\'' +
-                ", esTransPort=" + esPort +
+        return "{" +
+                "elastic=" + elastic +
+                ", misc=" + misc +
+                ", mongo=" + mongo +
                 '}';
     }
 }

@@ -21,7 +21,7 @@ public class MongoBulkService implements BulkService {
     private final MongoCollection<Document> collection;
 
     public MongoBulkService(final MongoClient client, final YamlConfiguration config) {
-        this.collection = client.getDatabase(config.getAsDatabase()).getCollection(config.getAsCollection());
+        this.collection = client.getDatabase(config.getMisc().getDindex().getAs()).getCollection(config.getMisc().getCtype().getAs());
     }
 
     @Override

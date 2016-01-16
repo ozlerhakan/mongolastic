@@ -28,7 +28,7 @@ public class MongoConfiguration {
 
     private void prepareClient() {
         try {
-            ServerAddress address = new ServerAddress(config.getMongoHost(), config.getMongoPort());
+            ServerAddress address = new ServerAddress(config.getMongo().getHost(), config.getMongo().getPort());
             MongoClientOptions options = MongoClientOptions.builder()
                     .serverSelectionTimeout(5000)
                     .socketKeepAlive(false)
@@ -43,8 +43,8 @@ public class MongoConfiguration {
     public MongoCollection<Document> getMongoCollection() {
         MongoCollection<Document> collection = null;
         try {
-            MongoDatabase database = client.getDatabase(config.getDatabase());
-            collection = database.getCollection(config.getCollection());
+            MongoDatabase database = client.getDatabase(config.getMisc().getDindex().getName());
+            collection = database.getCollection(config.getMisc().getCtype().getName());
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex.fillInStackTrace());
         }

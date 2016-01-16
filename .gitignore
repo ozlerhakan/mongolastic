@@ -2,3 +2,5 @@
 target
 .idea
 *.log
+*.yml
+*.yaml

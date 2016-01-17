@@ -1,0 +1,15 @@
+misc:
+    dindex:
+        name: twitter
+        as: kodcu
+    ctype:
+        name: tweets
+        as: tweets
+#    direction: me
+mongo:
+    host: localhost
+    port: 27017
+    query: "{ 'user.name' : 'kodcu.com'}"
+elastic:
+    host: localhost
+    port: 9300

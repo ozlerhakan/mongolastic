@@ -26,7 +26,7 @@ public class TestMongoToElastic {
     @Test
     public void shouldCopyOneQueryToEsFromMongoDB() {
         Log.buildLog("TestMongoToElastic");
-        FileConfiguration fConfig = new FileConfiguration(new String[]{"src/test/resources/query3.mongolastic"});
+        FileConfiguration fConfig = new FileConfiguration(new String[]{"-f", "src/test/resources/conf1"});
         assertThat(fConfig.getFileContent(), is(notNullValue()));
 
         YamlConfiguration config = fConfig.getFileContent();
@@ -47,15 +47,17 @@ public class TestMongoToElastic {
         });
     }
 
-    public Provider initializeProvider(YamlConfiguration config, MongoConfiguration mongo, ElasticConfiguration elastic) {
-        if (config.isFromMongo())
-            return new MongoToElasticProvider(mongo.getMongoCollection(), config, new JsonBuilder());
-        return new ElasticToMongoProvider(elastic, config, new JsonBuilder());
+    private Provider initializeProvider(YamlConfiguration config, MongoConfiguration mongo, ElasticConfiguration elastic) {
+        if (config.getMisc().getDirection().equals("em")) {
+            return new ElasticToMongoProvider(elastic, config, new JsonBuilder());
+        }
+        return new MongoToElasticProvider(mongo.getMongoCollection(), config, new JsonBuilder());
     }
 
-    public BulkService initializeBulkService(YamlConfiguration config, MongoConfiguration mongo, ElasticConfiguration elastic) {
-        if (config.isFromMongo())
-            return new ElasticBulkService(config, elastic);
-        return new MongoBulkService(mongo.getClient(), config);
+    private BulkService initializeBulkService(YamlConfiguration config, MongoConfiguration mongo, ElasticConfiguration elastic) {
+        if (config.getMisc().getDirection().equals("em")) {
+            return new MongoBulkService(mongo.getClient(), config);
+        }
+        return new ElasticBulkService(config, elastic);
     }
 }

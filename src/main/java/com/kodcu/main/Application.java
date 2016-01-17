@@ -1,6 +1,9 @@
 package com.kodcu.main;
 
-import com.kodcu.config.*;
+import com.kodcu.config.ElasticConfiguration;
+import com.kodcu.config.FileConfiguration;
+import com.kodcu.config.MongoConfiguration;
+import com.kodcu.config.YamlConfiguration;
 import com.kodcu.converter.JsonBuilder;
 import com.kodcu.provider.ElasticToMongoProvider;
 import com.kodcu.provider.MongoToElasticProvider;
@@ -8,9 +11,8 @@ import com.kodcu.provider.Provider;
 import com.kodcu.service.BulkService;
 import com.kodcu.service.ElasticBulkService;
 import com.kodcu.service.MongoBulkService;
-import com.kodcu.util.Constants;
 import com.kodcu.util.Log;
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -76,7 +78,7 @@ public class Application {
             logger.error("Incorrect syntax. Should be mongolastic.jar -f /path/yml/file");
             System.exit(-1);
         }
-        if ( !args[0].equals("-f")){
+        if (!args[0].equals("-f")) {
             logger.error("Please specify the -f parameter with a correct yaml file");
             System.exit(-1);
         }

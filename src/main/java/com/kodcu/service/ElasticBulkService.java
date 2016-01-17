@@ -13,6 +13,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.common.unit.TimeValue;
 
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
@@ -70,7 +71,7 @@ public class ElasticBulkService implements BulkService {
     @Override
     public void close() {
         try {
-            bulkProcessor.awaitClose(60, TimeUnit.MINUTES);
+            bulkProcessor.awaitClose(10, TimeUnit.MINUTES);
         } catch (InterruptedException ex) {
             logger.error(ex.getMessage(), ex.fillInStackTrace());
         }
@@ -78,14 +79,15 @@ public class ElasticBulkService implements BulkService {
 
     @Override
     public void dropDataSet() {
+        final String indexName = config.getMisc().getDindex().getAs();
         IndicesAdminClient admin = client.getClient().admin().indices();
-        IndicesExistsRequestBuilder builder = admin.prepareExists(config.getMisc().getDindex().getAs());
+        IndicesExistsRequestBuilder builder = admin.prepareExists(indexName);
         if (builder.execute().actionGet().isExists()) {
-            DeleteIndexResponse delete = admin.delete(new DeleteIndexRequest(config.getMisc().getDindex().getAs())).actionGet();
+            DeleteIndexResponse delete = admin.delete(new DeleteIndexRequest(indexName)).actionGet();
             if (delete.isAcknowledged())
-                logger.info(String.format("The current index %s was deleted.", config.getMisc().getDindex().getAs()));
+                logger.info(String.format("The current index %s was deleted.", indexName));
             else
-                logger.info(String.format("The current index %s was not deleted.", config.getMisc().getDindex().getAs()));
+                logger.info(String.format("The current index %s was not deleted.", indexName));
         }
     }
 

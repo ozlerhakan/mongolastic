@@ -4,12 +4,17 @@ jdk:
 - oraclejdk8
 os:
 - linux
+addons:
+  apt:
+    sources:
+      - elasticsearch-2.1.1
+    packages:
+      - elasticsearch
 services:
 - mongodb
 - elasticsearch
 script: mvn install
 before_install:
-- curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.1.1.deb && sudo dpkg -i --force-confnew elasticsearch-2.1.1.deb
 - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 - echo "deb http://repo.mongodb.org/apt/ubuntu precise/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
 - sudo apt-get update
@@ -18,6 +23,7 @@ before_script:
 - wget https://dl.dropboxusercontent.com/u/15056258/mongodb/tweets.zip
 - unzip tweets.zip
 - sleep 15
+- elasticsearch -v
 - mongo --version
 - mongorestore dump
 - mvn clean

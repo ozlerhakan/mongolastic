@@ -1,167 +1,71 @@
 = Mongolastic
+:version: v1.3.3
 
-image::https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master"[alt="Build Status" url="https://travis-ci.org/ozlerhakan/mongolastic"]
+image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-3.0.4-brightgreen.svg[] image:https://img.shields.io/badge/es.java.driver-2.1.1-brightgreen.svg[]
 
-What data you have in your MongoDB can also be included into your ElasticSearch and vice versa using this tool. You can perform the aforementioned facilities using the mongolastic query language. Writing a mongolastic query, you explicitly can pass a few specific parameters as well.
+What data you have in your MongoDB can also be included into your ElasticSearch and vice versa using this tool. You can perform the aforementioned facilities by providing a file having a yaml characteristic.
 
 == How it works
 
-First, download the latest mongolastic.jar file from the https://github.com/ozlerhakan/mongolastic/releases[releases] page.
+First, download the latest https://github.com/ozlerhakan/mongolastic/releases/download/{version}/mongolastic.jar[mongolastic.jar] file.
 
-Second, write a query in a mongolastic file. Mongolastic requires you to give a file ending with `.mongolastic` which contains the query structure:
+Second, give a yaml file which must contains the following structure:
 
-.the query anatomy
-[source,xml]
+[source,yaml]
 ----
-transfer|export|copy|clone database-index-name/collection-type-name
-[as different-database-index-name/different-collection-type-name]?
-from <declarations>
-to  <declarations>
-
-<declarations> := mongo [= <serverConfig>]?
-                | es    [= <serverConfig>]?
-
-<serverConfig> := { <properties> [, <properties>]* }
-
-<properties> := port: port-number
-              | host: "host-machine"
-              | query: "{mongodb-json-query}"  <1>
-              | query: "elastic/json/file/path" <2>
+misc:
+    dindex:
+        name: <string>   <1>
+        as: <string>     <2>
+    ctype:
+        name: <string>   <3>
+        as: <string>     <4>
+    direction: <em | me> <5>
+mongo:
+    host: <string>       <6>
+    port: <number>       <7>
+    query: "mongo-query" <8>
+elastic:
+    host: <string>       <9>
+    port: <number>       <10>
 ----
-<1> Works only for the mongo configuration
-<2> Works only for the es configuration
+<1>  the _database/index name_ to connect to.
+<2>  another _database/index name_ in which documents will be located in the target service (*Optional*)
+<3>  the _collection/type name_ to export.
+<4>  another _collection/type name_ in which indexed/collected documents will reside in the target service (*Optional*)
+<5>  direction of the data transfer. the default direction is me (that is, mongo to elasticsearch). You can skip this option if your data move from mongo to es.
+<6>  the name of the host machine where the `mongod` is running.
+<7>  the port where the `mongod` instance is listening.
+<8>  data will be transferred based on a json mongodb query (*Optional*)
+<9>  the name of the host machine where the `elastic node` is running.
+<10> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
 
-Here is an example of a mongolastic query in a mongolastic file:
+Here is an example of a configuration file:
 
-[source,mongolastic]
+[source,yaml]
 ----
-transfer twitter/tweets
-from
-mongo = { host:"localhost", port: 27017 }
-to
-es = { host:"localhost", port: 9300 }
+misc:
+    dindex:
+        name: twitter
+        as: kodcu
+    ctype:
+        name: tweets
+        as: posts
+mongo:
+    host: localhost
+    port: 27017
+    query: "{ 'user.name' : 'kodcu.com'}"
+elastic:
+    host: localhost
+    port: 9300
 ----
+the config says that the transfer direction is from mongodb to elasticsearch, mongolastic first looks at the _tweets_ collection, where the _user name_ is _kodcu.com_, of the _twitter_ database located on a mongod server running on default host interface and port number. If It finds the corresponding data, It will start copying those into an elasticsearch environment running on default host and transport number. After all, you should see a type called _"posts"_ in an index called _"kodcu"_ in the current elastic node. Why the index and type are different is because "dindex.as" and "ctype.as" options were set, these indicates that your data being transferred exist in _posts_ type of the _kodcu_ index.
 
-The following is the equivalent of the previous query:
+After downloading the jar and providing a conf file, you can run the tool as below:
 
-[source,mongolastic]
-----
-transfer twitter/tweets from mongo to es
-----
+    $ java -jar mongolastic.jar -f config.file
 
-And the following one as well:
-
-[source,mongolastic]
-----
-copy twitter/tweets
-from
-mongo = { host:"localhost" } <1>
-to
-es = { port: 9300 } <2>
-----
-<1> Default number of the mongo port is 27017 and default host is localhost.
-<2> Default host and port of es are localhost and 9300 respectively.
-
-NOTE: You can either use upper-case or lower-case for the keywords (e.g. FROM, PORT, etc.)
-
-After downloading the jar and writing a query into a mongolastic file, you can run the tool in a terminal (i.e. command prompt):
-
-    $ java -jar mongolastic.jar query.mongolastic [key:value key:value ... property6] <1>
-
-<1> _Optionally_, you can *override* the specified value of each given property by typing a new key:value pair among the available config pairs.
-
-You can pass the following key:value properties to override the initial settings:
-
-[width="100%",options="header"]
-|====================
-| Property | Description
-| _mongoHost_ |  Specifies the name of the host machine where the `mongod` is running.
-| _mongoPort_ |  Specifies the port where the `mongod` instance is listening.
-| _db_ *or* _database_ *or* _index_ |  Specifies the _database/index name_ to connect to.
-| _c_ *or* _collection_ *or* _type_ |  Specifies the _collection/type name_ to export.
-| _esHost_ |  Specifies the name of the host machine where the `elastic node` is running.
-| _esPort_ | Specifies the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
-|====================
-
-IMPORTANT: You can pass parameters up to _6 config key:value pairs_ + _a mongolastic query file_ to Mongolastic. If you pass unknown parameters not being a key:value pair, Mongolastic will discard them and consider the properties of a given query file.
-
-== Examples
-
-=== 1. Example
-
-Let's say your query is as follows:
-
-.the query.mongolastic file
-[source, mongolastic]
-----
-copy twitter/tweets as social/tweet
-from
-mongo = { host:"localhost", port: 27017 } to es
-----
-
-and you did not pass any extra parameter except the query.mongolastic file. Mongolastic first looks at the _tweets_ collection of the database called _twitter_ located on the running mongod. If it finds tweet documents, it will start copying those into an elasticsearch environment. Ultimately, you should see a type called "tweet" in an index called "social" in your running elastic node listening on localhost:9300 as Mongolastic adds the data into a different type of a different index. If you do not specify the mongolastic as statement, the tweets data will be located in a type called "tweets" in an index called "twitter" in the elastic server.
-
-=== 2. Example
-
-Consider the following one that 2 additional parameters are passed along with the same query.mongolastic file:
-
-    $ java -jar mongolastic.jar query.mongolastic db:kodcucom c:tweetdata
-
-Mongolastic will simply ignore twitter/tweets and look for the collection called _tweetdata_ in the database called _kodcucom_ from mongod in order to transfer them into a running elastic node. As you know now, the new location of the entire data in es will be located in a different index/type. The entire tweet data will be imported to an type called _tweet_ of the index called _social_ since the query includes the AS statement.
-
-=== 3. Example
-
-Let's say we have another query like below:
-
-[source, mongolastic]
-----
-clone kodcucom/students
-from es to mongo
-----
-
-The query ask to the tool to retrieve the _students_ data in the index called _kodcucom_ from es and import them into a mongod server. Both servers are listening on the default values.
-
-=== 4. Example
-
-Another query is:
-
-[source, mongolastic]
-----
-transfer twitter/tweets as kodcu/tweets
-from mongo = { host:"localhost", port: 27017, query: "{ 'user.name' : 'Kodcucom'}" }
-to es = { host:"localhost", port: 9300 }
-----
-
-tells to Mongolastic to transfer the tweets where the user name is Kodcucom from a running mongod to an elastic node listening on localhost:9300. You should see an type called _tweets_ containing all the corresponding tweets in an index called _kodcu_. You can write mongodb json queries in the query property of the mongo configuration.
-
-=== 5. Example
-
-This example demonstrates how to use the query property of the es configuration. Before starting the tool, we need one json file having the characteristic of an es query like below:
-
-.a json file called elastic that must contains *only* the *query* part
-[source, json]
-----
-{
-  "query": {
-    "match": {
-      "user.screen_name": "FCBarcelona"
-    }
-  }
-}
-----
-
-Now that we have an elastic query, we are free to include its path in the query property:
-
-.a mongolastic query
-[source, mongolastic]
-----
-transfer twitter/tweets as barca/tweets
-from es = { host:"elastic-machine" query:"./elastic.json" } <1>
-to mongo
-----
-<1> If you do not specify the query option, the default search query works as a match all query.
-
-The query above will copy the tweets where the screen name is 'FCBarcelona' from a running elastic node to a mongod listening on localhost:27017. You should see a collection called _tweets_ containing all the corresponding tweets tweeted by FCBarcelona in a database called _barca_.
+NOTE: Every attempt of running the tool drops the mentioned db/index in the target environment.
 
 == License
 

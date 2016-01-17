@@ -4,3 +4,4 @@ target
 *.log
 *.yml
 *.yaml
+*.xml

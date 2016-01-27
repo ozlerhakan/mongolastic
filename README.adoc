@@ -69,4 +69,4 @@ NOTE: Every attempt of running the tool drops the mentioned db/index in the targ
 
 == License
 
-Mongolastic is released under the MIT License. See LICENSE file for details.
+Mongolastic is released under http://showalicense.com/?hide_explanations=false&year=2015&fullname=Kodcu.com#license-mit[MIT]. 

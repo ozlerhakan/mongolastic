@@ -1,31 +1,35 @@
 package com.kodcu.provider;
 
 
+import com.kodcu.config.YamlConfiguration;
 import com.kodcu.service.BulkService;
+import org.bson.Document;
+
+import java.util.List;
 
 /**
  * Created by Hakan on 6/30/2015.
  */
 public interface Provider {
 
-    default void transfer(final BulkService bulkService, final Runnable closeConnections) {
+    default void transfer(final BulkService bulkService,YamlConfiguration config,  final Runnable closeConnections) {
         long count = this.getCount();
-        final int limit = 200;
+        final int limit = config.getMisc().getBatch();
         int skip = 0;
 
         if (count != 0)
             bulkService.dropDataSet();
 
         while (count >= limit) {
-            String jsonContent = this.buildJSONContent(skip, limit);
-            bulkService.proceed(jsonContent);
+            List content = this.buildJSONContent(skip, limit);
+            bulkService.proceed(content);
             count -= limit;
             skip += limit;
         }
 
         if (count > 0) {
-            String jsonContent = this.buildJSONContent(skip, (int) count);
-            bulkService.proceed(jsonContent);
+            List content = this.buildJSONContent(skip, (int) count);
+            bulkService.proceed(content);
         }
 
         closeConnections.run();
@@ -33,5 +37,5 @@ public interface Provider {
 
     long getCount();
 
-    String buildJSONContent(int skip, int limit);
+    List<Document> buildJSONContent(int skip, int limit);
 }

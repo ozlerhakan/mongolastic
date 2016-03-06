@@ -3,14 +3,10 @@ package com.kodcu.service;
 import com.kodcu.config.YamlConfiguration;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.InsertOneModel;
 import org.apache.log4j.Logger;
 import org.bson.Document;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by Hakan on 6/29/2015.
@@ -25,17 +21,12 @@ public class MongoBulkService implements BulkService {
     }
 
     @Override
-    public void proceed(String jsonContent) {
+    public void proceed(List content) {
         try {
             logger.info("Transferring data began to mongodb.");
-            final List<InsertOneModel<Document>> list =
-                    Stream.of(jsonContent.split(System.lineSeparator())).map(json -> {
-                        final byte bytes[] = json.getBytes(StandardCharsets.UTF_8);
-                        return new InsertOneModel<>(Document.parse(new String(bytes, StandardCharsets.UTF_8)));
-                    }).collect(Collectors.toList());
-            collection.bulkWrite(list);
+            collection.insertMany((List<Document>) content);
         } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex.fillInStackTrace());
+            logger.debug(ex.getMessage(), ex.fillInStackTrace());
         }
     }
 

@@ -4,7 +4,6 @@ import com.kodcu.config.ElasticConfiguration;
 import com.kodcu.config.FileConfiguration;
 import com.kodcu.config.MongoConfiguration;
 import com.kodcu.config.YamlConfiguration;
-import com.kodcu.converter.JsonBuilder;
 import com.kodcu.provider.ElasticToMongoProvider;
 import com.kodcu.provider.MongoToElasticProvider;
 import com.kodcu.provider.Provider;
@@ -40,7 +39,7 @@ public class TestMongoToElastic {
         assertThat(provider, is(instanceOf(MongoToElasticProvider.class)));
         assertThat(provider.getCount(), equalTo(1L));
 
-        provider.transfer(bulkService, () -> {
+        provider.transfer(bulkService, config, () -> {
             bulkService.close();
             mongo.closeConnection();
             elastic.closeNode();
@@ -49,9 +48,9 @@ public class TestMongoToElastic {
 
     private Provider initializeProvider(YamlConfiguration config, MongoConfiguration mongo, ElasticConfiguration elastic) {
         if (config.getMisc().getDirection().equals("em")) {
-            return new ElasticToMongoProvider(elastic, config, new JsonBuilder());
+            return new ElasticToMongoProvider(elastic, config);
         }
-        return new MongoToElasticProvider(mongo.getMongoCollection(), config, new JsonBuilder());
+        return new MongoToElasticProvider(mongo.getMongoCollection(), config);
     }
 
     private BulkService initializeBulkService(YamlConfiguration config, MongoConfiguration mongo, ElasticConfiguration elastic) {

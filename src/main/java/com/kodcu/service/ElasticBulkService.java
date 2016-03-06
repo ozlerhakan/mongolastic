@@ -3,8 +3,9 @@ package com.kodcu.service;
 import com.kodcu.config.ElasticConfiguration;
 import com.kodcu.config.YamlConfiguration;
 import com.kodcu.listener.BulkProcessorListener;
-import com.kodcu.util.Constants;
+import com.mongodb.client.MongoCursor;
 import org.apache.log4j.Logger;
+import org.bson.Document;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
@@ -13,12 +14,10 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
-import org.elasticsearch.common.unit.TimeValue;
 
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Hakan on 5/21/2015.
@@ -37,33 +36,28 @@ public class ElasticBulkService implements BulkService {
     }
 
     @Override
-    public void proceed(String jsonContent) {
-        final Pattern pattern = Pattern.compile(Constants.CREATE_ACTION);
-
+    public void proceed(List content) {
         try {
             logger.info("Transferring data began to elasticsearch.");
             final String indexName = config.getMisc().getDindex().getAs();
             final String typeName = config.getMisc().getCtype().getAs();
-            String id = null;
-
-            for (String line : jsonContent.split(System.lineSeparator())) {
-                final Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    id = matcher.group(1);
-                } else {
-                    IndexRequest indexRequest = new IndexRequest(indexName, typeName, id);
-                    indexRequest.source(line.getBytes(Charset.forName("UTF-8")));
-                    bulkProcessor.add(indexRequest);
-                }
+            MongoCursor<Document> cursor = (MongoCursor<Document>) content.get(0);
+            while (cursor.hasNext()) {
+                Document doc = cursor.next();
+                doc.remove("_id");
+                IndexRequest indexRequest = new IndexRequest(indexName, typeName, doc.getString("_id"));
+                indexRequest.source(doc.toJson().getBytes(Charset.forName("UTF-8")));
+                bulkProcessor.add(indexRequest);
             }
         } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex.fillInStackTrace());
+            logger.debug(ex.getMessage(), ex.fillInStackTrace());
         }
+
     }
 
     private void initialize() {
         bulkProcessor = BulkProcessor.builder(client.getClient(), new BulkProcessorListener())
-                .setBulkActions(200)
+                .setBulkActions(config.getMisc().getBatch())
                 .setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
                 .build();
     }

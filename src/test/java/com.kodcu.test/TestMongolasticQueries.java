@@ -42,6 +42,7 @@ public class TestMongolasticQueries {
         c.setName("tweets");
         c.setAs("tweets");
         misc.setCtype(c);
+        misc.setBatch(300);
         query.setMisc(misc);
 
         Mongo mongod = new Mongo();
@@ -70,6 +71,7 @@ public class TestMongolasticQueries {
         c.setAs("posts");
         misc.setCtype(c);
         misc.setDirection("em");
+        misc.setBatch(200);
         query.setMisc(misc);
 
         Mongo mongod = new Mongo();

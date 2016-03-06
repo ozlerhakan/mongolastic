@@ -5,6 +5,7 @@ misc:
     ctype:
         name: tweets
         as: tweets
+    batch: 300
 #    direction: me
 mongo:
     host: localhost

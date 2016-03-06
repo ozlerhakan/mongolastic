@@ -21,24 +21,26 @@ misc:
         name: <string>   <3>
         as: <string>     <4>
     direction: <em | me> <5>
+    batch: <number>      <6>
 mongo:
-    host: <string>       <6>
-    port: <number>       <7>
-    query: "mongo-query" <8>
+    host: <string>       <7>
+    port: <number>       <8>
+    query: "mongo-query" <9>
 elastic:
-    host: <string>       <9>
-    port: <number>       <10>
+    host: <string>       <10>
+    port: <number>       <11>
 ----
 <1>  the _database/index name_ to connect to.
 <2>  another _database/index name_ in which documents will be located in the target service (*Optional*)
 <3>  the _collection/type name_ to export.
 <4>  another _collection/type name_ in which indexed/collected documents will reside in the target service (*Optional*)
 <5>  direction of the data transfer. the default direction is me (that is, mongo to elasticsearch). You can skip this option if your data move from mongo to es.
-<6>  the name of the host machine where the `mongod` is running.
-<7>  the port where the `mongod` instance is listening.
-<8>  data will be transferred based on a json mongodb query (*Optional*)
-<9>  the name of the host machine where the `elastic node` is running.
-<10> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
+<6>  Override the default batch size which is normally 200. (*Optional*)
+<7>  the name of the host machine where the `mongod` is running.
+<8>  the port where the `mongod` instance is listening.
+<9>  data will be transferred based on a json mongodb query (*Optional*)
+<10>  the name of the host machine where the `elastic node` is running.
+<11> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
 
 Here is an example of a configuration file:
 

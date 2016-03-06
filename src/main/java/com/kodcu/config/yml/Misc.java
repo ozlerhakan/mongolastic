@@ -8,6 +8,15 @@ public class Misc {
     private String direction = "me";
     private Namespace dindex;
     private Namespace ctype;
+    private int batch = 200;
+
+    public int getBatch() {
+        return batch;
+    }
+
+    public void setBatch(int batch) {
+        this.batch = batch;
+    }
 
     public Namespace getCtype() {
         return ctype;
@@ -36,9 +45,10 @@ public class Misc {
     @Override
     public String toString() {
         return "Misc{" +
-                "ctype=" + ctype +
+                "batch=" + batch +
                 ", direction='" + direction + '\'' +
                 ", dindex=" + dindex +
+                ", ctype=" + ctype +
                 '}';
     }
 }

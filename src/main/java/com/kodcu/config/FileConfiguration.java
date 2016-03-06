@@ -42,6 +42,9 @@ public class FileConfiguration {
             config.getMisc().getDindex().setAs(config.getMisc().getDindex().getName());
         if (Objects.isNull(cTypeAs))
             config.getMisc().getCtype().setAs(config.getMisc().getCtype().getName());
+        if (config.getMisc().getBatch() < 200)
+            config.getMisc().setBatch(200);
+
         return config;
     }
 

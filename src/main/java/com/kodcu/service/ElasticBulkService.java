@@ -44,8 +44,9 @@ public class ElasticBulkService implements BulkService {
             MongoCursor<Document> cursor = (MongoCursor<Document>) content.get(0);
             while (cursor.hasNext()) {
                 Document doc = cursor.next();
+                Object id = doc.get("_id");
+                IndexRequest indexRequest = new IndexRequest(indexName, typeName, String.valueOf(id));
                 doc.remove("_id");
-                IndexRequest indexRequest = new IndexRequest(indexName, typeName, doc.getString("_id"));
                 indexRequest.source(doc.toJson().getBytes(Charset.forName("UTF-8")));
                 bulkProcessor.add(indexRequest);
             }

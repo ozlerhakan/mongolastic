@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  mongo:
+    image: mongo:3.2
+  mongorestore:
+    build:
+      context: .
+      dockerfile: Dockerfile.mrestore
+    links:
+    - mongo
+  es:
+    image: elasticsearch:2.1
+  test:
+    build: .
+    image: mongolastic:v1.3.4
+    container_name: mongolastic
+    links:
+    - mongo
+    - es
+    environment:
+      MONGO_IP: mongo
+      ES_IP: es

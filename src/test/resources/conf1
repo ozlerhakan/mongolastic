@@ -8,9 +8,8 @@ misc:
     batch: 300
 #    direction: me
 mongo:
-    host: localhost
+    host: mongo
     port: 27017
-    query: "{ 'user.name' : 'kodcu.com'}"
 elastic:
-    host: localhost
+    host: es
     port: 9300

@@ -11,7 +11,17 @@ import com.kodcu.service.BulkService;
 import com.kodcu.service.ElasticBulkService;
 import com.kodcu.service.MongoBulkService;
 import com.kodcu.util.Log;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
+import org.elasticsearch.action.admin.indices.flush.FlushRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.client.IndicesAdminClient;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.Is.is;
@@ -20,15 +30,41 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by Hakan on 9/8/2015.
  */
+@RunWith(Parameterized.class)
 public class TestMongoToElastic {
+
+    @Parameterized.Parameters(name = "{index}: ({0})={1}")
+    public static Iterable<Object[]> queries() throws Exception {
+        return Arrays.asList(new Object[][]{
+                {new FileConfiguration(new String[]{"-f", "src/test/resources/conf1"})}
+        });
+    }
+
+    private final FileConfiguration file;
+
+    public TestMongoToElastic(final FileConfiguration file) {
+        super();
+        this.file = file;
+    }
 
     @Test
     public void shouldCopyOneQueryToEsFromMongoDB() {
         Log.buildLog("TestMongoToElastic");
-        FileConfiguration fConfig = new FileConfiguration(new String[]{"-f", "src/test/resources/conf1"});
-        assertThat(fConfig.getFileContent(), is(notNullValue()));
 
-        YamlConfiguration config = fConfig.getFileContent();
+        YamlConfiguration config = file.getFileContent();
+        assertThat(config, is(notNullValue()));
+
+        if (Objects.isNull(System.getenv("MONGO_IP")))
+            config.getMongo().setHost("localhost");
+        else
+            config.getMongo().setHost(System.getenv("MONGO_IP"));
+
+        if (Objects.isNull(System.getenv("ES_IP")))
+            config.getElastic().setHost("localhost");
+        else
+            config.getElastic().setHost(System.getenv("ES_IP"));
+
+
         ElasticConfiguration elastic = new ElasticConfiguration(config);
         MongoConfiguration mongo = new MongoConfiguration(config);
 
@@ -37,12 +73,12 @@ public class TestMongoToElastic {
 
         Provider provider = this.initializeProvider(config, mongo, elastic);
         assertThat(provider, is(instanceOf(MongoToElasticProvider.class)));
-        assertThat(provider.getCount(), equalTo(1L));
 
         provider.transfer(bulkService, config, () -> {
             bulkService.close();
-            mongo.closeConnection();
+            assertThat(provider.getCount(), equalTo(this.getCount(elastic, config)));
             elastic.closeNode();
+            mongo.closeConnection();
         });
     }
 
@@ -58,5 +94,21 @@ public class TestMongoToElastic {
             return new MongoBulkService(mongo.getClient(), config);
         }
         return new ElasticBulkService(config, elastic);
+    }
+
+    public long getCount(ElasticConfiguration elastic, YamlConfiguration config) {
+        IndicesAdminClient admin = elastic.getClient().admin().indices();
+        IndicesExistsRequestBuilder builder = admin.prepareExists(config.getMisc().getDindex().getAs());
+        assertThat(builder.execute().actionGet().isExists(), is(true));
+
+        elastic.getClient().admin().indices().flush(new FlushRequest(config.getMisc().getDindex().getAs())).actionGet();
+
+        SearchResponse response = elastic.getClient().prepareSearch(config.getMisc().getDindex().getAs())
+                .setTypes(config.getMisc().getCtype().getAs())
+                .setSearchType(SearchType.QUERY_THEN_FETCH)
+                .setSize(0)
+                .execute().actionGet();
+        long count = response.getHits().getTotalHits();
+        return count;
     }
 }

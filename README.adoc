@@ -9,7 +9,7 @@ What data you have in your MongoDB can also be included into your ElasticSearch 
 
 First, download the latest https://github.com/ozlerhakan/mongolastic/releases/download/{version}/mongolastic.jar[mongolastic.jar] file.
 
-Second, give a yaml file which must contains the following structure:
+Second, give a yaml file which must contain the following structure:
 
 [source,yaml]
 ----

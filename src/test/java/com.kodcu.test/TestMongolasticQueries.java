@@ -25,8 +25,8 @@ public class TestMongolasticQueries {
     @Parameterized.Parameters(name = "{index}: ({0})={1}")
     public static Iterable<Object[]> queries() throws Exception {
         return Arrays.asList(new Object[][]{
-                {new FileConfiguration(new String[]{"-f","src/test/resources/conf1"}), createQueryConfiguration1()},
-                {new FileConfiguration(new String[]{"-f","src/test/resources/conf2"}), createQueryConfiguration2()}
+                {new FileConfiguration(new String[]{"-f", "src/test/resources/conf1"}), createQueryConfiguration1()},
+                {new FileConfiguration(new String[]{"-f", "src/test/resources/conf2"}), createQueryConfiguration2()}
         });
     }
 
@@ -46,13 +46,13 @@ public class TestMongolasticQueries {
         query.setMisc(misc);
 
         Mongo mongod = new Mongo();
-        mongod.setHost("localhost");
+        mongod.setHost("mongo");
         mongod.setPort(27017);
-        mongod.setQuery("{ 'user.name' : 'kodcu.com'}");
+        mongod.setQuery("{}");
         query.setMongo(mongod);
 
         Elastic es = new Elastic();
-        es.setHost("localhost");
+        es.setHost("es");
         es.setPort(9300);
         query.setElastic(es);
         return query;

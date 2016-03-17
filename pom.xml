@@ -19,7 +19,7 @@
 
     <name>mongolastic</name>
     <description>
-        A tool that converts MongoDB Collections to ElasticSearch Types
+        A tool that migrates data from mongodb to elasticsearch and vice versa.
     </description>
     <url>http://github.com/ozlerhakan/mongolastic</url>
 
@@ -60,11 +60,6 @@
             <version>${mongo.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-        <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.16</version>
@@ -78,11 +73,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.12</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

@@ -8,4 +8,4 @@ ADD  https://dl.dropboxusercontent.com/u/15056258/mongodb/tweets.zip /data
 
 WORKDIR /data
 RUN unzip ./tweets.zip
-CMD mongorestore --host mongo --port 27017 dump
+CMD bash -c "mongorestore --host mongo --port 27017 dump && mongorestore --host mongo_auth --port 27017 dump"

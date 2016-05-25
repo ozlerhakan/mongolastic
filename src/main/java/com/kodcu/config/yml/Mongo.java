@@ -8,6 +8,7 @@ public class Mongo {
     private String host;
     private int port;
     private String query = "{}";
+    private Auth auth;
 
     @Override
     public String toString() {
@@ -15,7 +16,16 @@ public class Mongo {
                 "host='" + host + '\'' +
                 ", port=" + port +
                 ", query='" + query + '\'' +
+                ", auth=" + auth +
                 '}';
+    }
+
+    public Auth getAuth() {
+        return auth;
+    }
+
+    public void setAuth(Auth auth) {
+        this.auth = auth;
     }
 
     public String getQuery() {

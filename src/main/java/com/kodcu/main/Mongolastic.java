@@ -19,20 +19,21 @@ import java.util.Optional;
 /**
  * Created by Hakan on 5/19/2015.
  */
-public class Application {
+public class Mongolastic {
 
-    private static final Logger logger = Logger.getLogger(Application.class);
-    private final String[] args;
+    private static final Logger logger = Logger.getLogger(Mongolastic.class);
+    private final String parameter;
 
-    public Application(String[] args) {
-        this.args = args;
+    public Mongolastic(String parameter) {
+        this.parameter = parameter;
     }
 
     public static void main(String[] args) throws Exception {
         configLog();
         configAssertion(args);
 
-        Application app = new Application(args);
+        String parameter = args[1];
+        Mongolastic app = new Mongolastic(parameter);
         app.start();
     }
 
@@ -41,7 +42,7 @@ public class Application {
     }
 
     public void start() {
-        FileConfiguration fConfig = new FileConfiguration(args);
+        FileConfiguration fConfig = new FileConfiguration(parameter);
         Optional<YamlConfiguration> yamlConfig = Optional.ofNullable(fConfig.getFileContent());
         yamlConfig.ifPresent(this::proceedService);
     }

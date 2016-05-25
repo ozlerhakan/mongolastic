@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Objects;
 
@@ -13,19 +14,25 @@ import java.util.Objects;
 public class FileConfiguration {
 
     private final Logger logger = LoggerFactory.getLogger(FileConfiguration.class);
-    private final String[] args;
+    private final String parameter;
 
-    public FileConfiguration(String[] args) {
-        this.args = args;
+    public FileConfiguration(String parameter) {
+        this.parameter = parameter;
     }
 
     public YamlConfiguration getFileContent() {
-        String yamlFile = args[1];
         YamlConfiguration config = null;
         try {
-            FileInputStream configFile = new FileInputStream(yamlFile);
+            File ymlFile = new File(parameter);
             Yaml yaml = new Yaml();
-            config = yaml.loadAs(configFile, YamlConfiguration.class);
+            if (ymlFile.isFile()) {
+                FileInputStream configFile = new FileInputStream(ymlFile);
+                config = yaml.loadAs(configFile, YamlConfiguration.class);
+            }
+            else {
+                // we expect that this is just a string including yaml format
+                config = yaml.loadAs(parameter, YamlConfiguration.class);
+            }
             config = this.controlAsSettings(config);
             logger.info(System.lineSeparator() + "Config Output:" + System.lineSeparator() + config.toString() + System.lineSeparator());
         } catch (Exception e) {

@@ -35,8 +35,22 @@ public class TestMongoToElastic {
 
     @Parameterized.Parameters(name = "{index}: ({0})={1}")
     public static Iterable<Object[]> queries() throws Exception {
+        String query = "misc:\n" +
+                        "    dindex:\n" +
+                        "        name: twitter\n" +
+                        "    ctype:\n" +
+                        "        name: tweets\n" +
+                        "    batch: 500\n" +
+                        "mongo:\n" +
+                        "    host: mongo\n" +
+                        "    port: 27017\n" +
+                        "elastic:\n" +
+                        "    host: es\n" +
+                        "    port: 9300";
         return Arrays.asList(new Object[][]{
-                {new FileConfiguration(new String[]{"-f", "src/test/resources/conf1"})}
+                {new FileConfiguration("src/test/resources/conf1")},
+                {new FileConfiguration("src/test/resources/conf3")},
+                {new FileConfiguration(query)}
         });
     }
 
@@ -54,10 +68,17 @@ public class TestMongoToElastic {
         YamlConfiguration config = file.getFileContent();
         assertThat(config, is(notNullValue()));
 
-        if (Objects.isNull(System.getenv("MONGO_IP")))
-            config.getMongo().setHost("localhost");
-        else
-            config.getMongo().setHost(System.getenv("MONGO_IP"));
+        if (Objects.isNull(config.getMongo().getAuth()))
+            if (Objects.nonNull(System.getenv("MONGO_IP")))
+                config.getMongo().setHost(System.getenv("MONGO_IP"));
+            else
+                config.getMongo().setHost("localhost");
+        else {
+            if (Objects.nonNull(System.getenv("MONGO_AUTH_IP")))
+                config.getMongo().setHost(System.getenv("MONGO_AUTH_IP"));
+            else
+                return;
+        }
 
         if (Objects.isNull(System.getenv("ES_IP")))
             config.getElastic().setHost("localhost");

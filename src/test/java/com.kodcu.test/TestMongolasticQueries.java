@@ -25,8 +25,8 @@ public class TestMongolasticQueries {
     @Parameterized.Parameters(name = "{index}: ({0})={1}")
     public static Iterable<Object[]> queries() throws Exception {
         return Arrays.asList(new Object[][]{
-                {new FileConfiguration(new String[]{"-f", "src/test/resources/conf1"}), createQueryConfiguration1()},
-                {new FileConfiguration(new String[]{"-f", "src/test/resources/conf2"}), createQueryConfiguration2()}
+                {new FileConfiguration("src/test/resources/conf1"), createQueryConfiguration1()},
+                {new FileConfiguration("src/test/resources/conf2"), createQueryConfiguration2()}
         });
     }
 

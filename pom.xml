@@ -6,13 +6,13 @@
 
     <groupId>com.kodcu.mongolastic</groupId>
     <artifactId>mongolastic</artifactId>
-    <version>1.3.4</version>
+    <version>1.3.5</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <elastic.version>2.1.1</elastic.version>
-        <mongo.version>3.0.4</mongo.version>
+        <elastic.version>2.3.1</elastic.version>
+        <mongo.version>3.2.2</mongo.version>
     </properties>
 
     <inceptionYear>2015</inceptionYear>
@@ -98,7 +98,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.kodcu.main.Application</mainClass>
+                    <mainClass>com.kodcu.main.Mongolastic</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -130,7 +130,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>com.kodcu.main.Application</mainClass>
+                            <mainClass>com.kodcu.main.Mongolastic</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

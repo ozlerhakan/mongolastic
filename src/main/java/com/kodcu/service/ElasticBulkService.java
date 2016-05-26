@@ -1,9 +1,9 @@
 package com.kodcu.service;
 
-import com.kodcu.config.ElasticConfiguration;
-import com.kodcu.config.YamlConfiguration;
-import com.kodcu.listener.BulkProcessorListener;
-import com.mongodb.client.MongoCursor;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -14,10 +14,11 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.common.unit.TimeValue;
 
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.kodcu.config.ElasticConfiguration;
+import com.kodcu.config.YamlConfiguration;
+import com.kodcu.listener.BulkProcessorListener;
 
 /**
  * Created by Hakan on 5/21/2015.
@@ -41,9 +42,8 @@ public class ElasticBulkService implements BulkService {
             logger.info("Transferring data began to elasticsearch.");
             final String indexName = config.getMisc().getDindex().getAs();
             final String typeName = config.getMisc().getCtype().getAs();
-            MongoCursor<Document> cursor = (MongoCursor<Document>) content.get(0);
-            while (cursor.hasNext()) {
-                Document doc = cursor.next();
+            for (Object o : content) {
+                Document doc = (Document) o;
                 Object id = doc.get("_id");
                 IndexRequest indexRequest = new IndexRequest(indexName, typeName, String.valueOf(id));
                 doc.remove("_id");
@@ -59,6 +59,7 @@ public class ElasticBulkService implements BulkService {
     private void initialize() {
         bulkProcessor = BulkProcessor.builder(client.getClient(), new BulkProcessorListener())
                 .setBulkActions(config.getMisc().getBatch())
+                .setFlushInterval(TimeValue.timeValueSeconds(5))
                 .setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
                 .build();
     }

@@ -45,30 +45,28 @@ public class MongoToElasticProvider implements Provider {
 
         MongoCursor<Document> cursor = getCursor(skip);
         while(cursor.hasNext() && result.size() < limit) {
-          result.add(cursor.next());
+            result.add(cursor.next());
         }
         return result;
     }
 
-  /**
-   * Get the MongoDB cursor.
-   * TODO: Fetch server cursor in case of a restart.
-   */
+    /**
+     * Get the MongoDB cursor.
+     */
     private MongoCursor<Document> getCursor(int skip) {
         if (cursor == null && cursorId == 0) {
-          System.out.println("Creating cursor.");
-          Document query = Document.parse(config.getMongo().getQuery());
-          BasicDBObject sort = new BasicDBObject("$natural", -1);
+            Document query = Document.parse(config.getMongo().getQuery());
+            BasicDBObject sort = new BasicDBObject("$natural", -1);
 
-          FindIterable<Document> results = collection
-              .find(query)
-              .sort(sort)
-              .skip(skip)
-              .noCursorTimeout(true);
-          cursor = results.iterator();
+            FindIterable<Document> results = collection
+                .find(query)
+                .sort(sort)
+                .skip(skip)
+                .noCursorTimeout(true);
+            cursor = results.iterator();
 
-          // TODO: Persist cursor ID somewhere to allow restarts.
-          this.cursorId = cursor.getServerCursor().getId();
+            // TODO: Persist cursor ID somewhere to allow restarts.
+            this.cursorId = cursor.getServerCursor().getId();
         }
         else if (cursor == null && cursorId != 0) {
             // TODO: Lookup cursor ID for resume.

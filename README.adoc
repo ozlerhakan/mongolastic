@@ -15,26 +15,27 @@ Second, give a yaml file which must contain the following structure:
 ----
 misc:
     dindex:
-        name: <string>   <1>
-        as: <string>     <2>
+        name: <string>      <1>
+        as: <string>        <2>
     ctype:
-        name: <string>   <3>
-        as: <string>     <4>
-    direction: (em | me) <5>
-    batch: <number>      <6>
-    dropDataset: <bool>  <7>
+        name: <string>      <3>
+        as: <string>        <4>
+    direction: (em | me)    <5>
+    batch: <number>         <6>
+    dropDataset: <bool>     <7>
 mongo:
-    host: <ip-address>   <8>
-    port: <number>       <9>
-    query: "mongo-query" <10>
-    auth:                <11>
+    host: <ip-address>      <8>
+    port: <number>          <9>
+    query: "mongo-query"    <10>
+    auth:                   <11>
         user: <string>
         pwd: "password"
         source: <db-name>
         mechanism: ( plain | scram-sha-1 | x509 | gssapi | cr )
 elastic:
-    host: <ip-address>  <12>
-    port: <number>      <13>
+    host: <ip-address>     <12>
+    port: <number>         <13>
+    dateFormat: "<format>" <14>
 ----
 <1>  the _database/index name_ to connect to.
 <2>  another _database/index name_ in which documents will be located in the target service (*Optional*)
@@ -49,6 +50,7 @@ elastic:
 <11> as of v1.3.5, you can access an auth mongodb by giving auth configuration.
 <12> the name of the host machine where the `elastic node` is running.
 <13> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
+<14> a custom formatter for Date fields rather than the default DateCodec (*Optional*)
 
 Here is an example of a configuration file:
 

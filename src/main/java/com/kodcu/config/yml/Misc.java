@@ -58,6 +58,7 @@ public class Misc {
                 ", direction='" + direction + '\'' +
                 ", dindex=" + dindex +
                 ", ctype=" + ctype +
+                ", dropDataset=" + dropDataset +
                 '}';
     }
 }

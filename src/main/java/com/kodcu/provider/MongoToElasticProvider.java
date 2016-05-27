@@ -56,7 +56,7 @@ public class MongoToElasticProvider implements Provider {
     private MongoCursor<Document> getCursor(int skip) {
         if (cursor == null && cursorId == 0) {
             Document query = Document.parse(config.getMongo().getQuery());
-            BasicDBObject sort = new BasicDBObject("$natural", -1);
+            BasicDBObject sort = new BasicDBObject("$natural", 1);
 
             FindIterable<Document> results = collection
                 .find(query)

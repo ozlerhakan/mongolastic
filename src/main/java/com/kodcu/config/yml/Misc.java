@@ -8,6 +8,7 @@ public class Misc {
     private String direction = "me";
     private Namespace dindex;
     private Namespace ctype;
+    private Boolean dropDataset = true;
     private int batch = 200;
 
     public int getBatch() {
@@ -40,6 +41,14 @@ public class Misc {
 
     public void setDindex(Namespace dindex) {
         this.dindex = dindex;
+    }
+
+    public void setDropDataset(Boolean dropDataset) {
+        this.dropDataset = dropDataset;
+    }
+
+    public Boolean getDropDataset() {
+      return this.dropDataset;
     }
 
     @Override

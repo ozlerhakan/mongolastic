@@ -1,11 +1,12 @@
 package com.kodcu.provider;
 
 
-import com.kodcu.config.YamlConfiguration;
-import com.kodcu.service.BulkService;
+import java.util.List;
+
 import org.bson.Document;
 
-import java.util.List;
+import com.kodcu.config.YamlConfiguration;
+import com.kodcu.service.BulkService;
 
 /**
  * Created by Hakan on 6/30/2015.
@@ -17,7 +18,7 @@ public interface Provider {
         final int limit = config.getMisc().getBatch();
         int skip = 0;
 
-        if (count != 0)
+        if (count != 0 && config.getMisc().getDropDataset())
             bulkService.dropDataSet();
 
         while (count >= limit) {

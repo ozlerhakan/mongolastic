@@ -22,18 +22,19 @@ misc:
         as: <string>     <4>
     direction: (em | me) <5>
     batch: <number>      <6>
+    dropDataset: <bool>  <7>
 mongo:
-    host: <ip-address>   <7>
-    port: <number>       <8>
-    query: "mongo-query" <9>
-    auth:                <10>
+    host: <ip-address>   <8>
+    port: <number>       <9>
+    query: "mongo-query" <10>
+    auth:                <11>
         user: <string>
         pwd: "password"
         source: <db-name>
         mechanism: ( plain | scram-sha-1 | x509 | gssapi | cr )
 elastic:
-    host: <ip-address>  <11>
-    port: <number>      <12>
+    host: <ip-address>  <12>
+    port: <number>      <13>
 ----
 <1>  the _database/index name_ to connect to.
 <2>  another _database/index name_ in which documents will be located in the target service (*Optional*)
@@ -41,12 +42,13 @@ elastic:
 <4>  another _collection/type name_ in which indexed/collected documents will reside in the target service (*Optional*)
 <5>  direction of the data transfer. the default direction is me (that is, mongo to elasticsearch). You can skip this option if your data move from mongo to es.
 <6>  Override the default batch size which is normally 200. (*Optional*)
-<7>  the name of the host machine where the `mongod` is running.
-<8>  the port where the `mongod` instance is listening.
-<9>  data will be transferred based on a json mongodb query (*Optional*)
-<10> as of v1.3.5, you can access an auth mongodb by giving auth configuration.
-<11> the name of the host machine where the `elastic node` is running.
-<12> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
+<7>  configures whether or not the target table should be dropped prior to loading data. Default value is true (*Optional*)
+<8>  the name of the host machine where the `mongod` is running.
+<9>  the port where the `mongod` instance is listening.
+<10>  data will be transferred based on a json mongodb query (*Optional*)
+<11> as of v1.3.5, you can access an auth mongodb by giving auth configuration.
+<12> the name of the host machine where the `elastic node` is running.
+<13> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
 
 Here is an example of a configuration file:
 
@@ -73,8 +75,8 @@ After downloading the jar and providing a conf file, you can run the tool as bel
 
     $ java -jar mongolastic.jar -f config.file
 
-NOTE: Every attempt of running the tool drops the mentioned db/index in the target environment.
+NOTE: Every attempt of running the tool drops the mentioned db/index in the target environment unless the dropDataset parameter is configured otherwise.
 
 == License
 
-Mongolastic is released under http://showalicense.com/?hide_explanations=false&year=2015&fullname=Kodcu.com#license-mit[MIT]. 
+Mongolastic is released under http://showalicense.com/?hide_explanations=false&year=2015&fullname=Kodcu.com#license-mit[MIT].

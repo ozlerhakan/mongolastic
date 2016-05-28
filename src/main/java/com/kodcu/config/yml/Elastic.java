@@ -7,6 +7,7 @@ public class Elastic {
 
     private String host;
     private int port;
+    private String dateFormat;
 
     public String getHost() {
         return host;
@@ -24,11 +25,20 @@ public class Elastic {
         this.port = port;
     }
 
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
     @Override
     public String toString() {
         return "Elastic{" +
                 "host='" + host + '\'' +
                 ", port=" + port +
+                ", dateFormat=" + dateFormat +
                 '}';
     }
 

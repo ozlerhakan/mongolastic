@@ -1,5 +1,10 @@
 package com.kodcu.main;
 
+import java.io.IOException;
+import java.util.Optional;
+
+import org.apache.log4j.Logger;
+
 import com.kodcu.config.ElasticConfiguration;
 import com.kodcu.config.FileConfiguration;
 import com.kodcu.config.MongoConfiguration;
@@ -11,10 +16,6 @@ import com.kodcu.service.BulkService;
 import com.kodcu.service.ElasticBulkService;
 import com.kodcu.service.MongoBulkService;
 import com.kodcu.util.Log;
-import org.apache.log4j.Logger;
-
-import java.io.IOException;
-import java.util.Optional;
 
 /**
  * Created by Hakan on 5/19/2015.
@@ -44,7 +45,12 @@ public class Mongolastic {
     public void start() {
         FileConfiguration fConfig = new FileConfiguration(parameter);
         Optional<YamlConfiguration> yamlConfig = Optional.ofNullable(fConfig.getFileContent());
-        yamlConfig.ifPresent(this::proceedService);
+        long begin = System.currentTimeMillis();
+        try {
+            yamlConfig.ifPresent(this::proceedService);
+        } finally {
+            logger.info("Load duration: " + (System.currentTimeMillis() - begin) + "ms");
+        }
     }
 
     public void proceedService(YamlConfiguration config) {

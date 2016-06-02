@@ -31,8 +31,9 @@ public class MongoToElasticProvider implements Provider {
     @Override
     public long getCount() {
         long count = collection.count(Document.parse(config.getMongo().getQuery()));
+        logger.info("Mongo collection count: " + count);
         if (count == 0) {
-            logger.info("Database/Collection does not exist or does not contain the record");
+            logger.error("Database/Collection does not exist or does not contain the record");
             System.exit(-1);
         }
         return count;

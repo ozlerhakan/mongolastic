@@ -1,7 +1,8 @@
 package com.kodcu.provider;
 
-import com.kodcu.config.ElasticConfiguration;
-import com.kodcu.config.YamlConfiguration;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
@@ -11,8 +12,8 @@ import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.search.SearchHit;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.kodcu.config.ElasticConfiguration;
+import com.kodcu.config.YamlConfiguration;
 
 /**
  * Created by Hakan on 6/29/2015.
@@ -44,6 +45,8 @@ public class ElasticToMongoProvider implements Provider {
             logger.info("Index/Type does not exist or does not contain the record");
             System.exit(-1);
         }
+
+        logger.info("Elastic Index/Type count: " + count);
         return count;
     }
 

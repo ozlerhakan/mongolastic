@@ -31,6 +31,7 @@ import com.kodcu.config.ElasticConfiguration;
 import com.kodcu.config.YamlConfiguration;
 import com.kodcu.listener.BulkProcessorListener;
 import com.kodcu.util.codecs.CustomDateCodec;
+import com.kodcu.util.codecs.CustomLongCodec;
 import com.mongodb.MongoClient;
 
 /**
@@ -114,6 +115,12 @@ public class ElasticBulkService implements BulkService {
             // Replace default DateCodec class to use the custom date formatter.
             replacements.put(BsonType.DATE_TIME, CustomDateCodec.class);
             codecs.add(new CustomDateCodec(config.getElastic().getDateFormat()));
+        }
+
+        if (config.getElastic().getLongToString()) {
+            // Replace default LongCodec class
+            replacements.put(BsonType.INT64, CustomLongCodec.class);
+            codecs.add(new CustomLongCodec());
         }
 
         if (codecs.size() > 0) {

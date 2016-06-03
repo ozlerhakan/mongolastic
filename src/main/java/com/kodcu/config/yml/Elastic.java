@@ -8,6 +8,7 @@ public class Elastic {
     private String host;
     private int port;
     private String dateFormat;
+    private Boolean longToString = false;
 
     public String getHost() {
         return host;
@@ -33,12 +34,21 @@ public class Elastic {
         return dateFormat;
     }
 
+    public void setLongToString(Boolean longToString) {
+        this.longToString = longToString;
+    }
+
+    public Boolean getLongToString() {
+        return this.longToString;
+    }
+
     @Override
     public String toString() {
         return "Elastic{" +
                 "host='" + host + '\'' +
                 ", port=" + port +
                 ", dateFormat=" + dateFormat +
+                ", longToString=" + longToString +
                 '}';
     }
 

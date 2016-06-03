@@ -1,7 +1,7 @@
 = Mongolastic
 :version: v1.3.6
 
-image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-3.2.2-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-2.3.1-brightgreen.svg[]
+image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-3.2.2-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-2.3.3-brightgreen.svg[]
 
 What data you have in your MongoDB can also be included into your ElasticSearch and vice versa using this tool. You can perform the aforementioned facilities by providing a file having a yaml characteristic.
 
@@ -36,6 +36,7 @@ elastic:
     host: <ip-address>     <12>
     port: <number>         <13>
     dateFormat: "<format>" <14>
+    longToString: <bool>   <15>
 ----
 <1>  the _database/index name_ to connect to.
 <2>  another _database/index name_ in which documents will be located in the target service (*Optional*)
@@ -51,6 +52,7 @@ elastic:
 <12> the name of the host machine where the `elastic node` is running.
 <13> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
 <14> a custom formatter for Date fields rather than the default DateCodec (*Optional*)
+<15> serialize long value as a string for backwards compatibility with other tools (*Optional*)
 
 Here is an example of a configuration file:
 

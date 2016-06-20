@@ -11,7 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <elastic.version>2.3.1</elastic.version>
+        <elastic.version>2.3.3</elastic.version>
         <mongo.version>3.2.2</mongo.version>
     </properties>
 

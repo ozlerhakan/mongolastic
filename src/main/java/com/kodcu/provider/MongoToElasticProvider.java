@@ -3,6 +3,7 @@ package com.kodcu.provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Optional;
 import org.apache.log4j.Logger;
 import org.bson.Document;
 
@@ -67,7 +68,7 @@ public class MongoToElasticProvider implements Provider {
             cursor = results.iterator();
 
             // TODO: Persist cursor ID somewhere to allow restarts.
-            this.cursorId = cursor.getServerCursor().getId();
+            Optional.ofNullable(cursor.getServerCursor()).ifPresent(serverCursor -> cursorId = serverCursor.getId());
         }
         else if (cursor == null && cursorId != 0) {
             // TODO: Lookup cursor ID for resume.

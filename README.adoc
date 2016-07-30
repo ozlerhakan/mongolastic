@@ -37,6 +37,9 @@ elastic:
     port: <number>         <13>
     dateFormat: "<format>" <14>
     longToString: <bool>   <15>
+    auth:                   <16>
+        user: <string>
+        pwd: "password"
 ----
 <1>  the _database/index name_ to connect to.
 <2>  another _database/index name_ in which documents will be located in the target service (*Optional*)
@@ -53,6 +56,7 @@ elastic:
 <13> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
 <14> a custom formatter for Date fields rather than the default DateCodec (*Optional*)
 <15> serialize long value as a string for backwards compatibility with other tools (*Optional*)
+<11> (YG) as of v1.3.9, you can access an auth elastic search by giving auth configuration. (*Optional*)
 
 Here is an example of a configuration file:
 

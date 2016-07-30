@@ -1,4 +1,11 @@
+!.gitignore
 *.iml
 target
 .idea
 *.log
+
+*.class
+/.classpath
+/.project
+/.settings
+

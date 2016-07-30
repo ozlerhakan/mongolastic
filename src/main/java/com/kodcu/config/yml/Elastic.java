@@ -9,7 +9,16 @@ public class Elastic {
     private int port;
     private String dateFormat;
     private Boolean longToString = false;
-
+    
+    // added by YG 
+    private Auth auth;
+    public Auth getAuth() {
+        return auth;
+    }
+    public void setAuth(Auth auth) {
+        this.auth = auth;
+    }
+    
     public String getHost() {
         return host;
     }
@@ -49,6 +58,7 @@ public class Elastic {
                 ", port=" + port +
                 ", dateFormat=" + dateFormat +
                 ", longToString=" + longToString +
+                ", auth=" + auth +
                 '}';
     }
 

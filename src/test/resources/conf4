@@ -1,0 +1,21 @@
+misc:
+    dindex:
+        name: twitter
+        as: twt
+    ctype:
+        name: tweets
+        as: posts
+mongo:
+    host: mongo_auth
+    port: 27017
+    auth:
+        user: mongo_user
+        pwd: "mongo_pwd"
+        source: admin
+        mechanism: scram-sha-1
+elastic:
+    host: es
+    port: 9300
+    auth:
+        user: elastic_user
+        pwd: "elastic_pwd"

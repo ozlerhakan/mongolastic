@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.kodcu.mongolastic</groupId>
+  <artifactId>mongolastic</artifactId>
+  <name>mongolastic</name>
+  <version>1.3.9</version>
+  <description>A tool that migrates data from mongodb to elasticsearch and vice versa.</description>
+  <url>http://github.com/ozlerhakan/mongolastic</url>
+  <issueManagement>
+    <system>github.com</system>
+    <url>https://github.com/ozlerhakan/mongolastic/issues</url>
+  </issueManagement>
+  <inceptionYear>2015</inceptionYear>
+  <developers>
+    <developer>
+      <id>ozlerhakan</id>
+      <name>Hakan Ozler</name>
+      <email>ozler.hakan@gmail.com</email>
+      <url>http://github.com/ozlerhakan</url>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>hakdogan</id>
+      <name>Hüseyin Akdoğan</name>
+      <email>huseyin.akdogan@kodcu.com</email>
+      <url>http://github.com/hakdogan</url>
+      <roles>
+        <role>software evangelist - developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <organization>
+    <name>Kodcu.com</name>
+  </organization>
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer>
+                  <mainClass>com.kodcu.main.Mongolastic</mainClass>
+                </transformer>
+                <transformer />
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5.1</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <repository>
+      <releases />
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>elasticsearch-releases</id>
+      <url>https://maven.elasticsearch.org/releases</url>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <properties>
+    <java.version>1.8</java.version>
+    <mongo.version>3.2.2</mongo.version>
+    <shield.version>2.3.4</shield.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <elastic.version>2.3.4</elastic.version>
+  </properties>
+</project>
+

@@ -41,4 +41,10 @@ public class Auth {
     public void setMechanism(String mechanism) {
         this.mechanism = mechanism;
     }
+
+	@Override
+	public String toString() {
+		return "Auth [user=" + user + ", pwd=" + pwd + ", source=" + source + ", mechanism=" + mechanism + "]";
+	}
+    
 }

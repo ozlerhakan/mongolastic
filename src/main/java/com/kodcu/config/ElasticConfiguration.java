@@ -31,8 +31,8 @@ public class ElasticConfiguration {
                         .put("client.transport.ping_timeout", "5s")
                         .put("client.transport.nodes_sampler_interval", "5s")
                         // added by YG for supporting auth with shield
-                        .put("shield.user", "transport_client_user:" 
-                        		+ config.getElastic().getAuth().getUser()+":"+config.getElastic().getAuth().getPwd()
+                        .put("shield.user",  
+                        		config.getElastic().getAuth().getUser()+":"+config.getElastic().getAuth().getPwd()
                         		)
                         .build();
         	}

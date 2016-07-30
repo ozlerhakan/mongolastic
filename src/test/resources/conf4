@@ -5,12 +5,14 @@ misc:
     ctype:
         name: tweets
         as: posts
+    batch: 500
+#    direction: me
 mongo:
     host: mongo_auth
     port: 27017
     auth:
-        user: mongo_user
-        pwd: "mongo_pwd"
+        user: hakan
+        pwd: "1234"
         source: admin
         mechanism: scram-sha-1
 elastic:

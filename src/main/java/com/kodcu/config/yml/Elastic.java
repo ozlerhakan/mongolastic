@@ -10,14 +10,22 @@ public class Elastic {
     private String dateFormat;
     private Boolean longToString = false;
     
-    // added by YG 
-    private Auth auth;
+    // added by YG
+    private String clusterName; // optional
+    private Auth auth; // optional
     public Auth getAuth() {
         return auth;
     }
     public void setAuth(Auth auth) {
         this.auth = auth;
     }
+    public String getClusterName() {
+        return clusterName;
+    }
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
+    }
+    
     
     public String getHost() {
         return host;
@@ -56,6 +64,7 @@ public class Elastic {
         return "Elastic{" +
                 "host='" + host + '\'' +
                 ", port=" + port +
+                ", clusterName=" + clusterName +
                 ", dateFormat=" + dateFormat +
                 ", longToString=" + longToString +
                 ", auth=" + auth +

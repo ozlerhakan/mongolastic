@@ -1,0 +1,7 @@
+== Contributors
+
+Thank you for our contributors to make this project more usable! ✨
+
+* https://github.com/hakdogan[Hüseyin Hakdoğan]
+* https://github.com/winder[Will Winder]
+* https://github.com/wareninja[Yılmaz Güleryüz]

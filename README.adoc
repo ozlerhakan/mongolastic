@@ -1,7 +1,7 @@
 = Mongolastic
-:version: v1.3.8
+:version: v1.3.9
 
-image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-3.2.2-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-2.3.3-brightgreen.svg[]
+image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-3.2.2-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-2.3.4-brightgreen.svg[]
 
 What data you have in your MongoDB can also be included into your ElasticSearch and vice versa using this tool. You can perform the aforementioned facilities by providing a file having a yaml characteristic.
 

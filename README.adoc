@@ -57,7 +57,7 @@ elastic:
 <13> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
 <14> a custom formatter for Date fields rather than the default DateCodec (*Optional*)
 <15> serialize long value as a string for backwards compatibility with other tools (*Optional*)
-<16> the property lets you connect to a spesific elastic cluster (*Optional*)
+<16> connect to a spesific elastic cluster (*Optional*)
 <17> as of v1.3.9, you can access an auth elastic search by giving auth configuration. (*Optional*)
 
 == Example

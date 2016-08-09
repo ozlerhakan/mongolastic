@@ -6,11 +6,10 @@ import org.apache.log4j.Logger;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by hakdogan on 21/05/15.
@@ -29,7 +28,7 @@ public class ElasticConfiguration {
     private void prepareClient() {
         try {
 
-            Settings.Builder settingsBuilder = Settings.settingsBuilder();
+            Builder settingsBuilder = Settings.builder();
 
             settingsBuilder.put("client.transport.ping_timeout", "15s");
             settingsBuilder.put("client.transport.nodes_sampler_interval", "5s");

@@ -1,5 +1,5 @@
 = Mongolastic
-:version: v1.3.10
+:version: v1.3.11
 
 image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-3.2.2-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-2.3.4-brightgreen.svg[]
 

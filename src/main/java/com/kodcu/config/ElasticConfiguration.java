@@ -8,6 +8,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.shield.ShieldPlugin;
 
 import java.net.InetAddress;
 
@@ -46,7 +47,11 @@ public class ElasticConfiguration {
             }
 
             InetSocketTransportAddress ista = new InetSocketTransportAddress(InetAddress.getByName(config.getElastic().getHost()), config.getElastic().getPort());
-            client = TransportClient.builder().settings(settingsBuilder.build()).build().addTransportAddress(ista);
+            client = TransportClient.builder()
+            		.addPlugin(ShieldPlugin.class)
+            		.settings(settingsBuilder.build())
+            		.build()
+            		.addTransportAddress(ista);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex.fillInStackTrace());
         }

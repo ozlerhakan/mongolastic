@@ -75,7 +75,7 @@ public class MongoConfiguration {
                 client = new MongoClient(Arrays.asList(address), options);
             }
         } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex.fillInStackTrace());
+            logger.error(ex.getMessage(), ex);
         }
     }
 
@@ -85,7 +85,7 @@ public class MongoConfiguration {
             MongoDatabase database = client.getDatabase(config.getMisc().getDindex().getName());
             collection = database.getCollection(config.getMisc().getCtype().getName());
         } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex.fillInStackTrace());
+            logger.error(ex.getMessage(), ex);
         }
         return collection;
     }

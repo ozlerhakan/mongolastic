@@ -36,7 +36,7 @@ public class FileConfiguration {
             config = this.controlAsSettings(config);
             logger.info(System.lineSeparator() + "Config Output:" + System.lineSeparator() + config.toString() + System.lineSeparator());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e.fillInStackTrace());
+            logger.error(e.getMessage(), e);
         }
 
         return config;

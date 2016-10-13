@@ -1,5 +1,5 @@
 = Mongolastic
-:version: v1.3.12
+:version: v1.3.13
 
 image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-3.3.0-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-2.4.0-brightgreen.svg[]
 
@@ -62,7 +62,7 @@ elastic:
 
 Alternatively, you can use a JSON file.
 
-.this is the same configuration JSON schema of the yaml file above:
+.this is the same JSON schema of the yaml file above:
 [source,json]
 ----
 {

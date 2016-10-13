@@ -1,15 +1,15 @@
 = Mongolastic
 :version: v1.3.12
 
-image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-3.2.2-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-2.4.0-brightgreen.svg[]
+image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-3.3.0-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-2.4.0-brightgreen.svg[]
 
-Mongolastic enables you to migrate your datasets from a mongod node to an elasticsearch node and vice versa. Since mongo and elastic servers can run with different characteristics, the tool provides several optional and required features to ably connect them. Mongolastic works with a yaml configuration file to begin a migration process. It reads your demand on the file and start syncing data in the specified direction.
+Mongolastic enables you to migrate your datasets from a mongod node to an elasticsearch node and vice versa. Since mongo and elastic servers can run with different characteristics, the tool provides several optional and required features to ably connect them. Mongolastic works with a yaml or json configuration file to begin a migration process. It reads your demand on the file and start syncing data in the specified direction.
 
 == How it works
 
 First, download the latest https://github.com/ozlerhakan/mongolastic/releases/download/{version}/mongolastic.jar[mongolastic.jar] file.
 
-Second, give a yaml file which must contain the following structure:
+Second, create a yaml or json file which must contain the following structure:
 
 [source,yaml]
 ----
@@ -60,10 +60,55 @@ elastic:
 <16> connect to a spesific elastic cluster (*Optional*)
 <17> as of v1.3.9, you can access an auth elastic search by giving auth configuration. (*Optional*)
 
+Alternatively, you can use a JSON file.
+
+.this is the same configuration JSON schema of the yaml file above:
+[source,json]
+----
+{
+	"misc": {
+		"dindex": {
+			"name": "db-index-name",
+			"as": "different-db-index-name"
+		},
+		"ctype": {
+			"name": "collection-type-name",
+			"as": "different-coll-type-name"
+		},
+		"direction": "em | me",
+		"batch": 1234,
+		"dropDataset": bool
+	},
+	"mongo": {
+		"host": "127.0.0.1",
+		"port": 27017,
+		"query": "{}",
+		"auth": {
+			"user": "user-name",
+			"pwd": "password",
+			"source": "db-name",
+			"mechanism": "plain | scram-sha-1 | x509 | gssapi | cr"
+		}
+	},
+	"elastic": {
+		"host": "127.0.0.1",
+		"port": 9300,
+		"dateFormat": "<format>",
+		"longToString": bool,
+		"clusterName": "cluster-name",
+		"auth": {
+			"user": "user-name",
+			"pwd": "password"
+		}
+	}
+}
+----
+
 == Example
 
-Here is an example of a configuration file:
+The following files have the same confguration details:
 
+.yaml file
 [source,yaml]
 ----
 misc:
@@ -81,6 +126,33 @@ elastic:
     host: localhost
     port: 9300
 ----
+
+.json file
+[source,json]
+----
+{
+	"misc": {
+		"dindex": {
+			"name": "twitter",
+			"as": "kodcu"
+		},
+		"ctype": {
+			"name": "tweets",
+			"as": "posts"
+		}
+	},
+	"mongo": {
+		"host": "localhost",
+		"port": 27017,
+		"query": "{ 'user.name' : 'kodcu.com'}"
+	},
+	"elastic": {
+		"host": "localhost",
+		"port": 9300
+	}
+}
+----
+
 the config says that the transfer direction is from mongodb to elasticsearch, mongolastic first looks at the _tweets_ collection, where the _user name_ is _kodcu.com_, of the _twitter_ database located on a mongod server running on default host interface and port number. If It finds the corresponding data, It will start copying those into an elasticsearch environment running on default host and transport number. After all, you should see a type called _"posts"_ in an index called _"kodcu"_ in the current elastic node. Why the index and type are different is because "dindex.as" and "ctype.as" options were set, these indicates that your data being transferred exist in _posts_ type of the _kodcu_ index. Additionally, all the test cases can run on Docker using `docker-compose`.
 
 After downloading the jar and providing a conf file, you can run the tool as below:

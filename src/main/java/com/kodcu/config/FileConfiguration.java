@@ -1,11 +1,13 @@
 package com.kodcu.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -22,23 +24,30 @@ public class FileConfiguration {
 
     public YamlConfiguration getFileContent() {
         YamlConfiguration config = null;
+        File ymlFile = new File(parameter);
         try {
-            File ymlFile = new File(parameter);
             Yaml yaml = new Yaml();
             if (ymlFile.isFile()) {
                 FileInputStream configFile = new FileInputStream(ymlFile);
                 config = yaml.loadAs(configFile, YamlConfiguration.class);
-            }
-            else {
+            } else {
                 // we expect that this is just a string including yaml format
                 config = yaml.loadAs(parameter, YamlConfiguration.class);
             }
-            config = this.controlAsSettings(config);
             logger.info(System.lineSeparator() + "Config Output:" + System.lineSeparator() + config.toString() + System.lineSeparator());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
 
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                config = mapper.readValue(ymlFile, YamlConfiguration.class);
+                logger.info(System.lineSeparator() + "Config Output:" + System.lineSeparator() + config.toString() + System.lineSeparator());
+            } catch (IOException ex) {
+                logger.error(e.getMessage(), e);
+                logger.error(e.getMessage(), ex);
+                System.exit(-1);
+            }
+        }
+        config = this.controlAsSettings(config);
         return config;
     }
 

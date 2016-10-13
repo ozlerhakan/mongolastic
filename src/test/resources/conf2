@@ -1,13 +1,20 @@
-misc:
-    dindex:
-        name: twitter
-    ctype:
-        name: tweets
-        as: posts
-    direction: em
-mongo:
-    host: 127.0.0.1
-    port: 27017
-elastic:
-    host: 127.0.0.1
-    port: 9300
+{
+	"misc": {
+		"dindex": {
+			"name": "twitter"
+		},
+		"ctype": {
+			"name": "tweets",
+			"as": "posts"
+		},
+		"direction": "em"
+	},
+	"mongo": {
+		"host": "127.0.0.1",
+		"port": 27017
+	},
+	"elastic": {
+		"host": "127.0.0.1",
+		"port": 9300
+	}
+}

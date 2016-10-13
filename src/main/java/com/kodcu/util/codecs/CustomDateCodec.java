@@ -1,11 +1,11 @@
 package com.kodcu.util.codecs;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.bson.BsonWriter;
 import org.bson.codecs.DateCodec;
 import org.bson.codecs.EncoderContext;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author wwinder
@@ -13,6 +13,7 @@ import org.bson.codecs.EncoderContext;
  */
 public class CustomDateCodec extends DateCodec {
     private final SimpleDateFormat formatter;
+
     public CustomDateCodec(String format) {
         formatter = new SimpleDateFormat(format);
     }

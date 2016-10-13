@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,7 @@
         <java.version>1.8</java.version>
         <elastic.version>2.4.0</elastic.version>
         <shield.version>2.4.0</shield.version>
-        <mongo.version>3.2.2</mongo.version>
+        <mongo.version>3.3.0</mongo.version>
     </properties>
 
     <inceptionYear>2015</inceptionYear>
@@ -54,36 +54,37 @@
         <url>https://github.com/ozlerhakan/mongolastic/issues</url>
     </issueManagement>
 
-   <repositories>
-      <!-- add the elasticsearch repo -->
-      <repository>
-         <id>elasticsearch-releases</id>
-         <url>https://maven.elasticsearch.org/releases</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </repository>
-   </repositories>
-   
+    <repositories>
+        <!-- add the elasticsearch repo -->
+        <repository>
+            <id>elasticsearch-releases</id>
+            <url>https://maven.elasticsearch.org/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
+            <artifactId>mongodb-driver</artifactId>
             <version>${mongo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.16</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
             <version>${elastic.version}</version>
-        </dependency> 
+        </dependency>
         <dependency> <!-- elasticsearch plugin: SHIELD -->
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>shield</artifactId>

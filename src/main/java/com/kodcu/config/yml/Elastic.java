@@ -44,20 +44,20 @@ public class Elastic {
         this.port = port;
     }
 
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
     public String getDateFormat() {
         return dateFormat;
     }
 
-    public void setLongToString(Boolean longToString) {
-        this.longToString = longToString;
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
     }
 
     public Boolean getLongToString() {
         return this.longToString;
+    }
+
+    public void setLongToString(Boolean longToString) {
+        this.longToString = longToString;
     }
 
     @Override

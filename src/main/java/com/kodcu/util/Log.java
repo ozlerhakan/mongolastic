@@ -5,12 +5,15 @@ import java.io.IOException;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 /**
  * Created by Hakan on 9/9/2015.
  */
 public class Log {
+
+    private final static Logger logger = Logger.getLogger(Log.class);
 
     public static void buildLog(){
         buildLog("mongolastic");
@@ -24,7 +27,7 @@ public class Log {
             BasicConfigurator.configure(fileAppender);
             BasicConfigurator.configure();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
     }
 }

@@ -1,12 +1,11 @@
 package com.kodcu.service;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
+import com.kodcu.config.ElasticConfiguration;
+import com.kodcu.config.YamlConfiguration;
+import com.kodcu.listener.BulkProcessorListener;
+import com.kodcu.util.codecs.CustomDateCodec;
+import com.kodcu.util.codecs.CustomLongCodec;
+import com.mongodb.MongoClient;
 import org.apache.log4j.Logger;
 import org.bson.BsonType;
 import org.bson.Document;
@@ -27,12 +26,12 @@ import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 
-import com.kodcu.config.ElasticConfiguration;
-import com.kodcu.config.YamlConfiguration;
-import com.kodcu.listener.BulkProcessorListener;
-import com.kodcu.util.codecs.CustomDateCodec;
-import com.kodcu.util.codecs.CustomLongCodec;
-import com.mongodb.MongoClient;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Hakan on 5/21/2015.
@@ -50,10 +49,10 @@ public class ElasticBulkService implements BulkService {
         this.client = client;
 
         this.bulkProcessor = BulkProcessor.builder(client.getClient(), new BulkProcessorListener())
-            .setBulkActions(config.getMisc().getBatch())
-            .setFlushInterval(TimeValue.timeValueSeconds(5))
-            .setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
-            .build();
+                .setBulkActions(config.getMisc().getBatch())
+                .setFlushInterval(TimeValue.timeValueSeconds(5))
+                .setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
+                .build();
 
         encoder = getEncoder();
     }
@@ -73,7 +72,7 @@ public class ElasticBulkService implements BulkService {
                 bulkProcessor.add(indexRequest);
             }
         } catch (Exception ex) {
-            logger.debug(ex.getMessage(), ex.fillInStackTrace());
+            logger.debug(ex.getMessage(), ex);
         }
     }
 
@@ -82,7 +81,7 @@ public class ElasticBulkService implements BulkService {
         try {
             bulkProcessor.awaitClose(10, TimeUnit.MINUTES);
         } catch (InterruptedException ex) {
-            logger.error(ex.getMessage(), ex.fillInStackTrace());
+            logger.error(ex.getMessage(), ex);
         }
     }
 
@@ -102,12 +101,12 @@ public class ElasticBulkService implements BulkService {
 
     /**
      * Customizations for the document.toJson output.
-     *
+     * <p>
      * http://mongodb.github.io/mongo-java-driver/3.0/bson/codecs/
      *
      * @return the toJson encoder.
      */
-  private Encoder<Document> getEncoder() {
+    private Encoder<Document> getEncoder() {
         Map<BsonType, Class<?>> replacements = new HashMap<BsonType, Class<?>>();
         ArrayList<Codec<?>> codecs = new ArrayList<>();
 
@@ -128,9 +127,9 @@ public class ElasticBulkService implements BulkService {
             DocumentCodecProvider documentCodecProvider = new DocumentCodecProvider(bsonTypeClassMap);
 
             CodecRegistry codecRegistry = codecRegistry = CodecRegistries.fromRegistries(
-                CodecRegistries.fromCodecs(codecs),
-                CodecRegistries.fromProviders(documentCodecProvider),
-                MongoClient.getDefaultCodecRegistry());
+                    CodecRegistries.fromCodecs(codecs),
+                    CodecRegistries.fromProviders(documentCodecProvider),
+                    MongoClient.getDefaultCodecRegistry());
 
             return new DocumentCodec(codecRegistry, bsonTypeClassMap);
         } else {

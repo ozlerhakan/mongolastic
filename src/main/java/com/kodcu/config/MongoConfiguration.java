@@ -76,6 +76,7 @@ public class MongoConfiguration {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
+            System.exit(-1);
         }
     }
 

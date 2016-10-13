@@ -26,7 +26,7 @@ public class MongoBulkService implements BulkService {
             logger.info("Transferring data began to mongodb.");
             collection.insertMany((List<Document>) content);
         } catch (Exception ex) {
-            logger.debug(ex.getMessage(), ex.fillInStackTrace());
+            logger.debug(ex.getMessage(), ex);
         }
     }
 

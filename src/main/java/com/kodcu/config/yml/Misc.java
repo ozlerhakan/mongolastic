@@ -43,12 +43,12 @@ public class Misc {
         this.dindex = dindex;
     }
 
-    public void setDropDataset(Boolean dropDataset) {
-        this.dropDataset = dropDataset;
+    public Boolean getDropDataset() {
+        return this.dropDataset;
     }
 
-    public Boolean getDropDataset() {
-      return this.dropDataset;
+    public void setDropDataset(Boolean dropDataset) {
+        this.dropDataset = dropDataset;
     }
 
     @Override

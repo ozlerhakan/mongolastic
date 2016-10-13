@@ -20,8 +20,7 @@ public class BulkProcessorListener implements BulkProcessor.Listener {
     public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
         if (response.hasFailures()) {
             logger.error(response.buildFailureMessage());
-        }
-        else {
+        } else {
             logger.info(String.format("Data transfer successfully terminated.(%d)", response.getItems().length));
         }
 

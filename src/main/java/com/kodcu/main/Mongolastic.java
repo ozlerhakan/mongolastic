@@ -1,10 +1,5 @@
 package com.kodcu.main;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import org.apache.log4j.Logger;
-
 import com.kodcu.config.ElasticConfiguration;
 import com.kodcu.config.FileConfiguration;
 import com.kodcu.config.MongoConfiguration;
@@ -16,6 +11,10 @@ import com.kodcu.service.BulkService;
 import com.kodcu.service.ElasticBulkService;
 import com.kodcu.service.MongoBulkService;
 import com.kodcu.util.Log;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Created by Hakan on 5/19/2015.
@@ -40,6 +39,21 @@ public class Mongolastic {
 
     public static void configLog() throws IOException {
         Log.buildLog();
+    }
+
+    private static void configAssertion(String[] args) {
+        if (args.length == 0) {
+            logger.error("Incorrect syntax. Should be mongolastic.jar -f /path/yml/file");
+            System.exit(-1);
+        }
+        if (!args[0].equals("-f")) {
+            logger.error("Please specify the -f parameter with a correct yaml file");
+            System.exit(-1);
+        }
+        if (args.length != 2) {
+            logger.error("Incorrect syntax. Pass max 2 parameters");
+            System.exit(-1);
+        }
     }
 
     public void start() {
@@ -77,20 +91,5 @@ public class Mongolastic {
             return new MongoBulkService(mongo.getClient(), config);
         }
         return new ElasticBulkService(config, elastic);
-    }
-
-    static void configAssertion(String[] args) {
-        if (args.length == 0) {
-            logger.error("Incorrect syntax. Should be mongolastic.jar -f /path/yml/file");
-            System.exit(-1);
-        }
-        if (!args[0].equals("-f")) {
-            logger.error("Please specify the -f parameter with a correct yaml file");
-            System.exit(-1);
-        }
-        if (args.length != 2) {
-            logger.error("Incorrect syntax. Pass max 2 parameters");
-            System.exit(-1);
-        }
     }
 }

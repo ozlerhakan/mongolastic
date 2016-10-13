@@ -33,32 +33,32 @@ import static org.junit.Assert.assertThat;
 @RunWith(Parameterized.class)
 public class TestMongoToElastic {
 
-    @Parameterized.Parameters(name = "{index}: ({0})={1}")
-    public static Iterable<Object[]> queries() throws Exception {
-        String query = "misc:\n" +
-                        "    dindex:\n" +
-                        "        name: twitter\n" +
-                        "    ctype:\n" +
-                        "        name: tweets\n" +
-                        "    batch: 500\n" +
-                        "mongo:\n" +
-                        "    host: mongo\n" +
-                        "    port: 27017\n" +
-                        "elastic:\n" +
-                        "    host: es\n" +
-                        "    port: 9300";
-        return Arrays.asList(new Object[][]{
-                {new FileConfiguration("src/test/resources/conf1")},
-                {new FileConfiguration("src/test/resources/conf3")},
-                {new FileConfiguration(query)}
-        });
-    }
-
     private final FileConfiguration file;
 
     public TestMongoToElastic(final FileConfiguration file) {
         super();
         this.file = file;
+    }
+
+    @Parameterized.Parameters(name = "{index}: ({0})={1}")
+    public static Iterable<Object[]> queries() throws Exception {
+        String query = "misc:\n" +
+                "    dindex:\n" +
+                "        name: twitter\n" +
+                "    ctype:\n" +
+                "        name: tweets\n" +
+                "    batch: 500\n" +
+                "mongo:\n" +
+                "    host: mongo\n" +
+                "    port: 27017\n" +
+                "elastic:\n" +
+                "    host: es\n" +
+                "    port: 9300";
+        return Arrays.asList(new Object[][]{
+                {new FileConfiguration("src/test/resources/conf1")},
+                {new FileConfiguration("src/test/resources/conf3")},
+                {new FileConfiguration(query)}
+        });
     }
 
     @Test

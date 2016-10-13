@@ -1,19 +1,18 @@
 package com.kodcu.provider;
 
 
-import java.util.List;
-
-import org.bson.Document;
-
 import com.kodcu.config.YamlConfiguration;
 import com.kodcu.service.BulkService;
+import org.bson.Document;
+
+import java.util.List;
 
 /**
  * Created by Hakan on 6/30/2015.
  */
 public interface Provider {
 
-    default void transfer(final BulkService bulkService,YamlConfiguration config,  final Runnable closeConnections) {
+    default void transfer(final BulkService bulkService, YamlConfiguration config, final Runnable closeConnections) {
         long count = this.getCount();
         final int limit = config.getMisc().getBatch();
         int skip = 0;

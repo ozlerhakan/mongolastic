@@ -22,6 +22,15 @@ import static org.junit.Assert.assertThat;
 @RunWith(Parameterized.class)
 public class TestMongolasticQueries {
 
+    private final FileConfiguration config;
+    private final YamlConfiguration expected;
+
+    public TestMongolasticQueries(final FileConfiguration config, final YamlConfiguration expected) {
+        super();
+        this.config = config;
+        this.expected = expected;
+    }
+
     @Parameterized.Parameters(name = "{index}: ({0})={1}")
     public static Iterable<Object[]> queries() throws Exception {
         return Arrays.asList(new Object[][]{
@@ -84,15 +93,6 @@ public class TestMongolasticQueries {
         es.setPort(9300);
         query.setElastic(es);
         return query;
-    }
-
-    private final FileConfiguration config;
-    private final YamlConfiguration expected;
-
-    public TestMongolasticQueries(final FileConfiguration config, final YamlConfiguration expected) {
-        super();
-        this.config = config;
-        this.expected = expected;
     }
 
     @Test

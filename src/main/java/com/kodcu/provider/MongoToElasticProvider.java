@@ -1,17 +1,16 @@
 package com.kodcu.provider;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Optional;
-import org.apache.log4j.Logger;
-import org.bson.Document;
-
 import com.kodcu.config.YamlConfiguration;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import org.apache.log4j.Logger;
+import org.bson.Document;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Hakan on 5/18/2015.
@@ -69,8 +68,7 @@ public class MongoToElasticProvider implements Provider {
 
             // TODO: Persist cursor ID somewhere to allow restarts.
             Optional.ofNullable(cursor.getServerCursor()).ifPresent(serverCursor -> cursorId = serverCursor.getId());
-        }
-        else if (cursor == null && cursorId != 0) {
+        } else if (cursor == null && cursorId != 0) {
             // TODO: Lookup cursor ID for resume.
             // Open existing cursor in case of restart??
         }

@@ -42,9 +42,9 @@ public class Auth {
         this.mechanism = mechanism;
     }
 
-	@Override
-	public String toString() {
-		return "Auth [user=" + user + ", pwd=" + pwd + ", source=" + source + ", mechanism=" + mechanism + "]";
-	}
-    
+    @Override
+    public String toString() {
+        return "Auth [user=" + user + ", pwd=" + pwd + ", source=" + source + ", mechanism=" + mechanism + "]";
+    }
+
 }

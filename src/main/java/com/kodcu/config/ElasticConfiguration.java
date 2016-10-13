@@ -1,7 +1,5 @@
 package com.kodcu.config;
 
-import java.util.Objects;
-import java.util.Optional;
 import org.apache.log4j.Logger;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -11,6 +9,8 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.shield.ShieldPlugin;
 
 import java.net.InetAddress;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created by hakdogan on 21/05/15.
@@ -53,7 +53,8 @@ public class ElasticConfiguration {
             		.build()
             		.addTransportAddress(ista);
         } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex.fillInStackTrace());
+            logger.error(ex.getMessage(), ex);
+            System.exit(-1);
         }
     }
 

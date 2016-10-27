@@ -1,7 +1,7 @@
 = Mongolastic
 :version: v1.3.14
 
-image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-2.2.0-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-2.4.0-brightgreen.svg[]
+image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"] image:https://img.shields.io/badge/license-MIT-blue.svg[] image:https://img.shields.io/badge/mongo.java.driver-3.2.0-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-2.4.0-brightgreen.svg[]
 
 Mongolastic enables you to migrate your datasets from a mongod node to an elasticsearch node and vice versa. Since mongo and elastic servers can run with different characteristics, the tool provides several optional and required features to ably connect them. Mongolastic works with a yaml or json configuration file to begin a migration process. It reads your demand on the file and start syncing data in the specified direction.
 

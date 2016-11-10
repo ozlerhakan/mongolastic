@@ -16,17 +16,20 @@ before_install:
 - whereis elasticsearch
 - curl -O https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.3.3/elasticsearch-2.3.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.3.3.deb
 - sudo service elasticsearch start
+- sudo service mongod stop
 - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 - echo "deb http://repo.mongodb.org/apt/ubuntu precise/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
 - sudo apt-get update
 - sudo apt-get install -y --force-yes mongodb-org=3.2.10 mongodb-org-server=3.2.10 mongodb-org-tools=3.2.10
+- sudo service mongod start
+- mongod --version
 before_script:
 - wget https://dl.dropboxusercontent.com/u/15056258/mongodb/tweets.zip
 - unzip tweets.zip
 - sleep 15
 - curl http://localhost:9200/
 - mongo --version
-- mongorestore -host=127.0.0.1 --port 27017 dump/twitter/
+- mongorestore -h 127.0.0.1 --port 27017 dump/twitter/
 - mvn clean
 after_success:
 - docker version

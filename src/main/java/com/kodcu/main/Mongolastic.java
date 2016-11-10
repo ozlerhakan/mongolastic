@@ -43,11 +43,11 @@ public class Mongolastic {
 
     private static void configAssertion(String[] args) {
         if (args.length == 0) {
-            logger.error("Incorrect syntax. Should be mongolastic.jar -f /path/yml/file");
+            logger.error("Incorrect syntax. Should be mongolastic.jar -f /path/file");
             System.exit(-1);
         }
         if (!args[0].equals("-f")) {
-            logger.error("Please specify the -f parameter with a correct yaml file");
+            logger.error("Please specify the -f parameter with a correct yaml or json file");
             System.exit(-1);
         }
         if (args.length != 2) {

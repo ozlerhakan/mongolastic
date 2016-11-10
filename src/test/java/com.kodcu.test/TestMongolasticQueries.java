@@ -2,10 +2,10 @@ package com.kodcu.test;
 
 import com.kodcu.config.FileConfiguration;
 import com.kodcu.config.YamlConfiguration;
-import com.kodcu.config.yml.Elastic;
-import com.kodcu.config.yml.Misc;
-import com.kodcu.config.yml.Mongo;
-import com.kodcu.config.yml.Namespace;
+import com.kodcu.config.structure.Elastic;
+import com.kodcu.config.structure.Misc;
+import com.kodcu.config.structure.Mongo;
+import com.kodcu.config.structure.Namespace;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

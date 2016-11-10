@@ -1,8 +1,8 @@
 package com.kodcu.config;
 
-import com.kodcu.config.yml.Elastic;
-import com.kodcu.config.yml.Misc;
-import com.kodcu.config.yml.Mongo;
+import com.kodcu.config.structure.Elastic;
+import com.kodcu.config.structure.Misc;
+import com.kodcu.config.structure.Mongo;
 
 /**
  * Created by Hakan on 5/19/2015.

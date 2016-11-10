@@ -1,4 +1,4 @@
-package com.kodcu.config.yml;
+package com.kodcu.config.structure;
 
 /**
  * Created by Hakan on 1/16/2016.

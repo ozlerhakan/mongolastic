@@ -1,5 +1,0 @@
-FROM mongo:3.2
-ADD auth.js /auth/
-
-WORKDIR /auth
-CMD mongo --host mongo_auth --port 27017 < auth.js

@@ -7,7 +7,14 @@ Mongolastic enables you to migrate your datasets from a mongod node to an elasti
 
 == How it works
 
-First, download the latest https://github.com/ozlerhakan/mongolastic/releases/download/{version}/mongolastic.jar[mongolastic.jar] file.
+First, you can either pull the corresponding image of the app from https://hub.docker.com/r/ozlerhakan/mongolastic/[Docker Hub]
+
+Supported tags and respective Dockerfile links:
+
+*  `_1.3_`, `_1.3.15_`, `_latest_` https://github.com/ozlerhakan/mongolastic/blob/master/Dockerfile[_(master/Dockerfile)_]
+
+
+or download the latest https://github.com/ozlerhakan/mongolastic/releases/download/{version}/mongolastic.jar[mongolastic.jar] file.
 
 Second, create a yaml or json file which must contain the following structure:
 
@@ -157,9 +164,13 @@ elastic:
 
 the config says that the transfer direction is from mongodb to elasticsearch, mongolastic first looks at the _tweets_ collection, where the _user name_ is _kodcu.com_, of the _twitter_ database located on a mongod server running on default host interface and port number. If It finds the corresponding data, It will start copying those into an elasticsearch environment running on default host and transport number. After all, you should see a type called _"posts"_ in an index called _"kodcu"_ in the current elastic node. Why the index and type are different is because "dindex.as" and "ctype.as" options were set, these indicates that your data being transferred exist in _posts_ type of the _kodcu_ index.
 
-After downloading the jar and providing a conf file, you can run the tool as below:
+After downloading the jar and providing a conf file, you can either run the tool as:
 
     $ java -jar mongolastic.jar -f config.file
+
+__or__
+
+    $docker run --rm -v $(PWD)/config.file:/config.file --net host ozlerhakan/mongolastic:<tag> config.file
 
 NOTE: Every attempt of running the tool drops the mentioned db/index in the target environment unless the dropDataset parameter is configured otherwise.
 

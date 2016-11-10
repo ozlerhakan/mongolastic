@@ -9,7 +9,8 @@ os:
 services:
 - docker
 env:
-- MONGOLASTIC_REPO="ozlerhakan/mongolastic:1.3.15-dev"
+- MONGOLASTIC_FULL="ozlerhakan/mongolastic:1.3.15"
+- MONGOLASTIC_SHORT="ozlerhakan/mongolastic:1.3"
 script: mvn install
 before_install:
 - whereis elasticsearch
@@ -30,10 +31,14 @@ before_script:
 - mvn clean
 after_success:
 - docker version
-- docker build -t $MONGOLASTIC_REPO .
-- docker images
-- docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-- docker push $MONGOLASTIC_REPO
+- if [ "$TRAVIS_BRANCH" == "master" ]; then
+  docker build -t $MONGOLASTIC_FULL .;
+  docker tag $MONGOLASTIC_FULL $MONGOLASTIC_SHORT;
+  docker images;
+  docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+  docker push $MONGOLASTIC_FULL;
+  docker push $MONGOLASTIC_SHORT;
+  fi
 deploy:
   provider: releases
   skip_cleanup: true

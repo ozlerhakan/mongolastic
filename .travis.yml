@@ -29,7 +29,7 @@ before_script:
 - sleep 15
 - curl http://localhost:9200/
 - mongo --version
-- mongorestore -h 127.0.0.1 --port 27017 dump/twitter/
+- mongorestore -h 127.0.0.1 --port 27017 dump
 - mvn clean
 after_success:
 - docker version

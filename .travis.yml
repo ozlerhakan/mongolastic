@@ -9,17 +9,15 @@ os:
 services:
 - docker
 env:
-- MONGOLASTIC_FULL="ozlerhakan/mongolastic:1.3.15"
-- MONGOLASTIC_SHORT="ozlerhakan/mongolastic:1.3"
+- MONGOLASTIC_FULL="ozlerhakan/mongolastic:1.4.0"
 script: mvn install
 before_install:
-- whereis elasticsearch
-- curl -O https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.3.3/elasticsearch-2.3.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.3.3.deb
+- curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.1.deb && sudo dpkg -i --force-confnew elasticsearch-5.1.1.deb
 - sudo service elasticsearch start
-- sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
-- echo "deb http://repo.mongodb.org/apt/ubuntu precise/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+- sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+- echo "deb http://repo.mongodb.org/apt/ubuntu precise/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 - sudo apt-get update
-- sudo apt-get install -y --force-yes mongodb-org=3.2.10 mongodb-org-server=3.2.10 mongodb-org-tools=3.2.10
+- sudo apt-get install -y mongodb-org
 - sudo service mongod start
 - mongod --version
 before_script:
@@ -30,14 +28,15 @@ before_script:
 - mongorestore -h 127.0.0.1 --port 27017 dump
 - mvn clean
 after_success:
-- docker version
+- docker build -t $MONGOLASTIC_FULL .
+- docker tag $MONGOLASTIC_FULL ozlerhakan/mongolastic:1.4;
+- docker tag $MONGOLASTIC_FULL ozlerhakan/mongolastic:latest;
+- docker images
 - if [ "$TRAVIS_BRANCH" == "master" ]; then
-  docker build -t $MONGOLASTIC_FULL .;
-  docker tag $MONGOLASTIC_FULL $MONGOLASTIC_SHORT;
-  docker images;
   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
   docker push $MONGOLASTIC_FULL;
-  docker push $MONGOLASTIC_SHORT;
+  docker push ozlerhakan/mongolastic:1.4;
+  docker push ozlerhakan/mongolastic:latest;
   fi
 deploy:
   provider: releases

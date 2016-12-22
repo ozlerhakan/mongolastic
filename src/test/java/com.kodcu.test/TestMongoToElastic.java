@@ -10,7 +10,6 @@ import com.kodcu.provider.Provider;
 import com.kodcu.service.BulkService;
 import com.kodcu.service.ElasticBulkService;
 import com.kodcu.service.MongoBulkService;
-import com.kodcu.util.Log;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -63,8 +62,6 @@ public class TestMongoToElastic {
 
     @Test
     public void shouldCopyOneQueryToEsFromMongoDB() {
-        Log.buildLog("TestMongoToElastic");
-
         YamlConfiguration config = file.getFileContent();
         assertThat(config, is(notNullValue()));
 

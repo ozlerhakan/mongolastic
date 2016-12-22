@@ -34,9 +34,7 @@ public class FileConfiguration {
                 // we expect that this is just a string including yaml format
                 config = yaml.loadAs(parameter, YamlConfiguration.class);
             }
-            logger.info(System.lineSeparator() + "Config Output:" + System.lineSeparator() + config.toString() + System.lineSeparator());
         } catch (Exception e) {
-
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 config = mapper.readValue(ymlFile, YamlConfiguration.class);
@@ -47,6 +45,8 @@ public class FileConfiguration {
                 System.exit(-1);
             }
         }
+
+        logger.info(System.lineSeparator() + "Config Output:" + System.lineSeparator() + config.toString() + System.lineSeparator());
         config = this.controlAsSettings(config);
         return config;
     }

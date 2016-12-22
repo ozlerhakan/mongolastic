@@ -6,13 +6,10 @@ import com.kodcu.listener.BulkProcessorListener;
 import com.kodcu.util.codecs.CustomDateCodec;
 import com.kodcu.util.codecs.CustomLongCodec;
 import com.mongodb.MongoClient;
-import org.apache.log4j.Logger;
-import org.bson.BsonType;
 import org.bson.Document;
 import org.bson.codecs.BsonTypeClassMap;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DocumentCodec;
-import org.bson.codecs.DocumentCodecProvider;
 import org.bson.codecs.Encoder;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -25,12 +22,12 @@ import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -38,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ElasticBulkService implements BulkService {
 
-    private final Logger logger = Logger.getLogger(ElasticBulkService.class);
+    private final Logger logger = LoggerFactory.getLogger(ElasticBulkService.class);
     private final YamlConfiguration config;
     private final ElasticConfiguration client;
     private final BulkProcessor bulkProcessor;
@@ -107,28 +104,23 @@ public class ElasticBulkService implements BulkService {
      * @return the toJson encoder.
      */
     private Encoder<Document> getEncoder() {
-        Map<BsonType, Class<?>> replacements = new HashMap<BsonType, Class<?>>();
         ArrayList<Codec<?>> codecs = new ArrayList<>();
 
         if (config.getElastic().getDateFormat() != null) {
             // Replace default DateCodec class to use the custom date formatter.
-            replacements.put(BsonType.DATE_TIME, CustomDateCodec.class);
             codecs.add(new CustomDateCodec(config.getElastic().getDateFormat()));
         }
 
         if (config.getElastic().getLongToString()) {
             // Replace default LongCodec class
-            replacements.put(BsonType.INT64, CustomLongCodec.class);
             codecs.add(new CustomLongCodec());
         }
 
         if (codecs.size() > 0) {
-            BsonTypeClassMap bsonTypeClassMap = new BsonTypeClassMap(replacements);
-            DocumentCodecProvider documentCodecProvider = new DocumentCodecProvider(bsonTypeClassMap);
+            BsonTypeClassMap bsonTypeClassMap = new BsonTypeClassMap();
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
                     CodecRegistries.fromCodecs(codecs),
-                    CodecRegistries.fromProviders(documentCodecProvider),
                     MongoClient.getDefaultCodecRegistry());
 
             return new DocumentCodec(codecRegistry, bsonTypeClassMap);

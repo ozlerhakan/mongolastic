@@ -3,8 +3,9 @@ package com.kodcu.service;
 import com.kodcu.config.YamlConfiguration;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import org.apache.log4j.Logger;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class MongoBulkService implements BulkService {
 
-    private final Logger logger = Logger.getLogger(MongoBulkService.class);
+    private final Logger logger = LoggerFactory.getLogger(MongoBulkService.class);
     private final MongoCollection<Document> collection;
 
     public MongoBulkService(final MongoClient client, final YamlConfiguration config) {

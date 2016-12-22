@@ -5,8 +5,9 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import org.apache.log4j.Logger;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Optional;
  */
 public class MongoToElasticProvider implements Provider {
 
-    private final Logger logger = Logger.getLogger(MongoToElasticProvider.class);
+    private final Logger logger = LoggerFactory.getLogger(MongoToElasticProvider.class);
     private final MongoCollection<Document> collection;
     private final YamlConfiguration config;
     private MongoCursor<Document> cursor;

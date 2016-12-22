@@ -2,7 +2,6 @@ package com.kodcu.provider;
 
 import com.kodcu.config.ElasticConfiguration;
 import com.kodcu.config.YamlConfiguration;
-import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -10,6 +9,8 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.search.SearchHit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class ElasticToMongoProvider implements Provider {
 
-    private final Logger logger = Logger.getLogger(ElasticToMongoProvider.class);
+    private final Logger logger = LoggerFactory.getLogger(ElasticToMongoProvider.class);
     private final ElasticConfiguration elastic;
     private final YamlConfiguration config;
 

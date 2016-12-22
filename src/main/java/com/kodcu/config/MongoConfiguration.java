@@ -5,11 +5,11 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
-
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.apache.log4j.Logger;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -21,7 +21,7 @@ import static com.mongodb.assertions.Assertions.notNull;
  */
 public class MongoConfiguration {
 
-    private final Logger logger = Logger.getLogger(MongoConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(MongoConfiguration.class);
     private final YamlConfiguration config;
     private MongoClient client;
 
@@ -40,44 +40,52 @@ public class MongoConfiguration {
                     .sslInvalidHostNameAllowed(true)
                     .build();
 
-            if (Objects.nonNull(config.getMongo().getAuth())) {
-
-                String user = notNull("auth.name", config.getMongo().getAuth().getUser());
-                String database = config.getMongo().getAuth().getSource();
-                char[] pwd = config.getMongo().getAuth().getPwd().toCharArray();
-                String mechanism = config.getMongo().getAuth().getMechanism();
-
-                MongoCredential credential = null;
-                switch (mechanism) {
-                    case "scram-sha-1":
-                        credential = MongoCredential.createScramSha1Credential(user, database, pwd);
-                        break;
-                    case "x509":
-                        credential = MongoCredential.createMongoX509Credential(user);
-                        break;
-                    case "cr":
-                        credential = MongoCredential.createMongoCRCredential(user, database, pwd);
-                        break;
-                    case "plain":
-                        credential = MongoCredential.createPlainCredential(user, database, pwd);
-                        break;
-                    case "gssapi":
-                        credential = MongoCredential.createGSSAPICredential(user);
-                        break;
-                    default:
-                        credential = MongoCredential.createCredential(user, database, pwd);
-                        break;
-                }
-
-                client = new MongoClient(Arrays.asList(address), Arrays.asList(credential), options);
-
-            } else {
-                client = new MongoClient(Arrays.asList(address), options);
-            }
+             client = connectToClient(address, options);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             System.exit(-1);
         }
+    }
+
+    private MongoClient connectToClient(ServerAddress address, MongoClientOptions options) {
+        if (Objects.nonNull(config.getMongo().getAuth())) {
+
+            String user = notNull("auth.name", config.getMongo().getAuth().getUser());
+            String database = config.getMongo().getAuth().getSource();
+            char[] pwd = config.getMongo().getAuth().getPwd().toCharArray();
+            String mechanism = config.getMongo().getAuth().getMechanism();
+
+            MongoCredential credential = findMongoCredential(user, database, pwd, mechanism);
+            return new MongoClient(Arrays.asList(address), Arrays.asList(credential), options);
+
+        } else {
+            return new MongoClient(Arrays.asList(address), options);
+        }
+    }
+
+    private MongoCredential findMongoCredential(String user, String database, char[] pwd, String mechanism) {
+        MongoCredential credential = null;
+        switch (mechanism) {
+            case "scram-sha-1":
+                credential = MongoCredential.createScramSha1Credential(user, database, pwd);
+                break;
+            case "x509":
+                credential = MongoCredential.createMongoX509Credential(user);
+                break;
+            case "cr":
+                credential = MongoCredential.createMongoCRCredential(user, database, pwd);
+                break;
+            case "plain":
+                credential = MongoCredential.createPlainCredential(user, database, pwd);
+                break;
+            case "gssapi":
+                credential = MongoCredential.createGSSAPICredential(user);
+                break;
+            default:
+                credential = MongoCredential.createCredential(user, database, pwd);
+                break;
+        }
+        return credential;
     }
 
     public MongoCollection<Document> getMongoCollection() {

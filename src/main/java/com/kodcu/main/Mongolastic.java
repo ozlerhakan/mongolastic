@@ -10,10 +10,9 @@ import com.kodcu.provider.Provider;
 import com.kodcu.service.BulkService;
 import com.kodcu.service.ElasticBulkService;
 import com.kodcu.service.MongoBulkService;
-import com.kodcu.util.Log;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -21,7 +20,7 @@ import java.util.Optional;
  */
 public class Mongolastic {
 
-    private static final Logger logger = Logger.getLogger(Mongolastic.class);
+    private static final Logger logger = LoggerFactory.getLogger(Mongolastic.class);
     private final String parameter;
 
     public Mongolastic(String parameter) {
@@ -29,16 +28,11 @@ public class Mongolastic {
     }
 
     public static void main(String[] args) throws Exception {
-        configLog();
         configAssertion(args);
 
         String parameter = args[1];
         Mongolastic app = new Mongolastic(parameter);
         app.start();
-    }
-
-    public static void configLog() throws IOException {
-        Log.buildLog();
     }
 
     private static void configAssertion(String[] args) {

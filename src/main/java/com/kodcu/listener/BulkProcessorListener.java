@@ -1,16 +1,17 @@
 package com.kodcu.listener;
 
-import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Hakan on 5/21/2015.
  */
 public class BulkProcessorListener implements BulkProcessor.Listener {
 
-    private final Logger logger = Logger.getLogger(BulkProcessorListener.class);
+    private final Logger logger = LoggerFactory.getLogger(BulkProcessorListener.class);
 
     @Override
     public void beforeBulk(long executionId, BulkRequest request) {

@@ -38,11 +38,9 @@ public class FileConfiguration {
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 config = mapper.readValue(ymlFile, YamlConfiguration.class);
-                logger.info(System.lineSeparator() + "Config Output:" + System.lineSeparator() + config.toString() + System.lineSeparator());
             } catch (IOException ex) {
                 logger.error(e.getMessage(), e);
-                logger.error(e.getMessage(), ex);
-                System.exit(-1);
+                System.exit(0);
             }
         }
 

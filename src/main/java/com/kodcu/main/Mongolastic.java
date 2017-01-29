@@ -38,15 +38,15 @@ public class Mongolastic {
     private static void configAssertion(String[] args) {
         if (args.length == 0) {
             logger.error("Incorrect syntax. Should be mongolastic.jar -f /path/file");
-            System.exit(-1);
+            System.exit(0);
         }
         if (!args[0].equals("-f")) {
             logger.error("Please specify the -f parameter with a correct yaml or json file");
-            System.exit(-1);
+            System.exit(0);
         }
         if (args.length != 2) {
             logger.error("Incorrect syntax. Pass max 2 parameters");
-            System.exit(-1);
+            System.exit(0);
         }
     }
 

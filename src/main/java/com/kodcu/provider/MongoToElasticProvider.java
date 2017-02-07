@@ -1,17 +1,19 @@
 package com.kodcu.provider;
 
 import com.kodcu.config.YamlConfiguration;
-import com.mongodb.BasicDBObject;
-import com.mongodb.client.FindIterable;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.mongodb.client.model.Aggregates.*;
 
 /**
  * Created by Hakan on 5/18/2015.
@@ -46,7 +48,7 @@ public class MongoToElasticProvider implements Provider {
         result.ensureCapacity(limit);
 
         MongoCursor<Document> cursor = getCursor(skip);
-        while(cursor.hasNext() && result.size() < limit) {
+        while (cursor.hasNext() && result.size() < limit) {
             result.add(cursor.next());
         }
         return result;
@@ -58,14 +60,17 @@ public class MongoToElasticProvider implements Provider {
     private MongoCursor<Document> getCursor(int skip) {
         if (cursor == null && cursorId == 0) {
             Document query = Document.parse(config.getMongo().getQuery());
-            BasicDBObject sort = new BasicDBObject("$natural", 1);
+            List<Bson> pipes = new ArrayList<>(3);
+            pipes.add(match(query));
+            pipes.add(skip(skip));
 
-            FindIterable<Document> results = collection
-                .find(query)
-                .sort(sort)
-                .skip(skip)
-                .noCursorTimeout(true);
-            cursor = results.iterator();
+            Optional.ofNullable(config.getMongo().getProject()).ifPresent(p -> pipes.add(project(Document.parse(p))));
+
+            AggregateIterable<Document> aggregate = collection.aggregate(pipes)
+                    .allowDiskUse(true)
+                    .useCursor(true);
+
+            cursor = aggregate.iterator();
 
             // TODO: Persist cursor ID somewhere to allow restarts.
             Optional.ofNullable(cursor.getServerCursor()).ifPresent(serverCursor -> cursorId = serverCursor.getId());

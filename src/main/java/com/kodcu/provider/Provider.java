@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface Provider {
 
-    default void transfer(final BulkService bulkService, YamlConfiguration config, final Runnable closeConnections) {
+    default void transfer(final BulkService bulkService, final YamlConfiguration config, final Runnable closeConnections) {
         long count = this.getCount();
         final int limit = config.getMisc().getBatch();
         int skip = 0;

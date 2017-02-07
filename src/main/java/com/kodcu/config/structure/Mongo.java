@@ -8,6 +8,7 @@ public class Mongo {
     private String host;
     private int port;
     private String query = "{}";
+    private String project;
     private Auth auth;
 
     @Override
@@ -16,8 +17,17 @@ public class Mongo {
                 "host='" + host + '\'' +
                 ", port=" + port +
                 ", query='" + query + '\'' +
+                ", project='" + project + '\'' +
                 ", auth=" + auth +
                 '}';
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(String project) {
+        this.project = project;
     }
 
     public Auth getAuth() {

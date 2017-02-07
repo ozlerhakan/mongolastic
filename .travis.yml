@@ -9,7 +9,7 @@ os:
 services:
 - docker
 env:
-- MONGOLASTIC_FULL="ozlerhakan/mongolastic:1.4.0"
+- MONGOLASTIC_FULL="ozlerhakan/mongolastic:1.4.1"
 script: mvn install
 before_install:
 - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.1.deb && sudo dpkg -i --force-confnew elasticsearch-5.1.1.deb

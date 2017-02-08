@@ -99,7 +99,7 @@ Alternatively, a JSON file can be specified as a mongolastic configuration file 
 	"mongo": {
 		"host": "127.0.0.1",
 		"port": 27017,
-		"query": "{ lang: 'en' }"
+		"query": "{ lang: 'en' }",
 		"project": "{ user:1, name:'$user.name', location: { $substr: [ '$user.location', 10, 15 ] }}",
 		"auth": {
 			"user": "joe",

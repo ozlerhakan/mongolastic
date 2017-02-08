@@ -1,5 +1,5 @@
 = Mongolastic
-:version: v1.4.0
+:version: v1.4.1
 
 image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"]
 image:https://api.codacy.com/project/badge/Grade/8d768c2fc37246019115e4d090a33b98["Codacy code quality", link="https://www.codacy.com/app/ozlerhakan/mongolastic?utm_source=github.com&utm_medium=referral&utm_content=ozlerhakan/mongolastic&utm_campaign=Badge_Grade"]
@@ -16,7 +16,8 @@ First, you can either pull the corresponding image of the app from https://hub.d
 
 Supported tags and respective Dockerfile links:
 
-*  `_1.4_`, `_1.4.0_`, `_latest_` https://github.com/ozlerhakan/mongolastic/blob/master/Dockerfile[_(master/Dockerfile)_]
+*  `_1.4_`, `_1.4.1_`, `_latest_` https://github.com/ozlerhakan/mongolastic/blob/master/Dockerfile[_(master/Dockerfile)_]
+*  `_1.4.0_` https://github.com/ozlerhakan/mongolastic/blob/8c43f7be74e68a7850caa6feb4d161712b6872a1/Dockerfile[_(master/Dockerfile)_]
 *  `_1.3_`, `_1.3.15_` https://github.com/ozlerhakan/mongolastic/blob/8e7494852ad601b58be25224e141f1cfed507d9c/Dockerfile[_(1.3.15/Dockerfile)_]
 
 
@@ -40,18 +41,19 @@ mongo:
     host: <ip-address>      <8>
     port: <number>          <9>
     query: "mongo-query"    <10>
-    auth:                   <11>
+    project: "projection"   <11>
+    auth:                   <12>
         user: <string>
         pwd: "password"
         source: <db-name>
         mechanism: ( plain | scram-sha-1 | x509 | gssapi | cr )
 elastic:
-    host: <ip-address>     <12>
-    port: <number>         <13>
-    dateFormat: "<format>" <14>
-    longToString: <bool>   <15>
-    clusterName: <string>  <16>
-    auth:                  <17>
+    host: <ip-address>     <13>
+    port: <number>         <14>
+    dateFormat: "<format>" <15>
+    longToString: <bool>   <16>
+    clusterName: <string>  <17>
+    auth:                  <18>
         user: <string>
         pwd: "password"
 ----
@@ -65,63 +67,63 @@ elastic:
 <8>  the name of the host machine where the `mongod` is running.
 <9>  the port where the `mongod` instance is listening.
 <10>  data will be transferred based on a json mongodb query (*Optional*)
-<11> as of v1.3.5, you can access an auth mongodb by giving auth configuration. (*Optional*)
-<12> the name of the host machine where the `elastic node` is running.
-<13> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
-<14> a custom formatter for Date fields rather than the default DateCodec (*Optional*)
-<15> serialize long value as a string for backwards compatibility with other tools (*Optional*)
-<16> connect to a spesific elastic cluster (*Optional*)
-<17> as of v1.3.9, you can access an auth elastic search by giving auth configuration. (*Optional*)
+<11> with 1.4.1, you can manipulate documents that will be migrated from mongo to es based on the https://docs.mongodb.com/manual/reference/operator/aggregation/project/[`$project`] operator (*Optional*)
+<12> as of v1.3.5, you can access an auth mongodb by giving auth configuration. (*Optional*)
+<13> the name of the host machine where the `elastic node` is running.
+<14> the *transport* port where the transport module will communicate with the running elastic node. E.g. *9300* for node-to-node communication.
+<15> a custom formatter for Date fields rather than the default DateCodec (*Optional*)
+<16> serialize long value as a string for backwards compatibility with other tools (*Optional*)
+<17> connect to a spesific elastic cluster (*Optional*)
+<18> as of v1.3.9, you can access an auth elastic search by giving auth configuration. (*Optional*)
 
 ---
 
-Alternatively, you can use a JSON file.
+Alternatively, a JSON file can be specified as a mongolastic configuration file including the same YAML file structure above.
 
-.this is the same JSON schema of the yaml file above:
 [source,json]
 ----
 {
 	"misc": {
 		"dindex": {
-			"name": "db-index-name",
-			"as": "different-db-index-name"
+			"name": "twitter",
+			"as": "media"
 		},
 		"ctype": {
-			"name": "collection-type-name",
-			"as": "different-coll-type-name"
+			"name": "tweets",
+			"as": "posts"
 		},
-		"direction": "em | me",
-		"batch": 1234,
-		"dropDataset": bool
+		"direction": "me",
+		"batch": 400,
+		"dropDataset": true
 	},
 	"mongo": {
 		"host": "127.0.0.1",
 		"port": 27017,
-		"query": "{}",
+		"query": "{ lang: 'en' }"
+		"project": "{ user:1, name:'$user.name', location: { $substr: [ '$user.location', 10, 15 ] }}",
 		"auth": {
-			"user": "user-name",
-			"pwd": "password",
-			"source": "db-name",
-			"mechanism": "plain | scram-sha-1 | x509 | gssapi | cr"
+			"user": "joe",
+			"pwd": "1234",
+			"source": "twitter",
+			"mechanism": "scram-sha-1"
 		}
 	},
 	"elastic": {
 		"host": "127.0.0.1",
 		"port": 9300,
-		"dateFormat": "<format>",
-		"longToString": bool,
-		"clusterName": "cluster-name",
+		"dateFormat": "yyyy-MM-dd",
+		"longToString": true,
 		"auth": {
-			"user": "user-name",
-			"pwd": "password"
+			"user": "joe",
+			"pwd": "4321"
 		}
 	}
 }
 ----
 
-== Example
+== Example #1
 
-The following files have the same confguration details:
+The following files have the same configuration details:
 
 .yaml file
 [source,yaml]
@@ -177,6 +179,27 @@ After downloading the jar or pulling the image and providing a conf file, you ca
 __or__
 
     $ docker run --rm -v $(PWD)/config.file:/config.file --net host ozlerhakan/mongolastic:<tag> config.file
+
+== Example #2
+
+Using the project field, you are able to manipulate documents when migrating them from mongodb to elasticsearch. for more examples about the `$project` operator of the aggregation pipeline, take a look at its https://docs.mongodb.com/manual/reference/operator/aggregation/project/[documentation].
+
+[source,yaml]
+----
+misc:
+    dindex:
+        name: twitter
+    ctype:
+        name: tweets
+mongo:
+    host: 192.168.10.151
+    port: 27017
+    project: "{ user: 1, name: '$user.name', location: { $substr: [ '$user.location', 10, 15 ] }}" <1>
+elastic:
+    host: 192.168.10.152
+    port: 9300
+----
+<1> the migrated documents will include the user field and contain new fields `name` and `location`.
 
 NOTE: Every attempt of running the tool drops the mentioned db/index in the target environment unless the dropDataset parameter is configured otherwise.
 

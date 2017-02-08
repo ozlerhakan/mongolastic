@@ -182,7 +182,7 @@ __or__
 
 == Example #2
 
-Using the project field, you are able to manipulate documents when migrating them from mongodb to elasticsearch. for more examples about the `$project` operator of the aggregation pipeline, take a look at its https://docs.mongodb.com/manual/reference/operator/aggregation/project/[documentation].
+Using the project field, you are able to manipulate documents when migrating them from mongodb to elasticsearch. For more examples about the `$project` operator of the aggregation pipeline, take a look at its https://docs.mongodb.com/manual/reference/operator/aggregation/project/[documentation].
 
 [source,yaml]
 ----

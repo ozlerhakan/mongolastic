@@ -8,12 +8,13 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by Hakan on 6/29/2015.
@@ -23,6 +24,7 @@ public class ElasticToMongoProvider implements Provider {
     private final Logger logger = LoggerFactory.getLogger(ElasticToMongoProvider.class);
     private final ElasticConfiguration elastic;
     private final YamlConfiguration config;
+    private SearchResponse response;
 
     public ElasticToMongoProvider(final ElasticConfiguration elastic, final YamlConfiguration config) {
         this.elastic = elastic;
@@ -35,12 +37,12 @@ public class ElasticToMongoProvider implements Provider {
         IndicesAdminClient admin = elastic.getClient().admin().indices();
         IndicesExistsRequestBuilder builder = admin.prepareExists(config.getMisc().getDindex().getName());
         if (builder.execute().actionGet().isExists()) {
-            SearchResponse response = elastic.getClient().prepareSearch(config.getMisc().getDindex().getName())
+            SearchResponse countResponse = elastic.getClient().prepareSearch(config.getMisc().getDindex().getName())
                     .setTypes(config.getMisc().getCtype().getName())
                     .setSearchType(SearchType.QUERY_THEN_FETCH)
                     .setSize(0)
                     .execute().actionGet();
-            count = response.getHits().getTotalHits();
+            count = countResponse.getHits().getTotalHits();
         } else {
             logger.info("Index/Type does not exist or does not contain the record");
             System.exit(-1);
@@ -53,17 +55,23 @@ public class ElasticToMongoProvider implements Provider {
     @Override
     public List buildJSONContent(int skip, int limit) {
 
-        SearchResponse response = elastic.getClient().prepareSearch(config.getMisc().getDindex().getName())
-                .setTypes(config.getMisc().getCtype().getName())
-                .setSearchType(SearchType.QUERY_THEN_FETCH)
-                .setScroll(new TimeValue(10000))
-                .setFrom(skip).setSize(limit)
-                .execute().actionGet();
-
-        List<Document> documents = new ArrayList<Document>();
-        for (SearchHit hit : response.getHits().getHits()) {
-            documents.add(new Document(hit.getSource()));
+        if (Objects.isNull(response)) {
+            response = elastic.getClient().prepareSearch(config.getMisc().getDindex().getName())
+                    .setTypes(config.getMisc().getCtype().getName())
+                    .setSearchType(SearchType.QUERY_THEN_FETCH)
+                    .setScroll(new TimeValue(60000))
+                    .setSize(limit)
+                    .execute().actionGet();
         }
-        return documents;
+        else {
+            response = elastic.getClient()
+                    .prepareSearchScroll(response.getScrollId())
+                    .setScroll(new TimeValue(60000))
+                    .execute().actionGet();
+        }
+
+        return Arrays.stream(response.getHits().getHits())
+                .map(hit -> new Document(hit.getSource()))
+                .collect(Collectors.toList());
     }
 }

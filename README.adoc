@@ -1,11 +1,11 @@
 = Mongolastic
-:version: v1.4.1
+:version: v1.4.2
 
 image:https://travis-ci.org/ozlerhakan/mongolastic.svg?branch=master["Build Status", link="https://travis-ci.org/ozlerhakan/mongolastic"]
 image:https://api.codacy.com/project/badge/Grade/8d768c2fc37246019115e4d090a33b98["Codacy code quality", link="https://www.codacy.com/app/ozlerhakan/mongolastic?utm_source=github.com&utm_medium=referral&utm_content=ozlerhakan/mongolastic&utm_campaign=Badge_Grade"]
 image:https://img.shields.io/docker/pulls/ozlerhakan/mongolastic.svg["Docker Pulls,link="https://hub.docker.com/r/ozlerhakan/mongolastic"]
 image:https://img.shields.io/github/release/ozlerhakan/mongolastic.svg[]
-image:https://img.shields.io/badge/mongo.java.driver-3.4.2-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-5.1.1-brightgreen.svg[]
+image:https://img.shields.io/badge/mongo.java.driver-3.4.2-brightgreen.svg[] image:https://img.shields.io/badge/elastic.java.driver-5.3.0-brightgreen.svg[]
 image:https://img.shields.io/badge/license-MIT-blue.svg[]
 
 Mongolastic enables you to migrate your datasets from a mongod node to an elasticsearch node and vice versa. Since mongo and elastic servers can run with different characteristics, the tool provides several optional and required features to ably connect them. Mongolastic works with a yaml or json configuration file to begin a migration process. It reads your demand on the file and start syncing data in the specified direction.
@@ -16,8 +16,9 @@ First, you can either pull the corresponding image of the app from https://hub.d
 
 Supported tags and respective Dockerfile links:
 
-*  `_1.4_`, `_1.4.1_`, `_latest_` https://github.com/ozlerhakan/mongolastic/blob/master/Dockerfile[_(master/Dockerfile)_]
-*  `_1.4.0_` https://github.com/ozlerhakan/mongolastic/blob/8c43f7be74e68a7850caa6feb4d161712b6872a1/Dockerfile[_(master/Dockerfile)_]
+*  `_1.4_`, `_1.4.2_`, `_latest_` https://github.com/ozlerhakan/mongolastic/blob/master/Dockerfile[_(master/Dockerfile)_]
+*  `_1.4.1_` https://github.com/ozlerhakan/mongolastic/blob/9c42a17525d29fe0c96ce90aade96d638c1edb6c/Dockerfile[_(1.4.1/Dockerfile)_]
+*  `_1.4.0_` https://github.com/ozlerhakan/mongolastic/blob/8c43f7be74e68a7850caa6feb4d161712b6872a1/Dockerfile[_(1.4.0/Dockerfile)_]
 *  `_1.3_`, `_1.3.15_` https://github.com/ozlerhakan/mongolastic/blob/8e7494852ad601b58be25224e141f1cfed507d9c/Dockerfile[_(1.3.15/Dockerfile)_]
 
 

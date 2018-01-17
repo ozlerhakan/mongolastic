@@ -12,7 +12,7 @@ env:
 - MONGOLASTIC_FULL="ozlerhakan/mongolastic:1.4.2"
 script: mvn install
 before_install:
-- curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.3.0.deb && sudo dpkg -i --force-confnew elasticsearch-5.3.0.deb
+- curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.1.1.deb && sudo dpkg -i --force-confnew elasticsearch-6.1.1.deb
 - sudo service elasticsearch start
 - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
 - echo "deb http://repo.mongodb.org/apt/ubuntu precise/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list

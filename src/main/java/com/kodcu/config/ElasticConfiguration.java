@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.xpack.client.PreBuiltXPackTransportClient;
 
 import java.net.InetAddress;
@@ -31,7 +31,7 @@ public class ElasticConfiguration {
 
         Builder settingsBuilder = applySettings();
         try {
-            InetSocketTransportAddress ista = new InetSocketTransportAddress(InetAddress.getByName(config.getElastic().getHost()), config.getElastic().getPort());
+            TransportAddress ista = new TransportAddress(InetAddress.getByName(config.getElastic().getHost()), config.getElastic().getPort());
             client = new PreBuiltXPackTransportClient(settingsBuilder.build())
                     .addTransportAddress(ista);
 

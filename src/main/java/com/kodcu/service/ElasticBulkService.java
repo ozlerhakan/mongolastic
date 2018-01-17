@@ -22,10 +22,10 @@ import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +65,7 @@ public class ElasticBulkService implements BulkService {
                 Object id = doc.get("_id");
                 IndexRequest indexRequest = new IndexRequest(indexName, typeName, String.valueOf(id));
                 doc.remove("_id");
-                indexRequest.source(doc.toJson(encoder).getBytes(Charset.forName("UTF-8")));
+                indexRequest.source(doc.toJson(encoder), XContentType.JSON);
                 bulkProcessor.add(indexRequest);
             }
         } catch (Exception ex) {

@@ -71,7 +71,7 @@ public class ElasticToMongoProvider implements Provider {
         }
 
         return Arrays.stream(response.getHits().getHits())
-                .map(hit -> new Document(hit.getSource()))
+                .map(hit -> new Document(hit.getSourceAsMap()))
                 .collect(Collectors.toList());
     }
 }

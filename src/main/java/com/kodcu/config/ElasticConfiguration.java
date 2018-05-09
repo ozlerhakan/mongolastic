@@ -1,17 +1,17 @@
 package com.kodcu.config;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.common.transport.TransportAddress;
-import org.elasticsearch.xpack.client.PreBuiltXPackTransportClient;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Objects;
-import java.util.Optional;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 /**
  * Created by hakdogan on 21/05/15.
@@ -32,7 +32,7 @@ public class ElasticConfiguration {
         Builder settingsBuilder = applySettings();
         try {
             TransportAddress ista = new TransportAddress(InetAddress.getByName(config.getElastic().getHost()), config.getElastic().getPort());
-            client = new PreBuiltXPackTransportClient(settingsBuilder.build())
+            client = new PreBuiltTransportClient(settingsBuilder.build())
                     .addTransportAddress(ista);
 
         } catch (UnknownHostException ex) {

@@ -207,5 +207,4 @@ NOTE: Every attempt of running the tool drops the mentioned db/index in the targ
 Mongolastic is released under http://showalicense.com/?hide_explanations=false&year=2015&fullname=Kodcu.com#license-mit[MIT].
 
 # The jar provided does'nt works with ES 7
-- I have added the jar in the repository
-[mongolastic](https://drive.google.com/file/d/1B4g1D76laL97cOq2D1Pcj0hwMonM41vC/view?usp=sharing)
+- Here is the link for the updated jar. https://drive.google.com/file/d/1B4g1D76laL97cOq2D1Pcj0hwMonM41vC/view?usp=sharing[mongolastic]

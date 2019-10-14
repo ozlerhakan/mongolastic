@@ -42,7 +42,7 @@ public class ElasticToMongoProvider implements Provider {
                     .setSearchType(SearchType.QUERY_THEN_FETCH)
                     .setSize(0)
                     .execute().actionGet();
-            count = countResponse.getHits().getTotalHits();
+            count = countResponse.getHits().getTotalHits().value;
         } else {
             logger.info("Index/Type does not exist or does not contain the record");
             System.exit(-1);

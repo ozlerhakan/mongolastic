@@ -126,7 +126,7 @@ public class TestMongoToElastic {
                 .setSearchType(SearchType.QUERY_THEN_FETCH)
                 .setSize(0)
                 .execute().actionGet();
-        long count = response.getHits().getTotalHits();
+        long count = response.getHits().getTotalHits().value;
         return count;
     }
 }

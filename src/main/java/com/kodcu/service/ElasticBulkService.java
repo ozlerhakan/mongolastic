@@ -14,10 +14,11 @@ import org.bson.codecs.Encoder;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.support.master.AcknowledgedRequest;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
@@ -88,7 +89,7 @@ public class ElasticBulkService implements BulkService {
         IndicesAdminClient admin = client.getClient().admin().indices();
         IndicesExistsRequestBuilder builder = admin.prepareExists(indexName);
         if (builder.execute().actionGet().isExists()) {
-            DeleteIndexResponse delete = admin.delete(new DeleteIndexRequest(indexName)).actionGet();
+            AcknowledgedResponse delete = admin.delete(new DeleteIndexRequest(indexName)).actionGet();
             if (delete.isAcknowledged())
                 logger.info(String.format("The current index %s was deleted.", indexName));
             else

@@ -21,7 +21,7 @@ Supported tags and respective Dockerfile links:
 
 
 or download the latest https://github.com/ozlerhakan/mongolastic/releases/download/{version}/mongolastic.jar[mongolastic.jar] file.
-
+Here is the link for the updated jar that works with Elasticsearch7.X. https://drive.google.com/file/d/1B4g1D76laL97cOq2D1Pcj0hwMonM41vC/view?usp=sharing[mongolastic]
 Second, create a yaml or json file which must contain the following structure:
 
 [source,yaml]

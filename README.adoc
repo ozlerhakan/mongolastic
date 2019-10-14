@@ -205,3 +205,6 @@ NOTE: Every attempt of running the tool drops the mentioned db/index in the targ
 == License
 
 Mongolastic is released under http://showalicense.com/?hide_explanations=false&year=2015&fullname=Kodcu.com#license-mit[MIT].
+
+# The jar provided does'nt works with ES 7
+- I have added the jar in the repository

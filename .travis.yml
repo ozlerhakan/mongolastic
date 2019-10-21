@@ -10,6 +10,7 @@ services:
   - docker
 env:
   - MONGOLASTIC_FULL="ozlerhakan/mongolastic:1.4.4"
+dist: trusty
 script: mvn install
 before_install:
   - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.4.0-amd64.deb && sudo dpkg -i --force-confnew elasticsearch-7.4.0.deb
